@@ -3,36 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RenewDesk — Admin Portal</title>
+    <title>RenewDesk - Infrastructure Renewal Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
-            color: #333;
+        body { font-family: 'Outfit', sans-serif; background-color: #f8f9fa; color: #2d3436; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 4px; }
+        
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 0;
         }
-        .container {
-            text-align: center;
-            padding: 2rem;
+        .navbar-brand { font-weight: 800; color: #2d3436; font-size: 1.6rem; letter-spacing: -0.5px; }
+        .nav-icon { background: linear-gradient(135deg, #0984e3, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;}
+        
+        .btn-gradient { background: linear-gradient(135deg, #0984e3, #6c5ce7); border: none; color: white; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 20px -5px rgba(108, 92, 231, 0.4); }
+        .btn-gradient:hover { box-shadow: 0 15px 25px -5px rgba(108, 92, 231, 0.5); color: white; transform: translateY(-3px) scale(1.02); }
+        .btn-outline-custom { border: 2px solid #2d3436; color: #2d3436; padding: 10px 28px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s; background: transparent; }
+        .btn-outline-custom:hover { background: #2d3436; color: white; transform: translateY(-3px); }
+
+        .hero-section {
+            padding: 140px 0 100px;
+            position: relative;
+            background: radial-gradient(circle at top right, rgba(108, 92, 231, 0.08), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(9, 132, 227, 0.08), transparent 40%);
+        }
+        
+        .hero-title { font-size: 4rem; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 25px; color: #1e272e; }
+        .text-gradient { background: linear-gradient(135deg, #0984e3, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 1.3rem; color: #636e72; font-weight: 400; line-height: 1.6; max-width: 600px; margin-bottom: 40px; }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 40px 30px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(10px);
+            height: 100%;
+        }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1); }
+        
+        .f-icon { width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 25px;}
+        .ic-1 { background: linear-gradient(135deg, rgba(9,132,227,0.1), rgba(9,132,227,0.02)); color: #0984e3; }
+        .ic-2 { background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(108,92,231,0.02)); color: #6c5ce7; }
+        .ic-3 { background: linear-gradient(135deg, rgba(253,203,110,0.1), rgba(253,203,110,0.02)); color: #e17055; }
+        .ic-4 { background: linear-gradient(135deg, rgba(0,184,148,0.1), rgba(0,184,148,0.02)); color: #00b894; }
+        
+        .feature-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; color: #2d3436; }
+        .feature-desc { color: #636e72; font-size: 1.05rem; line-height: 1.6; }
+
+        .dashboard-mockup {
+            border-radius: 20px;
+            box-shadow: 0 30px 80px -20px rgba(9, 132, 227, 0.3);
+            border: 1px solid rgba(255,255,255,0.6);
+            overflow: hidden;
+            transform: perspective(1000px) rotateY(-8deg) rotateX(5deg);
+            transition: transform 0.5s ease;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h1 { color: #0d6efd; margin-bottom: 0.5rem; }
-        p { color: #6c757d; }
+        .dashboard-mockup:hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+        .mockup-header { background: #f1f2f6; padding: 12px 20px; display: flex; gap: 8px; border-bottom: 1px solid #dfe4ea; align-items: center;}
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-r { background: #ff7675; } .dot-y { background: #fdcb6e; } .dot-g { background: #55efc4; }
+        
+        .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
+        .d-1 { animation-delay: 0.1s; } .d-2 { animation-delay: 0.2s; } .d-3 { animation-delay: 0.3s; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .cta-section { background: linear-gradient(135deg, #0984e3, #6c5ce7); color: white; padding: 100px 0; border-radius: 40px; margin: 0 20px 60px; text-align: center; position: relative; overflow: hidden;}
+        .cta-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none;}
+        
+        footer { padding: 40px 0; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; color: #a4b0be; font-weight: 500;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 RenewDesk</h1>
-        <p>The backend and database are running successfully.</p>
-        <p>Frontend SPA will be built here next.</p>
-        <br>
-        <a href="login.html" style="color: #0d6efd; text-decoration: none;">Go to Login</a>
+
+<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-shield-lock-fill nav-icon fs-2 me-2"></i> RenewDesk
+    </a>
+    <div class="d-flex ms-auto">
+      <a href="login.html" class="btn btn-outline-custom me-3 px-4 py-2 d-none d-sm-inline-block">Admin Login</a>
+      <a href="login.html" class="btn btn-gradient px-4 py-2">Get Started</a>
     </div>
+  </div>
+</nav>
+
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0 fade-in-up">
+                <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4 fw-bold fs-6">
+                    <i class="bi bi-stars me-1 text-warning"></i> Simplify Your Infrastructure
+                </div>
+                <h1 class="hero-title">Never Miss a <br><span class="text-gradient">Renewal Again.</span></h1>
+                <p class="hero-subtitle">The ultimate dashboard to track your clients' domains, hosting, maintenance contracts, and backup schedules. Beautifully organized with automated email alerts.</p>
+                <div class="d-flex gap-3">
+                    <a href="login.html" class="btn btn-gradient shadow-lg">Enter Dashboard <i class="bi bi-arrow-right ms-2"></i></a>
+                    <a href="#features" class="btn btn-outline-custom d-none d-sm-inline-block">Explore Features</a>
+                </div>
+            </div>
+            
+            <!-- Realistic 3D Mockup -->
+            <div class="col-lg-6 fade-in-up d-1">
+                <div class="dashboard-mockup">
+                    <div class="mockup-header">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <div class="mx-auto bg-white rounded text-center text-muted" style="width: 250px; font-size: 12px; padding: 3px;">renewdesk.app / dashboard</div>
+                    </div>
+                    <div class="p-4 bg-light">
+                        <div class="d-flex justify-content-between mb-4">
+                            <div style="width:40%; height:20px; background:#dfe4ea; border-radius:4px;"></div>
+                            <div style="width:15%; height:20px; background:#dfe4ea; border-radius:4px;"></div>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-4"><div class="bg-white p-3 rounded shadow-sm" style="height:80px; border-left: 4px solid #0984e3;"><div style="width:30px; height:30px; background:rgba(9,132,227,0.1); border-radius:8px; margin-bottom:10px;"></div><div style="width:60%; height:10px; background:#dfe4ea; border-radius:4px;"></div></div></div>
+                            <div class="col-4"><div class="bg-white p-3 rounded shadow-sm" style="height:80px; border-left: 4px solid #00b894;"><div style="width:30px; height:30px; background:rgba(0,184,148,0.1); border-radius:8px; margin-bottom:10px;"></div><div style="width:70%; height:10px; background:#dfe4ea; border-radius:4px;"></div></div></div>
+                            <div class="col-4"><div class="bg-white p-3 rounded shadow-sm" style="height:80px; border-left: 4px solid #fdcb6e;"><div style="width:30px; height:30px; background:rgba(253,203,110,0.1); border-radius:8px; margin-bottom:10px;"></div><div style="width:50%; height:10px; background:#dfe4ea; border-radius:4px;"></div></div></div>
+                        </div>
+                        <div class="bg-white rounded p-3 shadow-sm border border-light">
+                            <div class="d-flex align-items-center mb-3">
+                                <div style="width:10px; height:10px; border-radius:50%; background:#ff7675; margin-right:10px;"></div>
+                                <div style="width:30%; height:15px; background:#dfe4ea; border-radius:4px;"></div>
+                            </div>
+                            <div style="height:1px; background:#f1f2f6; margin-bottom:15px;"></div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div style="width:25%; height:12px; background:#dfe4ea; border-radius:4px;"></div>
+                                <div style="width:15%; height:24px; background:#ff7675; opacity:0.2; border-radius:12px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="fw-bold" style="font-size: 2.5rem;">Everything you need in <span class="text-gradient">one place.</span></h2>
+            <p class="text-muted fs-5 mt-3 max-w-lg mx-auto">Stop managing spreadsheets. RenewDesk gives you granular control over every asset tied to your clients.</p>
+        </div>
+        
+        <div class="row g-4 mt-4">
+            <div class="col-md-6 col-lg-3 fade-in-up d-1">
+                <div class="feature-card">
+                    <div class="f-icon ic-1"><i class="bi bi-globe"></i></div>
+                    <h4 class="feature-title">Domains</h4>
+                    <p class="feature-desc">Track registrars, purchase prices, and exact expiration dates for thousands of client domains.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up d-2">
+                <div class="feature-card">
+                    <div class="f-icon ic-2"><i class="bi bi-server"></i></div>
+                    <h4 class="feature-title">Hosting Plans</h4>
+                    <p class="feature-desc">Attach hosting plans to projects, monitor providers, and never let a critical server go offline.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up d-3">
+                <div class="feature-card">
+                    <div class="f-icon ic-3"><i class="bi bi-tools"></i></div>
+                    <h4 class="feature-title">Maintenance / AMC</h4>
+                    <p class="feature-desc">Log Annual Maintenance Contracts. Automatically track recurring revenue and renewal cycles.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in-up d-3">
+                <div class="feature-card">
+                    <div class="f-icon ic-4"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <h4 class="feature-title">Backup Schedules</h4>
+                    <p class="feature-desc">Ensure data integrity by tracking when a client's project was last backed up and when the next one is due.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-5 mb-5 mb-lg-0 fade-in-up">
+                <div class="f-icon ic-2 shadow-sm"><i class="bi bi-envelope-paper"></i></div>
+                <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">Automated <span class="text-gradient">Cron Alerts.</span></h2>
+                <p class="text-muted fs-5 mb-4">Configure custom warning thresholds (e.g., 30 days, 15 days, 7 days). RenewDesk runs in the background and emails you exactly when things need your attention.</p>
+                <ul class="list-unstyled mb-4">
+                    <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success fs-5 me-3"></i> <span class="fs-5 text-dark fw-medium">Direct SMTP Integration</span></li>
+                    <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success fs-5 me-3"></i> <span class="fs-5 text-dark fw-medium">Color-coded Delivery Logs</span></li>
+                    <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-success fs-5 me-3"></i> <span class="fs-5 text-dark fw-medium">Consolidated Project Reports</span></li>
+                </ul>
+            </div>
+            <div class="col-lg-7 fade-in-up d-1">
+                <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg border">
+                    <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light p-3 rounded-circle me-3"><i class="bi bi-envelope-at text-primary fs-4"></i></div>
+                            <div><h5 class="mb-0 fw-bold">Daily Expiration Report</h5><small class="text-muted">Today at 08:00 AM</small></div>
+                        </div>
+                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">Urgent</span>
+                    </div>
+                    <p class="mb-3 text-dark fw-medium">The following items require your attention:</p>
+                    <div class="bg-light rounded p-3 mb-2 border-start border-4 border-primary">
+                        <strong>Acme Corp Restructure</strong> &mdash; Domain: acme.com (Expiring in 7 days)
+                    </div>
+                    <div class="bg-light rounded p-3 mb-2 border-start border-4 border-warning">
+                        <strong>Stark Industries</strong> &mdash; AMC Contract (Expiring in 15 days)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="cta-section fade-in-up">
+    <div class="container position-relative z-1">
+        <h2 class="fw-bold mb-4" style="font-size: 3rem;">Ready to take control?</h2>
+        <p class="fs-5 text-white-50 mb-5 max-w-lg mx-auto" style="max-width: 600px;">Join now and deploy a centralized hub for all your client assets instantly.</p>
+        <a href="login.html" class="btn btn-light rounded-pill px-5 py-3 fs-5 fw-bold text-primary shadow-lg hover-lift" style="transition: transform 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;">Go to Login Panel</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-center mb-3">
+            <i class="bi bi-shield-lock-fill fs-3 me-2" style="color: #b2bec3;"></i> <span class="fs-4 fw-bold text-dark opacity-50">RenewDesk</span>
+        </div>
+        &copy; 2026 RenewDesk Application. All rights reserved.
+    </div>
+</footer>
+
+<script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+    });
+</script>
+
 </body>
 </html>
