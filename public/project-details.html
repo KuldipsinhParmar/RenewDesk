@@ -73,6 +73,18 @@
             <tbody id="tb-maintenance"></tbody>
         </table>
     </div>
+
+    <!-- BACKUPS -->
+    <div class="module-card card-backup" style="border-top-color: #20c997;">
+        <div class="d-flex justify-content-between mb-3">
+            <h4><i class="bi bi-cloud-arrow-up text-success"></i> Backups</h4>
+            <button class="btn btn-sm btn-success" onclick="addEntity('backup')">+ Add Backup Schedule</button>
+        </div>
+        <table class="table table-sm mt-3">
+            <thead><tr><th>Frequency</th><th>Last Backup</th><th>Next Backup</th><th>Storage</th><th>Action</th></tr></thead>
+            <tbody id="tb-backups"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -116,6 +128,16 @@ async function loadData() {
         <td>₹${i.price}</td>
         <td><button class="btn btn-sm text-danger" onclick="delEntity('maintenance', ${i.id})"><i class="bi bi-trash"></i></button></td>
     </tr>`).join('') || `<tr><td colspan="4" class="text-muted">No maintenance contracts.</td></tr>`;
+
+    // Render Backups
+    const bakTb = document.getElementById('tb-backups');
+    bakTb.innerHTML = d.backups.map(i => `<tr>
+        <td><strong>${i.frequency.toUpperCase()}</strong></td>
+        <td>${i.last_backup || '-'}</td>
+        <td>${i.next_backup || '-'}</td>
+        <td>${i.storage_location || '-'}</td>
+        <td><button class="btn btn-sm text-danger" onclick="delEntity('backups', ${i.id})"><i class="bi bi-trash"></i></button></td>
+    </tr>`).join('') || `<tr><td colspan="5" class="text-muted">No backup schedules.</td></tr>`;
 }
 
 async function delEntity(type, id) {
@@ -147,6 +169,13 @@ async function addEntity(type) {
         payload.end_date = prompt("End Date (YYYY-MM-DD):");
         if(!payload.end_date) return;
         payload.price = prompt("Yearly Price:");
+    }
+    else if (type === 'backup') {
+        payload.frequency = prompt("Frequency (daily, weekly, monthly, manual):");
+        if(!payload.frequency) return;
+        payload.last_backup = prompt("Last Backup Date (YYYY-MM-DD):");
+        payload.next_backup = prompt("Next Backup Date (YYYY-MM-DD):");
+        payload.storage_location = prompt("Storage Location (e.g. AWS S3, Google Drive):");
     }
 
     await fetch(`/api/${type}s.php`, {
