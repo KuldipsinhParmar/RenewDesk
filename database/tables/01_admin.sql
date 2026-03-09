@@ -17,5 +17,5 @@ INSERT INTO `admin` (`name`, `email`, `password`) VALUES
 (
   'Admin',
   'admin@renewdesk.local',
-  '$2y$12$Y5Q1z3kXq9pN6RmWvA7C0uLJhT8sOeGdFbKqMnVwPrEiXZcD4aH2.'
+  '$2y$12$mEumWTQsQhmxI8/tm7o9sODIHfCDfvIMUuBS8.8jznwRIESoRsLHm'
 );
