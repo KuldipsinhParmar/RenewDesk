@@ -1,0 +1,82 @@
+# RenewDesk - Docker (dev)
+# Web:        http://localhost:8880
+# phpMyAdmin: http://localhost:8883
+# MySQL:      localhost:3380
+#
+# Ensure .env has:
+#   database.default.hostname = renewdesk_db
+#   database.default.database = renewdesk_db
+#   database.default.username = renewdesk_user
+#   database.default.password = renewdesk_pass
+
+name: renewdesk
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: renewdesk_web
+    restart: unless-stopped
+    ports:
+      - "8880:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - renewdesk_network
+
+  db:
+    image: mysql:8.0
+    container_name: renewdesk_db
+    hostname: renewdesk_db
+    restart: unless-stopped
+    ports:
+      - "3380:3306"
+    environment:
+      MYSQL_DATABASE: renewdesk_db
+      MYSQL_USER: renewdesk_user
+      MYSQL_PASSWORD: renewdesk_pass
+      MYSQL_ROOT_PASSWORD: renewdesk_root_pass
+    volumes:
+      - renewdesk_db_data:/var/lib/mysql
+    networks:
+      renewdesk_network:
+        aliases:
+          - renewdesk_db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prenewesk_root_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: renewdesk_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8883:80"
+    environment:
+      PMA_HOST: renewdesk_db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: renewdesk_root_pass
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - renewdesk_network
+
+volumes:
+  renewdesk_db_data:
+
+networks:
+  renewdesk_network:
+    driver: bridge
