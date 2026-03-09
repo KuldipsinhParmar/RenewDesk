@@ -320,6 +320,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     
     let typeMap = currentModalType;
     if(currentModalType === 'backup') typeMap = 'backups';
+    if(currentModalType === 'domain') typeMap = 'domains';
     
     if (currentModalType === 'domain') {
         payload.domain_name = document.getElementById('f_domain_name').value;
