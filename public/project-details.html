@@ -4,109 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Details - RenewDesk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { background-color: #f8f9fa; display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background-color: #212529; color: white; padding-top: 20px; flex-shrink: 0; }
-        .sidebar a { color: #adb5bd; text-decoration: none; display: block; padding: 10px 20px; transition: 0.2s; }
-        .sidebar a:hover, .sidebar a.active { background-color: #343a40; color: white; border-left: 3px solid #0d6efd; }
-        .content { flex-grow: 1; padding: 30px; }
-        .module-card { background: white; border-top: 4px solid; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px;}
-        .card-domain { border-top-color: #0d6efd; }
-        .card-hosting { border-top-color: #6610f2; }
-        .card-amc { border-top-color: #ffc107; }
-        .card-backup { border-top-color: #20c997; }
-        .btn-purple { background-color: #6610f2; border-color: #6610f2; color: #fff; }
-        .btn-purple:hover { background-color: #520dc2; border-color: #520dc2; color: #fff; }
+        body { font-family: 'Outfit', sans-serif; background-color: #f4f6f9; color: #2d3436; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 4px; }
+        
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .navbar-brand { font-weight: 700; color: #2d3436; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .nav-link { color: #636e72 !important; font-weight: 500; transition: color 0.3s ease, transform 0.2s ease; padding: 0.5rem 1rem;}
+        .nav-link:hover { color: #0984e3 !important; transform: translateY(-1px); }
+        .nav-link.active { color: #0984e3 !important; font-weight: 600; }
+        .nav-icon { background: linear-gradient(135deg, #0984e3, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;}
+        
+        .page-content { padding: 40px 0; min-height: calc(100vh - 76px); }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s ease; padding: 25px; margin-bottom: 30px; }
+        .glass-card:hover { box-shadow: 0 15px 40px -10px rgba(0,0,0,0.06); transform: translateY(-3px);}
+        
+        .card-domain { border-top: 5px solid #0984e3; }
+        .card-hosting { border-top: 5px solid #6c5ce7; }
+        .card-amc { border-top: 5px solid #fdcb6e; }
+        .card-backup { border-top: 5px solid #00b894; }
+        
+        .table-custom { border-collapse: separate; border-spacing: 0 5px; width: 100%; }
+        .table-custom thead th { border: none; text-transform: uppercase; font-size: 11px; color: #b2bec3; letter-spacing: 1px; padding: 10px 15px; font-weight: 600; }
+        .table-custom tbody tr { background: #f8f9fa; border-radius: 8px; transition: all 0.2s; }
+        .table-custom tbody tr:hover { background: #eef2f7; transform: scale(1.01); }
+        .table-custom td { border: none; padding: 15px; vertical-align: middle; color: #2d3436; font-weight: 500;}
+        .table-custom tbody tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .table-custom tbody tr td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+        .btn-gradient { background: linear-gradient(135deg, #0984e3, #6c5ce7); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
+        .btn-gradient:hover { box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3); color: white; transform: translateY(-2px); }
+        .btn-purple { background: linear-gradient(135deg, #6c5ce7, #a29bfe); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 500; transition: all 0.3s;}
+        .btn-purple:hover { box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3); color: white; transform: translateY(-2px); }
+        .btn-warning-custom { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); border: none; color: #2d3436; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s;}
+        .btn-warning-custom:hover { box-shadow: 0 8px 15px rgba(253, 203, 110, 0.3); transform: translateY(-2px); }
+        .btn-success-custom { background: linear-gradient(135deg, #00b894, #55efc4); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 500; transition: all 0.3s;}
+        .btn-success-custom:hover { box-shadow: 0 8px 15px rgba(0, 184, 148, 0.3); color: white; transform: translateY(-2px); }
+
+        .modal-content { border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .modal-header { border-bottom: 1px solid #f0f2f5; padding: 20px 25px; }
+        .modal-footer { border-top: 1px solid #f0f2f5; padding: 15px 25px; }
+        .form-control { border-radius: 8px; border: 1px solid #dfe6e9; padding: 12px; transition: border-color 0.3s; background: #f8f9fa; }
+        .form-control:focus { border-color: #0984e3; box-shadow: 0 0 0 0.25rem rgba(9, 132, 227, 0.1); background: #fff;}
+        .form-select { border-radius: 8px; border: 1px solid #dfe6e9; padding: 12px; background-color: #f8f9fa; }
+        
+        .badge { padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 12px;}
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h4 class="text-center mb-4"><i class="bi bi-shield-lock text-primary"></i> RenewDesk</h4>
-    <a href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-    <a href="projects.html" class="active"><i class="bi bi-folder me-2"></i> Projects</a>
-    <a href="logs.html"><i class="bi bi-clock-history me-2"></i> Email Logs</a>
-    <a href="settings.html"><i class="bi bi-gear me-2"></i> Settings</a>
-    <hr class="text-secondary mx-3">
-    <a href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
-</div>
-
-<div class="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 id="projTitle">Loading...</h2>
-            <p class="text-muted" id="projDesc"></p>
-        </div>
-        <a href="projects.html" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top py-3">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+        <i class="bi bi-shield-lock-fill nav-icon fs-3 me-2"></i> RenewDesk
+    </a>
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navContent">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="projects.html"><i class="bi bi-folder-fill me-1"></i> Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="logs.html"><i class="bi bi-clock-history me-1"></i> Logs</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+        <a href="settings.html" class="nav-link p-0"><i class="bi bi-gear-fill fs-5"></i></a>
+        <button class="btn btn-gradient btn-sm" id="logoutBtn"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+      </div>
     </div>
+  </div>
+</nav>
 
-    <!-- DOMAINS -->
-    <div class="module-card card-domain">
-        <div class="d-flex justify-content-between mb-3">
-            <h4><i class="bi bi-globe text-primary"></i> Domains</h4>
-            <button class="btn btn-sm btn-primary" onclick="openModal('domain')">+ Add Domain</button>
+<div class="page-content">
+    <div class="container fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="d-flex align-items-center gap-4">
+                <a href="projects.html" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;"><i class="bi bi-arrow-left fs-5"></i></a>
+                <div>
+                    <h2 class="fw-bold mb-1" id="projTitle">Loading...</h2>
+                    <p class="text-muted mb-0" id="projDesc"></p>
+                </div>
+            </div>
         </div>
-        <table class="table table-sm mt-3 table-hover">
-            <thead><tr><th>Domain</th><th>Registrar</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
-            <tbody id="tb-domains"></tbody>
-        </table>
-    </div>
 
-    <!-- HOSTING -->
-    <div class="module-card card-hosting">
-        <div class="d-flex justify-content-between mb-3">
-            <h4><i class="bi bi-server" style="color:#6610f2;"></i> Hosting</h4>
-            <button class="btn btn-sm btn-purple" onclick="openModal('hosting')">+ Add Hosting</button>
-        </div>
-        <table class="table table-sm mt-3 table-hover">
-            <thead><tr><th>Plan</th><th>Provider</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
-            <tbody id="tb-hosting"></tbody>
-        </table>
-    </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- DOMAINS -->
+                <div class="glass-card card-domain">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-globe text-primary me-2"></i> Domains</h4>
+                        <button class="btn btn-gradient btn-sm text-nowrap" onclick="openModal('domain')"><i class="bi bi-plus-lg me-1"></i> Add Domain</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Domain</th><th>Registrar</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="tb-domains"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    <!-- MAINTENANCE -->
-    <div class="module-card card-amc">
-        <div class="d-flex justify-content-between mb-3">
-            <h4><i class="bi bi-tools text-warning"></i> Maintenance / AMC</h4>
-            <button class="btn btn-sm btn-warning" onclick="openModal('maintenance')">+ Add AMC</button>
-        </div>
-        <table class="table table-sm mt-3 table-hover">
-            <thead><tr><th>Start Date</th><th>End Date</th><th>Price</th><th class="text-end">Action</th></tr></thead>
-            <tbody id="tb-maintenance"></tbody>
-        </table>
-    </div>
+            <div class="col-lg-6">
+                <!-- HOSTING -->
+                <div class="glass-card card-hosting">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-server" style="color:#6c5ce7;"></i> Hosting</h4>
+                        <button class="btn btn-purple btn-sm text-nowrap" onclick="openModal('hosting')"><i class="bi bi-plus-lg me-1"></i> Add Hosting</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Plan</th><th>Provider</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="tb-hosting"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    <!-- BACKUPS -->
-    <div class="module-card card-backup">
-        <div class="d-flex justify-content-between mb-3">
-            <h4><i class="bi bi-cloud-arrow-up text-success"></i> Backups</h4>
-            <button class="btn btn-sm btn-success" onclick="openModal('backup')">+ Add Backup Schedule</button>
+            <div class="col-lg-6">
+                <!-- MAINTENANCE -->
+                <div class="glass-card card-amc">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-tools text-warning me-2"></i> Maintenance / AMC</h4>
+                        <button class="btn btn-warning-custom btn-sm text-nowrap" onclick="openModal('maintenance')"><i class="bi bi-plus-lg me-1"></i> Add AMC</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Start Date</th><th>End Date</th><th>Price</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="tb-maintenance"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <!-- BACKUPS -->
+                <div class="glass-card card-backup">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-cloud-arrow-up" style="color:#00b894;"></i> Backups</h4>
+                        <button class="btn btn-success-custom btn-sm text-nowrap" onclick="openModal('backup')"><i class="bi bi-plus-lg me-1"></i> Add Schedule</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Frequency</th><th>Last Backup</th><th>Next Backup</th><th>Storage</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="tb-backups"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        <table class="table table-sm mt-3 table-hover">
-            <thead><tr><th>Frequency</th><th>Last Backup</th><th>Next Backup</th><th>Storage</th><th class="text-end">Action</th></tr></thead>
-            <tbody id="tb-backups"></tbody>
-        </table>
     </div>
 </div>
 
 <!-- ================= MODALS ================= -->
 
-<!-- Shared Modal Shell -->
 <div class="modal fade" id="entityModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Manage Entry</h5>
+        <h5 class="modal-title fw-bold" id="modalTitle">Manage Entry</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" id="modalBody">
+      <div class="modal-body p-4" id="modalBody">
         <!-- Dynamic Form Content Injected Here -->
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="saveEntityBtn">Save</button>
+      <div class="modal-footer pb-4 px-4 bg-light bg-opacity-50">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-gradient px-4" id="saveEntityBtn">Save</button>
       </div>
     </div>
   </div>
@@ -123,49 +196,55 @@ let currentModalType = '';
 let currentEditId = null;
 
 async function loadData() {
-    const res = await fetch(`/api/projects.php?id=${pId}`);
-    if (res.status === 401) window.location.href = 'login.html';
-    const json = await res.json();
-    currentProjectData = json.data;
+    try {
+        const res = await fetch(`/api/projects.php?id=${pId}`);
+        if (res.status === 401) window.location.href = 'login.html';
+        const json = await res.json();
+        currentProjectData = json.data;
 
-    document.getElementById('projTitle').innerText = currentProjectData.name;
-    document.getElementById('projDesc').innerText = currentProjectData.description || '';
+        document.getElementById('projTitle').innerText = currentProjectData.name;
+        document.getElementById('projDesc').innerText = currentProjectData.description || 'No description provided.';
 
-    // Domains
-    document.getElementById('tb-domains').innerHTML = currentProjectData.domains.map(i => `<tr>
-        <td><strong>${i.domain_name}</strong></td><td>${i.registrar || '-'}</td><td>${i.renewal_date}</td><td>₹${i.price}</td>
-        <td class="text-end">
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('domain', ${i.id})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('domains', ${i.id})"><i class="bi bi-trash"></i></button>
-        </td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No domains added.</td></tr>`;
+        function formatD(d) { return d ? new Date(d).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : '-'; }
 
-    // Hosting
-    document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `<tr>
-        <td><strong>${i.plan_name}</strong></td><td>${i.provider || '-'}</td><td>${i.renewal_date}</td><td>₹${i.price}</td>
-        <td class="text-end">
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('hosting', ${i.id})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('hosting', ${i.id})"><i class="bi bi-trash"></i></button>
-        </td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No hosting added.</td></tr>`;
+        // Domains
+        document.getElementById('tb-domains').innerHTML = currentProjectData.domains.map(i => `<tr>
+            <td><strong>${i.domain_name}</strong></td><td>${i.registrar || '-'}</td><td>${formatD(i.renewal_date)}</td><td><span class="badge bg-light text-dark shadow-sm">₹${i.price}</span></td>
+            <td class="text-end text-nowrap">
+                <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1" style="width:32px;height:32px;padding:0;" onclick="openModal('domain', ${i.id})"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle" style="width:32px;height:32px;padding:0;" onclick="delEntity('domains', ${i.id})"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-4 bg-white rounded border">No domains added.</td></tr>`;
 
-    // AMC
-    document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.map(i => `<tr>
-        <td>${i.start_date}</td><td><strong>${i.end_date}</strong></td><td>₹${i.price}</td>
-        <td class="text-end">
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('maintenance', ${i.id})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('maintenance', ${i.id})"><i class="bi bi-trash"></i></button>
-        </td>
-    </tr>`).join('') || `<tr><td colspan="4" class="text-muted text-center py-3">No maintenance contracts.</td></tr>`;
+        // Hosting
+        document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `<tr>
+            <td><strong>${i.plan_name}</strong></td><td>${i.provider || '-'}</td><td>${formatD(i.renewal_date)}</td><td><span class="badge bg-light text-dark shadow-sm">₹${i.price}</span></td>
+            <td class="text-end text-nowrap">
+                <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1" style="width:32px;height:32px;padding:0;" onclick="openModal('hosting', ${i.id})"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle" style="width:32px;height:32px;padding:0;" onclick="delEntity('hosting', ${i.id})"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-4 bg-white rounded border">No hosting plans added.</td></tr>`;
 
-    // Backups
-    document.getElementById('tb-backups').innerHTML = currentProjectData.backups.map(i => `<tr>
-        <td><strong>${(i.frequency || '').toUpperCase()}</strong></td><td>${i.last_backup || '-'}</td><td>${i.next_backup || '-'}</td><td>${i.storage_location || '-'}</td>
-        <td class="text-end">
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('backup', ${i.id})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('backups', ${i.id})"><i class="bi bi-trash"></i></button>
-        </td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No backup schedules.</td></tr>`;
+        // AMC
+        document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.map(i => `<tr>
+            <td>${formatD(i.start_date)}</td><td><strong>${formatD(i.end_date)}</strong></td><td><span class="badge bg-light text-dark shadow-sm">₹${i.price}</span></td>
+            <td class="text-end text-nowrap">
+                <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1" style="width:32px;height:32px;padding:0;" onclick="openModal('maintenance', ${i.id})"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle" style="width:32px;height:32px;padding:0;" onclick="delEntity('maintenance', ${i.id})"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>`).join('') || `<tr><td colspan="4" class="text-muted text-center py-4 bg-white rounded border">No maintenance contracts.</td></tr>`;
+
+        // Backups
+        document.getElementById('tb-backups').innerHTML = currentProjectData.backups.map(i => `<tr>
+            <td><span class="badge bg-light text-dark shadow-sm text-uppercase">${i.frequency}</span></td><td>${formatD(i.last_backup)}</td><td><strong>${formatD(i.next_backup)}</strong></td><td>${i.storage_location || '-'}</td>
+            <td class="text-end text-nowrap">
+                <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1" style="width:32px;height:32px;padding:0;" onclick="openModal('backup', ${i.id})"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle" style="width:32px;height:32px;padding:0;" onclick="delEntity('backups', ${i.id})"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-4 bg-white rounded border">No backup schedules.</td></tr>`;
+    } catch(e) {
+        console.error("Failed to load project details", e);
+    }
 }
 
 function openModal(type, id = null) {
@@ -180,45 +259,41 @@ function openModal(type, id = null) {
     
     if(id) {
         let arr = type === 'domain' ? currentProjectData.domains : 
-                  type === 'backup' ? currentProjectData.backups : 
-                  currentProjectData[type];
-        
-        let targetArr;
-        if(type === 'domain') targetArr = currentProjectData.domains;
-        else if(type === 'hosting') targetArr = currentProjectData.hosting;
-        else if(type === 'maintenance') targetArr = currentProjectData.maintenance;
-        else targetArr = currentProjectData.backups;
-
-        item = targetArr.find(x => x.id == id);
+                  type === 'hosting' ? currentProjectData.hosting :
+                  type === 'maintenance' ? currentProjectData.maintenance :
+                  currentProjectData.backups;
+        item = arr.find(x => x.id == id);
     }
+    
+    let labelClass = "form-label fw-bold text-muted small text-uppercase";
     
     // Dynamic Form Generation
     let formHtml = `<form id="entityForm">`;
     if(type === 'domain') {
         formHtml += `
-            <div class="mb-3"><label class="form-label">Domain Name *</label><input type="text" id="f_domain_name" class="form-control" required value="${item?.domain_name||''}"></div>
-            <div class="mb-3"><label class="form-label">Registrar</label><input type="text" id="f_registrar" class="form-control" value="${item?.registrar||''}"></div>
-            <div class="mb-3"><label class="form-label">Renewal Date *</label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
-            <div class="mb-3"><label class="form-label">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+            <div class="mb-3"><label class="${labelClass}">Domain Name <span class="text-danger">*</span></label><input type="text" id="f_domain_name" class="form-control" required value="${item?.domain_name||''}"></div>
+            <div class="mb-3"><label class="${labelClass}">Registrar</label><input type="text" id="f_registrar" class="form-control" value="${item?.registrar||''}"></div>
+            <div class="row"><div class="col-6 mb-3"><label class="${labelClass}">Renewal Date <span class="text-danger">*</span></label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
+            <div class="col-6 mb-3"><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div></div>
         `;
     } else if(type === 'hosting') {
         formHtml += `
-            <div class="mb-3"><label class="form-label">Plan Name *</label><input type="text" id="f_plan_name" class="form-control" required value="${item?.plan_name||''}"></div>
-            <div class="mb-3"><label class="form-label">Provider</label><input type="text" id="f_provider" class="form-control" value="${item?.provider||''}"></div>
-            <div class="mb-3"><label class="form-label">Renewal Date *</label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
-            <div class="mb-3"><label class="form-label">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+            <div class="mb-3"><label class="${labelClass}">Plan Name <span class="text-danger">*</span></label><input type="text" id="f_plan_name" class="form-control" required value="${item?.plan_name||''}"></div>
+            <div class="mb-3"><label class="${labelClass}">Provider</label><input type="text" id="f_provider" class="form-control" value="${item?.provider||''}"></div>
+            <div class="row"><div class="col-6 mb-3"><label class="${labelClass}">Renewal Date <span class="text-danger">*</span></label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
+            <div class="col-6 mb-3"><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div></div>
         `;
     } else if(type === 'maintenance') {
         formHtml += `
-            <div class="mb-3"><label class="form-label">Start Date *</label><input type="date" id="f_start_date" class="form-control" required value="${item?.start_date||''}"></div>
-            <div class="mb-3"><label class="form-label">End Date (Expiry) *</label><input type="date" id="f_end_date" class="form-control" required value="${item?.end_date||''}"></div>
-            <div class="mb-3"><label class="form-label">Yearly Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+            <div class="row"><div class="col-6 mb-3"><label class="${labelClass}">Start Date <span class="text-danger">*</span></label><input type="date" id="f_start_date" class="form-control" required value="${item?.start_date||''}"></div>
+            <div class="col-6 mb-3"><label class="${labelClass}">End Date <span class="text-danger">*</span></label><input type="date" id="f_end_date" class="form-control" required value="${item?.end_date||''}"></div></div>
+            <div class="mb-3"><label class="${labelClass}">Yearly Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
         `;
     } else if(type === 'backup') {
         let freq = item?.frequency || 'monthly';
         formHtml += `
-            <div class="mb-3">
-                <label class="form-label">Frequency *</label>
+            <div class="col-12 mb-3">
+                <label class="${labelClass}">Frequency <span class="text-danger">*</span></label>
                 <select id="f_frequency" class="form-select">
                     <option value="daily" ${freq==='daily'?'selected':''}>Daily</option>
                     <option value="weekly" ${freq==='weekly'?'selected':''}>Weekly</option>
@@ -226,9 +301,9 @@ function openModal(type, id = null) {
                     <option value="manual" ${freq==='manual'?'selected':''}>Manual</option>
                 </select>
             </div>
-            <div class="mb-3"><label class="form-label">Last Backup Date</label><input type="date" id="f_last_backup" class="form-control" value="${item?.last_backup||''}"></div>
-            <div class="mb-3"><label class="form-label">Next Backup Date *</label><input type="date" id="f_next_backup" class="form-control" value="${item?.next_backup||''}" required></div>
-            <div class="mb-3"><label class="form-label">Storage Location</label><input type="text" id="f_storage_location" class="form-control" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
+            <div class="row"><div class="col-6 mb-3"><label class="${labelClass}">Last Backup</label><input type="date" id="f_last_backup" class="form-control" value="${item?.last_backup||''}"></div>
+            <div class="col-6 mb-3"><label class="${labelClass}">Next Backup <span class="text-danger">*</span></label><input type="date" id="f_next_backup" class="form-control" value="${item?.next_backup||''}" required></div></div>
+            <div class="mb-3"><label class="${labelClass}">Storage Location</label><input type="text" id="f_storage_location" class="form-control" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
         `;
     }
     formHtml += `</form>`;
@@ -243,7 +318,6 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 
     let payload = { project_id: pId };
     
-    // Check type of update
     let typeMap = currentModalType;
     if(currentModalType === 'backup') typeMap = 'backups';
     
@@ -294,7 +368,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 });
 
 async function delEntity(type, id) {
-    if(confirm("Delete this entry?")) {
+    if(confirm("Permanently delete this entry?")) {
         await fetch(`/api/${type}.php?id=${id}`, { method: 'DELETE' });
         loadData();
     }
