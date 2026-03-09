@@ -50,7 +50,7 @@ services:
         aliases:
           - renewdesk_db
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prenewesk_root_pass"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prenewdesk_root_pass", "--silent"]
       interval: 5s
       timeout: 5s
       retries: 10
