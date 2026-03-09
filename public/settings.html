@@ -76,7 +76,8 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="saveBtn">Save All Settings</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn"><i class="bi bi-save"></i> Save All Settings</button>
+        <button type="button" class="btn btn-outline-info ms-2" id="testEmailBtn"><i class="bi bi-send"></i> Send Test Email</button>
     </form>
 </div>
 
@@ -122,6 +123,36 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     
     btn.disabled = false;
     btn.innerText = 'Save All Settings';
+});
+
+document.getElementById('testEmailBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('testEmailBtn');
+    const alertBox = document.getElementById('alertBox');
+    
+    // First urge them to save if they made changes theoretically, but we'll just fire it:
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
+    
+    try {
+        const res = await fetch('/api/test_email.php', { method: 'POST' });
+        const json = await res.json();
+        
+        alertBox.classList.remove('d-none', 'alert-danger', 'alert-success');
+        if (json.status === 'success') {
+            alertBox.classList.add('alert-success');
+            alertBox.innerText = json.message;
+        } else {
+            alertBox.classList.add('alert-danger');
+            alertBox.innerText = json.message || 'SMTP Test Failed.';
+        }
+    } catch (e) {
+        alertBox.classList.remove('d-none', 'alert-success');
+        alertBox.classList.add('alert-danger');
+        alertBox.innerText = 'Server error during test email.';
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-send"></i> Send Test Email';
 });
 
 loadSettings();

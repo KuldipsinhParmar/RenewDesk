@@ -16,6 +16,9 @@
         .card-domain { border-top-color: #0d6efd; }
         .card-hosting { border-top-color: #6610f2; }
         .card-amc { border-top-color: #ffc107; }
+        .card-backup { border-top-color: #20c997; }
+        .btn-purple { background-color: #6610f2; border-color: #6610f2; color: #fff; }
+        .btn-purple:hover { background-color: #520dc2; border-color: #520dc2; color: #fff; }
     </style>
 </head>
 <body>
@@ -26,7 +29,7 @@
     <a href="projects.html" class="active"><i class="bi bi-folder me-2"></i> Projects</a>
     <a href="settings.html"><i class="bi bi-gear me-2"></i> Settings</a>
     <hr class="text-secondary mx-3">
-    <a href="login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    <a href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </div>
 
 <div class="content">
@@ -35,17 +38,17 @@
             <h2 id="projTitle">Loading...</h2>
             <p class="text-muted" id="projDesc"></p>
         </div>
-        <a href="projects.html" class="btn btn-secondary">Back</a>
+        <a href="projects.html" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
     </div>
 
     <!-- DOMAINS -->
     <div class="module-card card-domain">
         <div class="d-flex justify-content-between mb-3">
             <h4><i class="bi bi-globe text-primary"></i> Domains</h4>
-            <button class="btn btn-sm btn-primary" onclick="addEntity('domain')">+ Add Domain</button>
+            <button class="btn btn-sm btn-primary" onclick="openModal('domain')">+ Add Domain</button>
         </div>
-        <table class="table table-sm mt-3">
-            <thead><tr><th>Domain</th><th>Registrar</th><th>Expiry</th><th>Price</th><th>Action</th></tr></thead>
+        <table class="table table-sm mt-3 table-hover">
+            <thead><tr><th>Domain</th><th>Registrar</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
             <tbody id="tb-domains"></tbody>
         </table>
     </div>
@@ -53,11 +56,11 @@
     <!-- HOSTING -->
     <div class="module-card card-hosting">
         <div class="d-flex justify-content-between mb-3">
-            <h4><i class="bi bi-server text-purple"></i> Hosting</h4>
-            <button class="btn btn-sm btn-primary" onclick="addEntity('hosting')" style="background-color: #6610f2; border-color:#6610f2;">+ Add Hosting</button>
+            <h4><i class="bi bi-server" style="color:#6610f2;"></i> Hosting</h4>
+            <button class="btn btn-sm btn-purple" onclick="openModal('hosting')">+ Add Hosting</button>
         </div>
-        <table class="table table-sm mt-3">
-            <thead><tr><th>Plan</th><th>Provider</th><th>Expiry</th><th>Price</th><th>Action</th></tr></thead>
+        <table class="table table-sm mt-3 table-hover">
+            <thead><tr><th>Plan</th><th>Provider</th><th>Expiry</th><th>Price</th><th class="text-end">Action</th></tr></thead>
             <tbody id="tb-hosting"></tbody>
         </table>
     </div>
@@ -66,79 +69,228 @@
     <div class="module-card card-amc">
         <div class="d-flex justify-content-between mb-3">
             <h4><i class="bi bi-tools text-warning"></i> Maintenance / AMC</h4>
-            <button class="btn btn-sm btn-warning" onclick="addEntity('maintenance')">+ Add AMC</button>
+            <button class="btn btn-sm btn-warning" onclick="openModal('maintenance')">+ Add AMC</button>
         </div>
-        <table class="table table-sm mt-3">
-            <thead><tr><th>Start Date</th><th>End Date</th><th>Price</th><th>Action</th></tr></thead>
+        <table class="table table-sm mt-3 table-hover">
+            <thead><tr><th>Start Date</th><th>End Date</th><th>Price</th><th class="text-end">Action</th></tr></thead>
             <tbody id="tb-maintenance"></tbody>
         </table>
     </div>
 
     <!-- BACKUPS -->
-    <div class="module-card card-backup" style="border-top-color: #20c997;">
+    <div class="module-card card-backup">
         <div class="d-flex justify-content-between mb-3">
             <h4><i class="bi bi-cloud-arrow-up text-success"></i> Backups</h4>
-            <button class="btn btn-sm btn-success" onclick="addEntity('backup')">+ Add Backup Schedule</button>
+            <button class="btn btn-sm btn-success" onclick="openModal('backup')">+ Add Backup Schedule</button>
         </div>
-        <table class="table table-sm mt-3">
-            <thead><tr><th>Frequency</th><th>Last Backup</th><th>Next Backup</th><th>Storage</th><th>Action</th></tr></thead>
+        <table class="table table-sm mt-3 table-hover">
+            <thead><tr><th>Frequency</th><th>Last Backup</th><th>Next Backup</th><th>Storage</th><th class="text-end">Action</th></tr></thead>
             <tbody id="tb-backups"></tbody>
         </table>
     </div>
 </div>
 
+<!-- ================= MODALS ================= -->
+
+<!-- Shared Modal Shell -->
+<div class="modal fade" id="entityModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Manage Entry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamic Form Content Injected Here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveEntityBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const pId = urlParams.get('id');
+const bModal = new bootstrap.Modal(document.getElementById('entityModal'));
+
+let currentProjectData = {};
+let currentModalType = '';
+let currentEditId = null;
 
 async function loadData() {
     const res = await fetch(`/api/projects.php?id=${pId}`);
     if (res.status === 401) window.location.href = 'login.html';
     const json = await res.json();
-    const d = json.data;
+    currentProjectData = json.data;
 
-    document.getElementById('projTitle').innerText = d.name;
-    document.getElementById('projDesc').innerText = d.description || '';
+    document.getElementById('projTitle').innerText = currentProjectData.name;
+    document.getElementById('projDesc').innerText = currentProjectData.description || '';
 
-    // Render Domains
-    const domTb = document.getElementById('tb-domains');
-    domTb.innerHTML = d.domains.map(i => `<tr>
-        <td><strong>${i.domain_name}</strong></td>
-        <td>${i.registrar}</td>
-        <td>${i.renewal_date}</td>
-        <td>₹${i.price}</td>
-        <td><button class="btn btn-sm text-danger" onclick="delEntity('domains', ${i.id})"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted">No domains added.</td></tr>`;
+    // Domains
+    document.getElementById('tb-domains').innerHTML = currentProjectData.domains.map(i => `<tr>
+        <td><strong>${i.domain_name}</strong></td><td>${i.registrar || '-'}</td><td>${i.renewal_date}</td><td>₹${i.price}</td>
+        <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('domain', ${i.id})"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('domains', ${i.id})"><i class="bi bi-trash"></i></button>
+        </td>
+    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No domains added.</td></tr>`;
 
-    // Render Hosting
-    const hosTb = document.getElementById('tb-hosting');
-    hosTb.innerHTML = d.hosting.map(i => `<tr>
-        <td><strong>${i.plan_name}</strong></td>
-        <td>${i.provider}</td>
-        <td>${i.renewal_date}</td>
-        <td>₹${i.price}</td>
-        <td><button class="btn btn-sm text-danger" onclick="delEntity('hosting', ${i.id})"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted">No hosting added.</td></tr>`;
+    // Hosting
+    document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `<tr>
+        <td><strong>${i.plan_name}</strong></td><td>${i.provider || '-'}</td><td>${i.renewal_date}</td><td>₹${i.price}</td>
+        <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('hosting', ${i.id})"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('hosting', ${i.id})"><i class="bi bi-trash"></i></button>
+        </td>
+    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No hosting added.</td></tr>`;
 
-    // Render AMC
-    const amcTb = document.getElementById('tb-maintenance');
-    amcTb.innerHTML = d.maintenance.map(i => `<tr>
-        <td>${i.start_date}</td>
-        <td><strong>${i.end_date}</strong></td>
-        <td>₹${i.price}</td>
-        <td><button class="btn btn-sm text-danger" onclick="delEntity('maintenance', ${i.id})"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('') || `<tr><td colspan="4" class="text-muted">No maintenance contracts.</td></tr>`;
+    // AMC
+    document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.map(i => `<tr>
+        <td>${i.start_date}</td><td><strong>${i.end_date}</strong></td><td>₹${i.price}</td>
+        <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('maintenance', ${i.id})"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('maintenance', ${i.id})"><i class="bi bi-trash"></i></button>
+        </td>
+    </tr>`).join('') || `<tr><td colspan="4" class="text-muted text-center py-3">No maintenance contracts.</td></tr>`;
 
-    // Render Backups
-    const bakTb = document.getElementById('tb-backups');
-    bakTb.innerHTML = d.backups.map(i => `<tr>
-        <td><strong>${i.frequency.toUpperCase()}</strong></td>
-        <td>${i.last_backup || '-'}</td>
-        <td>${i.next_backup || '-'}</td>
-        <td>${i.storage_location || '-'}</td>
-        <td><button class="btn btn-sm text-danger" onclick="delEntity('backups', ${i.id})"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('') || `<tr><td colspan="5" class="text-muted">No backup schedules.</td></tr>`;
+    // Backups
+    document.getElementById('tb-backups').innerHTML = currentProjectData.backups.map(i => `<tr>
+        <td><strong>${(i.frequency || '').toUpperCase()}</strong></td><td>${i.last_backup || '-'}</td><td>${i.next_backup || '-'}</td><td>${i.storage_location || '-'}</td>
+        <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('backup', ${i.id})"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="delEntity('backups', ${i.id})"><i class="bi bi-trash"></i></button>
+        </td>
+    </tr>`).join('') || `<tr><td colspan="5" class="text-muted text-center py-3">No backup schedules.</td></tr>`;
 }
+
+function openModal(type, id = null) {
+    currentModalType = type;
+    currentEditId = id;
+    
+    let title = id ? `Edit ${type}` : `Add ${type}`;
+    document.getElementById('modalTitle').innerText = title.charAt(0).toUpperCase() + title.slice(1);
+    
+    const body = document.getElementById('modalBody');
+    let item = null;
+    
+    if(id) {
+        let arr = type === 'domain' ? currentProjectData.domains : 
+                  type === 'backup' ? currentProjectData.backups : 
+                  currentProjectData[type];
+        
+        let targetArr;
+        if(type === 'domain') targetArr = currentProjectData.domains;
+        else if(type === 'hosting') targetArr = currentProjectData.hosting;
+        else if(type === 'maintenance') targetArr = currentProjectData.maintenance;
+        else targetArr = currentProjectData.backups;
+
+        item = targetArr.find(x => x.id == id);
+    }
+    
+    // Dynamic Form Generation
+    let formHtml = `<form id="entityForm">`;
+    if(type === 'domain') {
+        formHtml += `
+            <div class="mb-3"><label class="form-label">Domain Name *</label><input type="text" id="f_domain_name" class="form-control" required value="${item?.domain_name||''}"></div>
+            <div class="mb-3"><label class="form-label">Registrar</label><input type="text" id="f_registrar" class="form-control" value="${item?.registrar||''}"></div>
+            <div class="mb-3"><label class="form-label">Renewal Date *</label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
+            <div class="mb-3"><label class="form-label">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+        `;
+    } else if(type === 'hosting') {
+        formHtml += `
+            <div class="mb-3"><label class="form-label">Plan Name *</label><input type="text" id="f_plan_name" class="form-control" required value="${item?.plan_name||''}"></div>
+            <div class="mb-3"><label class="form-label">Provider</label><input type="text" id="f_provider" class="form-control" value="${item?.provider||''}"></div>
+            <div class="mb-3"><label class="form-label">Renewal Date *</label><input type="date" id="f_renewal_date" class="form-control" required value="${item?.renewal_date||''}"></div>
+            <div class="mb-3"><label class="form-label">Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+        `;
+    } else if(type === 'maintenance') {
+        formHtml += `
+            <div class="mb-3"><label class="form-label">Start Date *</label><input type="date" id="f_start_date" class="form-control" required value="${item?.start_date||''}"></div>
+            <div class="mb-3"><label class="form-label">End Date (Expiry) *</label><input type="date" id="f_end_date" class="form-control" required value="${item?.end_date||''}"></div>
+            <div class="mb-3"><label class="form-label">Yearly Price</label><input type="number" step="0.01" id="f_price" class="form-control" value="${item?.price||'0'}"></div>
+        `;
+    } else if(type === 'backup') {
+        let freq = item?.frequency || 'monthly';
+        formHtml += `
+            <div class="mb-3">
+                <label class="form-label">Frequency *</label>
+                <select id="f_frequency" class="form-select">
+                    <option value="daily" ${freq==='daily'?'selected':''}>Daily</option>
+                    <option value="weekly" ${freq==='weekly'?'selected':''}>Weekly</option>
+                    <option value="monthly" ${freq==='monthly'?'selected':''}>Monthly</option>
+                    <option value="manual" ${freq==='manual'?'selected':''}>Manual</option>
+                </select>
+            </div>
+            <div class="mb-3"><label class="form-label">Last Backup Date</label><input type="date" id="f_last_backup" class="form-control" value="${item?.last_backup||''}"></div>
+            <div class="mb-3"><label class="form-label">Next Backup Date *</label><input type="date" id="f_next_backup" class="form-control" value="${item?.next_backup||''}" required></div>
+            <div class="mb-3"><label class="form-label">Storage Location</label><input type="text" id="f_storage_location" class="form-control" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
+        `;
+    }
+    formHtml += `</form>`;
+    body.innerHTML = formHtml;
+    
+    bModal.show();
+}
+
+document.getElementById('saveEntityBtn').addEventListener('click', async () => {
+    const form = document.getElementById('entityForm');
+    if(!form.reportValidity()) return;
+
+    let payload = { project_id: pId };
+    
+    // Check type of update
+    let typeMap = currentModalType;
+    if(currentModalType === 'backup') typeMap = 'backups';
+    
+    if (currentModalType === 'domain') {
+        payload.domain_name = document.getElementById('f_domain_name').value;
+        payload.registrar = document.getElementById('f_registrar').value;
+        payload.renewal_date = document.getElementById('f_renewal_date').value;
+        payload.price = document.getElementById('f_price').value;
+    } else if (currentModalType === 'hosting') {
+        payload.plan_name = document.getElementById('f_plan_name').value;
+        payload.provider = document.getElementById('f_provider').value;
+        payload.renewal_date = document.getElementById('f_renewal_date').value;
+        payload.price = document.getElementById('f_price').value;
+    } else if (currentModalType === 'maintenance') {
+        payload.start_date = document.getElementById('f_start_date').value;
+        payload.end_date = document.getElementById('f_end_date').value;
+        payload.price = document.getElementById('f_price').value;
+    } else if (currentModalType === 'backup') {
+        payload.frequency = document.getElementById('f_frequency').value;
+        payload.last_backup = document.getElementById('f_last_backup').value || null;
+        payload.next_backup = document.getElementById('f_next_backup').value;
+        payload.storage_location = document.getElementById('f_storage_location').value;
+    }
+
+    let url = `/api/${typeMap}.php`;
+    let method = 'POST';
+    
+    if(currentEditId) {
+        url += `?id=${currentEditId}`;
+        method = 'PUT';
+    }
+
+    const btn = document.getElementById('saveEntityBtn');
+    btn.disabled = true;
+    btn.innerText = 'Saving...';
+
+    await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    
+    bModal.hide();
+    btn.disabled = false;
+    btn.innerText = 'Save';
+    
+    loadData();
+});
 
 async function delEntity(type, id) {
     if(confirm("Delete this entry?")) {
@@ -147,45 +299,10 @@ async function delEntity(type, id) {
     }
 }
 
-async function addEntity(type) {
-    let payload = { project_id: pId };
-    
-    if (type === 'domain') {
-        payload.domain_name = prompt("Domain Name (e.g., example.com):");
-        if(!payload.domain_name) return;
-        payload.registrar = prompt("Registrar (e.g., GoDaddy):");
-        payload.renewal_date = prompt("Renewal Date (YYYY-MM-DD):");
-        payload.price = prompt("Price:");
-    } 
-    else if (type === 'hosting') {
-        payload.plan_name = prompt("Plan Name (e.g., Premium VPS):");
-        if(!payload.plan_name) return;
-        payload.provider = prompt("Provider (e.g., AWS, HostGator):");
-        payload.renewal_date = prompt("Renewal Date (YYYY-MM-DD):");
-        payload.price = prompt("Price:");
-    }
-    else if (type === 'maintenance') {
-        payload.start_date = prompt("Start Date (YYYY-MM-DD):");
-        payload.end_date = prompt("End Date (YYYY-MM-DD):");
-        if(!payload.end_date) return;
-        payload.price = prompt("Yearly Price:");
-    }
-    else if (type === 'backup') {
-        payload.frequency = prompt("Frequency (daily, weekly, monthly, manual):");
-        if(!payload.frequency) return;
-        payload.last_backup = prompt("Last Backup Date (YYYY-MM-DD):");
-        payload.next_backup = prompt("Next Backup Date (YYYY-MM-DD):");
-        payload.storage_location = prompt("Storage Location (e.g. AWS S3, Google Drive):");
-    }
-
-    await fetch(`/api/${type}s.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
-    
-    loadData();
-}
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch('/api/auth/logout.php', { method: 'POST' });
+    window.location.href = 'login.html';
+});
 
 loadData();
 </script>
