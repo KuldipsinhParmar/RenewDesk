@@ -20,6 +20,7 @@
     <h4 class="text-center mb-4"><i class="bi bi-shield-lock text-primary"></i> RenewDesk</h4>
     <a href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
     <a href="projects.html" class="active"><i class="bi bi-folder me-2"></i> Projects</a>
+    <a href="logs.html"><i class="bi bi-clock-history me-2"></i> Email Logs</a>
     <a href="settings.html"><i class="bi bi-gear me-2"></i> Settings</a>
     <hr class="text-secondary mx-3">
     <a href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
@@ -28,7 +29,13 @@
 <div class="content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Projects Management</h2>
-        <button class="btn btn-primary" onclick="showAddModal()"><i class="bi bi-plus-circle"></i> Add Project</button>
+        <div class="d-flex w-50 justify-content-end align-items-center gap-3">
+            <div class="input-group" style="max-width: 300px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="searchProjects" class="form-control" placeholder="Search projects...">
+            </div>
+            <button class="btn btn-primary" onclick="showAddModal()"><i class="bi bi-plus-circle"></i> Add Project</button>
+        </div>
     </div>
 
     <div class="bg-white p-3 rounded shadow-sm">
@@ -81,20 +88,26 @@
 <script>
 const modal = new bootstrap.Modal(document.getElementById('addProjectModal'));
 
+let projectsData = [];
+
 async function loadProjects() {
     const res = await fetch('/api/projects.php');
     if (res.status === 401) window.location.href = 'login.html';
     const data = await res.json();
-    
+    projectsData = data.data;
+    renderProjects(projectsData);
+}
+
+function renderProjects(dataset) {
     const tbody = document.getElementById('projectTable');
     tbody.innerHTML = '';
     
-    if (data.data.length === 0) {
+    if (dataset.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No projects found.</td></tr>';
         return;
     }
 
-    data.data.forEach(p => {
+    dataset.forEach(p => {
         let badge = p.status === 'active' ? 'bg-success' : 'bg-secondary';
         let date = new Date(p.created_at).toISOString().split('T')[0];
         tbody.innerHTML += `
@@ -111,6 +124,12 @@ async function loadProjects() {
         `;
     });
 }
+
+document.getElementById('searchProjects').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = projectsData.filter(p => p.name.toLowerCase().includes(term));
+    renderProjects(filtered);
+});
 
 function showAddModal() {
     document.getElementById('projectForm').reset();
