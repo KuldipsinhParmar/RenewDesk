@@ -1,135 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Settings - RenewDesk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #f4f6f9; color: #2d3436; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 4px; }
-        
-        .navbar-custom {
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Settings - RenewDesk Executive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0e17",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
         }
-        .navbar-brand { font-weight: 700; color: #2d3436; font-size: 1.4rem; letter-spacing: -0.5px; }
-        .nav-link { color: #636e72 !important; font-weight: 500; transition: color 0.3s ease, transform 0.2s ease; padding: 0.5rem 1rem;}
-        .nav-link:hover { color: #0984e3 !important; transform: translateY(-1px); }
-        .nav-link.active { color: #0984e3 !important; font-weight: 600; }
-        .nav-icon { background: linear-gradient(135deg, #0984e3, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;}
-        
-        .page-content { padding: 40px 0; min-height: calc(100vh - 76px); }
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-        
-        .glass-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s ease; padding: 30px; margin-bottom: 30px; }
-        
-        .btn-gradient { background: linear-gradient(135deg, #0984e3, #6c5ce7); border: none; color: white; padding: 10px 24px; border-radius: 8px; font-weight: 500; transition: all 0.3s; }
-        .btn-gradient:hover { box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3); color: white; transform: translateY(-2px); }
-        .btn-outline-custom { border: 2px solid #00b894; color: #00b894; padding: 8px 24px; border-radius: 8px; font-weight: 600; transition: all 0.3s;}
-        .btn-outline-custom:hover { background: rgba(0,184,148,0.1); color: #00b894; transform: translateY(-2px);}
-
-        .form-control { border-radius: 8px; border: 1px solid #dfe6e9; padding: 12px 15px; transition: border-color 0.3s; background: #f8f9fa; font-weight: 500; color: #34495e;}
-        .form-control:focus { border-color: #0984e3; box-shadow: 0 0 0 0.25rem rgba(9, 132, 227, 0.1); background: #fff;}
-        .form-label { font-weight: 600; color: #636e72; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;}
-        
-        .bg-light-primary { background-color: rgba(9,132,227,0.05); border-radius: 12px; padding: 20px;}
-        .bg-light-warning { background-color: rgba(253,203,110,0.08); border-radius: 12px; padding: 20px;}
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+        .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
+            border-left: 3px solid #2b6cee;
+        }
     </style>
 </head>
-<body>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden">
+<div class="flex h-full w-full">
+    <!-- Sidebar -->
+    <aside class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d121d] flex flex-col">
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined">shield_lock</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">RenewDesk</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Executive</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 mt-6 space-y-2">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="projects.html">
+                <span class="material-symbols-outlined">folder</span>
+                <span class="text-sm font-medium">Projects</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="logs.html">
+                <span class="material-symbols-outlined">history</span>
+                <span class="text-sm font-medium">Logs</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item-active text-primary transition-all" href="settings.html">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+            <button id="logoutBtn" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all mt-4">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="text-sm font-medium">Logout</span>
+            </button>
+        </nav>
+    </aside>
 
-<nav class="navbar navbar-expand-lg navbar-custom sticky-top py-3">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
-        <i class="bi bi-shield-lock-fill nav-icon fs-3 me-2"></i> RenewDesk
-    </a>
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navContent">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
-        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="projects.html"><i class="bi bi-folder-fill me-1"></i> Projects</a></li>
-        <li class="nav-item"><a class="nav-link" href="logs.html"><i class="bi bi-clock-history me-1"></i> Logs</a></li>
-      </ul>
-      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-        <a href="settings.html" class="nav-link p-0 active"><i class="bi bi-gear-fill fs-5"></i></a>
-        <button class="btn btn-gradient btn-sm flex-shrink-0" id="logoutBtn"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<div class="page-content">
-    <div class="container fade-in" style="max-width: 900px;">
-        <h2 class="fw-bold mb-1">Global Settings</h2>
-        <p class="text-muted mb-4">Configure email servers and reminder schedules.</p>
-
-        <div id="alertBox" class="alert d-none border-0 shadow-sm rounded-3"></div>
-
-        <form id="settingsForm">
-            <div class="glass-card">
-                <h4 class="fw-bold mb-4"><i class="bi bi-envelope-at bg-light-primary text-primary px-3 py-2 me-2 rounded d-inline-block"></i> SMTP Configuration</h4>
-                
-                <div class="row g-4 bg-light-primary m-0">
-                    <div class="col-md-8">
-                        <label class="form-label">SMTP Host</label>
-                        <input type="text" class="form-control key-input shadow-sm" data-key="smtp_host" placeholder="smtp.gmail.com">
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
+        <!-- Header -->
+        <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+            <div>
+                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Global Settings</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="h-8 w-[1px] bg-slate-200 dark:border-slate-800 mx-2"></div>
+                <div class="flex items-center gap-3 pl-2">
+                    <div class="text-right">
+                        <p class="text-sm font-bold dark:text-white">Admin</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">SMTP Port</label>
-                        <input type="text" class="form-control key-input shadow-sm" data-key="smtp_port" placeholder="587">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">SMTP Username</label>
-                        <input type="text" class="form-control key-input shadow-sm" data-key="smtp_user" placeholder="email@address.com">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">SMTP Password</label>
-                        <input type="password" class="form-control key-input shadow-sm" data-key="smtp_pass" placeholder="••••••••">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">From Email</label>
-                        <input type="email" class="form-control key-input shadow-sm" data-key="smtp_from_email" placeholder="noreply@renewdesk.app">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">From Name</label>
-                        <input type="text" class="form-control key-input shadow-sm" data-key="smtp_from_name" placeholder="RenewDesk System">
+                    <div class="w-10 h-10 rounded-full ring-2 ring-primary/20 p-0.5 bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-white font-bold bg-slate-800">
+                        AD
                     </div>
                 </div>
             </div>
+        </header>
 
-            <div class="glass-card">
-                <h4 class="fw-bold mb-4"><i class="bi bi-bell bg-light-warning text-warning px-3 py-2 me-2 rounded d-inline-block"></i> Alert Preferences</h4>
-                
-                <div class="row g-4 bg-light-warning m-0">
-                    <div class="col-md-6">
-                        <label class="form-label">Admin Notify Email</label>
-                        <div class="form-text mt-0 mb-2">The email address that will receive the reminder logs.</div>
-                        <input type="email" class="form-control key-input shadow-sm" data-key="admin_notify_email">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Reminder Thresholds</label>
-                        <div class="form-text mt-0 mb-2">Days before expiry to send alert (comma separated).</div>
-                        <input type="text" class="form-control key-input shadow-sm" data-key="remind_days" placeholder="30,15,7,1">
-                    </div>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Configuration</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Configure email servers and reminder schedules.</p>
                 </div>
-            </div>
 
-            <div class="glass-card bg-transparent border-0 shadow-none p-0 d-flex gap-3 justify-content-end align-items-center">
-                <button type="button" class="btn btn-outline-custom rounded-pill" id="testEmailBtn"><i class="bi bi-send me-1"></i> Send Test Email</button>
-                <button type="submit" class="btn btn-gradient rounded-pill" id="saveBtn"><i class="bi bi-save me-1"></i> Save Configuration</button>
+                <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all"></div>
+
+                <form id="settingsForm">
+                    <!-- SMTP Settings -->
+                    <div class="glass-card rounded-2xl p-8 mb-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-2xl">mail</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">SMTP Configuration</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-primary/5 rounded-2xl border border-primary/10">
+                            <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Host</label>
+                                <input type="text" data-key="smtp_host" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="smtp.gmail.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Port</label>
+                                <input type="text" data-key="smtp_port" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="587">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Username</label>
+                                <input type="text" data-key="smtp_user" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="email@address.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Password</label>
+                                <input type="password" data-key="smtp_pass" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="••••••••">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">From Email</label>
+                                <input type="email" data-key="smtp_from_email" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="noreply@renewdesk.app">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">From Name</label>
+                                <input type="text" data-key="smtp_from_name" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="RenewDesk System">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Preferences -->
+                    <div class="glass-card rounded-2xl p-8 mb-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                                <span class="material-symbols-outlined text-2xl">notifications_active</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Alert Preferences</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-amber-500/5 rounded-2xl border border-amber-500/10">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Admin Notify Email</label>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">The email address that will receive the reminder logs.</p>
+                                <input type="email" data-key="admin_notify_email" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 dark:text-white transition-colors outline-none shadow-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Reminder Thresholds</label>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">Days before expiry to send alert (comma separated).</p>
+                                <input type="text" data-key="remind_days" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="30,15,7,1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4">
+                        <button type="button" id="testEmailBtn" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-6 py-3 rounded-xl font-bold text-sm shadow-sm hover:bg-emerald-500/20 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">send</span> Test Email
+                        </button>
+                        <button type="submit" id="saveBtn" class="flex items-center gap-2 bg-primary px-8 py-3 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                            <span class="material-symbols-outlined text-[18px]">save</span> Save Configuration
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+            
+            <!-- Footer area with decorative glow -->
+            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
+        </div>
+    </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 async function loadSettings() {
     try {
@@ -148,8 +207,9 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     e.preventDefault();
     const btn = document.getElementById('saveBtn');
     const alertBox = document.getElementById('alertBox');
+    const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving...';
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Saving...';
 
     const inputs = document.querySelectorAll('.key-input');
     const payload = {};
@@ -164,51 +224,54 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
         
         const json = await res.json();
         
-        alertBox.classList.remove('d-none', 'alert-danger', 'alert-success');
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all';
         if(json.status === 'success') {
-            alertBox.classList.add('alert-success');
-            alertBox.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Settings saved securely!';
+            alertBox.classList.add('bg-emerald-500/10', 'text-emerald-600', 'border', 'border-emerald-500/20');
+            alertBox.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Settings saved securely!';
         } else {
-            alertBox.classList.add('alert-danger');
-            alertBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i> ${json.message || 'Error saving settings.'}`;
+            alertBox.classList.add('bg-red-500/10', 'text-red-600', 'border', 'border-red-500/20');
+            alertBox.innerHTML = `<span class="material-symbols-outlined">error</span> ${json.message || 'Error saving settings.'}`;
         }
     } catch (e) {
-        alertBox.classList.remove('d-none', 'alert-success');
-        alertBox.classList.add('alert-danger');
-        alertBox.innerText = 'Network request failed.';
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all bg-red-500/10 text-red-600 border border-red-500/20';
+        alertBox.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Network request failed.';
     }
     
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-save me-1"></i> Save Configuration';
+    btn.innerHTML = originalText;
+    
+    setTimeout(() => { alertBox.classList.add('hidden'); }, 5000);
 });
 
 document.getElementById('testEmailBtn').addEventListener('click', async () => {
     const btn = document.getElementById('testEmailBtn');
     const alertBox = document.getElementById('alertBox');
+    const originalText = btn.innerHTML;
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm py-1 me-1"></span> Sending...';
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Sending...';
     
     try {
         const res = await fetch('/api/test_email.php', { method: 'POST' });
         const json = await res.json();
         
-        alertBox.classList.remove('d-none', 'alert-danger', 'alert-success');
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all';
         if (json.status === 'success') {
-            alertBox.classList.add('alert-success');
-            alertBox.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i> ${json.message}`;
+             alertBox.classList.add('bg-emerald-500/10', 'text-emerald-600', 'border', 'border-emerald-500/20');
+             alertBox.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ${json.message}`;
         } else {
-            alertBox.classList.add('alert-danger');
-            alertBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i> ${json.message || 'SMTP Test Failed.'}`;
+             alertBox.classList.add('bg-red-500/10', 'text-red-600', 'border', 'border-red-500/20');
+             alertBox.innerHTML = `<span class="material-symbols-outlined">error</span> ${json.message || 'SMTP Test Failed.'}`;
         }
     } catch (e) {
-        alertBox.classList.remove('d-none', 'alert-success');
-        alertBox.classList.add('alert-danger');
-        alertBox.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Server error during test email.';
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all bg-red-500/10 text-red-600 border border-red-500/20';
+        alertBox.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Server error during test email.';
     }
     
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-send me-1"></i> Send Test Email';
+    btn.innerHTML = originalText;
+    
+    setTimeout(() => { alertBox.classList.add('hidden'); }, 5000);
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -218,6 +281,5 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 
 loadSettings();
 </script>
-
 </body>
 </html>
