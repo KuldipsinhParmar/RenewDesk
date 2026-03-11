@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Email Logs - RenewDesk Executive Dashboard</title>
+    <title>Backups - RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -46,8 +46,8 @@
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden">
 <div class="flex h-full w-full">
     <!-- Sidebar -->
-    <aside class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d121d] flex flex-col z-20">
-        <div class="p-6 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/50">
+    <aside class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d121d] flex flex-col">
+        <div class="p-6 flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined">shield_lock</span>
             </div>
@@ -77,13 +77,13 @@
                 <span class="material-symbols-outlined">engineering</span>
                 <span class="text-sm font-medium">Maintenance/AMC</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="backups.html">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item-active text-primary transition-all" href="backups.html">
                 <span class="material-symbols-outlined">backup</span>
                 <span class="text-sm font-medium">Backups</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item-active text-primary transition-all" href="logs.html">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="logs.html">
                 <span class="material-symbols-outlined">history</span>
-                <span class="text-sm font-semibold">Logs</span>
+                <span class="text-sm font-medium">Logs</span>
             </a>
             <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="settings.html">
                 <span class="material-symbols-outlined">settings</span>
@@ -101,8 +101,7 @@
         <!-- Header -->
         <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
             <div>
-                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Email Notification Logs</h2>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">System Delivery History</p>
+                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">All Backups</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="h-8 w-[1px] bg-slate-200 dark:border-slate-800 mx-2"></div>
@@ -120,111 +119,98 @@
 
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
-            
-            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Delivery Events</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1">Review automated reminder emails sent by the cron task.</p>
-                </div>
-                
-                <div class="relative w-full xl:w-96">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">search</span>
-                    <input id="searchLogs" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all outline-none" placeholder="Filter by project, subject, or type..." type="text"/>
+            <div class="flex items-center justify-between mb-8">
+                <div class="relative w-96">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input id="searchData" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all" placeholder="Search backups (by project name)..." type="text"/>
                 </div>
             </div>
             
-            <div class="glass-card rounded-2xl overflow-hidden flex flex-col">
-                <div class="p-0 overflow-x-auto flex-1">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                <th class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-48">Date & Time</th>
-                                <th class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/4">Project Entity</th>
-                                <th class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Alert Type</th>
-                                <th class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Subject Line</th>
-                                <th class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Delivery Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="logsTable">
-                            <tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm"><span class="material-symbols-outlined animate-spin align-middle mr-2">progress_activity</span>Loading logs...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="glass-card rounded-2xl overflow-hidden border-slate-200 dark:border-slate-800">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 dark:bg-slate-800/50">
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Frequency</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Last Backup</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Next Backup</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Storage Location</th>
+                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-32">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="dataTable">
+                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading backups...</td></tr>
+                    </tbody>
+                </table>
             </div>
             
             <!-- Footer area with decorative glow -->
-            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
+            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
         </div>
     </main>
 </div>
 
 <script>
-let logsData = [];
+let listData = [];
 
-async function loadLogs() {
+async function loadData() {
     try {
-        const res = await fetch('/api/logs.php');
+        const res = await fetch('/api/backups.php');
         if (res.status === 401) window.location.href = 'login.html';
-        const json = await res.json();
-        logsData = json.data || [];
-        renderTable(logsData);
+        const data = await res.json();
+        listData = data.data;
+        renderData(listData);
     } catch(e) {
-        console.error("Failed to load generic logs");
+        console.error("Failed to load backups", e);
     }
 }
 
-function renderTable(data) {
-    const tbody = document.getElementById('logsTable');
+function formatD(d) {
+    if (!d) return '-';
+    let dt = new Date(d);
+    return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+}
+
+function renderData(dataset) {
+    const tbody = document.getElementById('dataTable');
     tbody.innerHTML = '';
     
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-16 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-5xl block mb-3 text-slate-300 dark:text-slate-600">history</span><span class="font-medium">No emails have been sent by the system yet.</span></td></tr>';
+    if (dataset.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl block mb-2 text-slate-300 dark:text-slate-600">backup</span>No backups found.</td></tr>';
         return;
     }
 
-    data.forEach(log => {
-        let dt = new Date(log.sent_at);
-        const d = `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()} ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
-        
-        const bClass = log.success == 1 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20';
-        const txt = log.success == 1 ? '<span class="material-symbols-outlined text-[14px]">done_all</span> Delivered' : '<span class="material-symbols-outlined text-[14px]">error</span> Failed';
-        
-        let iconParts = log.type === 'domain' ? ['language', 'text-primary', 'bg-primary/10'] : 
-                       (log.type === 'hosting' ? ['dns', 'text-purple-600', 'bg-purple-500/10'] : 
-                       (log.type === 'maintenance' ? ['engineering', 'text-amber-600', 'bg-amber-500/10'] : 
-                       ['backup', 'text-emerald-600', 'bg-emerald-500/10']));
-
-        const projName = log.project_name || '<em class="text-slate-400">Deleted Project</em>';
-
+    dataset.forEach(item => {
         tbody.innerHTML += `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">${d}</td>
-                <td class="py-4 px-6 font-semibold text-sm text-slate-900 dark:text-white">${projName}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                 <td class="py-4 px-6">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg ${iconParts[2]} flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined text-[16px] ${iconParts[1]}">${iconParts[0]}</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-sm">backup</span>
                         </div>
-                        <span class="text-sm font-medium dark:text-slate-300">${log.type.charAt(0).toUpperCase() + log.type.slice(1)}</span>
+                        <a href="project-details.html?id=${item.project_id}" class="font-semibold text-sm text-slate-900 dark:text-white hover:text-primary transition-colors hover:underline">${item.project_name}</a>
                     </div>
                 </td>
-                <td class="py-4 px-6 text-sm text-slate-600 dark:text-slate-300 truncate max-w-[200px]" title="${log.subject}">${log.subject}</td>
-                <td class="py-4 px-6 text-right whitespace-nowrap">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${bClass}">${txt}</span>
+                <td class="py-4 px-6">
+                    <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 uppercase tracking-wider">${item.frequency}</span>
+                </td>
+                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${formatD(item.last_backup)}</td>
+                <td class="py-4 px-6 text-sm font-medium ${new Date(item.next_backup) < new Date() ? 'text-red-500' : 'text-emerald-500'}">${formatD(item.next_backup)}</td>
+                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${item.storage_location || '-'}</td>
+                <td class="py-4 px-6 text-right space-x-2">
+                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[14px]">open_in_new</span> Manage
+                    </a>
                 </td>
             </tr>
         `;
     });
 }
 
-document.getElementById('searchLogs').addEventListener('input', (e) => {
+document.getElementById('searchData').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    const filtered = logsData.filter(log => 
-        (log.project_name || '').toLowerCase().includes(term) || 
-        log.subject.toLowerCase().includes(term) ||
-        log.type.toLowerCase().includes(term)
-    );
-    renderTable(filtered);
+    const filtered = listData.filter(p => (p.project_name && p.project_name.toLowerCase().includes(term)));
+    renderData(filtered);
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -232,7 +218,7 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     window.location.href = 'login.html';
 });
 
-loadLogs();
+loadData();
 </script>
 </body>
 </html>

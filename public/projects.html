@@ -65,6 +65,22 @@
                 <span class="material-symbols-outlined">folder</span>
                 <span class="text-sm font-medium">Projects</span>
             </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="domains.html">
+                <span class="material-symbols-outlined">language</span>
+                <span class="text-sm font-medium">Domains</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="hosting.html">
+                <span class="material-symbols-outlined">dns</span>
+                <span class="text-sm font-medium">Hosting</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="maintenance.html">
+                <span class="material-symbols-outlined">engineering</span>
+                <span class="text-sm font-medium">Maintenance/AMC</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="backups.html">
+                <span class="material-symbols-outlined">backup</span>
+                <span class="text-sm font-medium">Backups</span>
+            </a>
             <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="logs.html">
                 <span class="material-symbols-outlined">history</span>
                 <span class="text-sm font-medium">Logs</span>
@@ -118,15 +134,14 @@
                 <table class="w-full border-collapse">
                     <thead>
                         <tr class="bg-slate-100 dark:bg-slate-800/50">
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-20">ID</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project Name</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Created On</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
+                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-64">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="projectTable">
-                        <tr><td colspan="5" class="text-center py-6 text-slate-500">Loading projects...</td></tr>
+                        <tr><td colspan="4" class="text-center py-6 text-slate-500">Loading projects...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -141,7 +156,7 @@
 <div id="addProjectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
     <div class="bg-white dark:bg-[#131b2c] w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
         <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0a0e17]">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Create New Project</h3>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="modalTitle">Create New Project</h3>
             <button onclick="hideAddModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
                 <span class="material-symbols-outlined">close</span>
             </button>
@@ -160,13 +175,14 @@
         </div>
         <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0e17] flex justify-end gap-3">
             <button onclick="hideAddModal()" class="px-5 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Cancel</button>
-            <button onclick="saveProject()" class="bg-primary px-6 py-2.5 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Create Project</button>
+            <button onclick="saveProject()" id="saveProjectBtn" class="bg-primary px-6 py-2.5 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Create Project</button>
         </div>
     </div>
 </div>
 
 <script>
 let projectsData = [];
+let currentEditProjectId = null;
 
 async function loadProjects() {
     try {
@@ -185,7 +201,7 @@ function renderProjects(dataset) {
     tbody.innerHTML = '';
     
     if (dataset.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl block mb-2 text-slate-300 dark:text-slate-600">folder_off</span>No projects found matching criteria.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl block mb-2 text-slate-300 dark:text-slate-600">folder_off</span>No projects found matching criteria.</td></tr>';
         return;
     }
 
@@ -196,7 +212,6 @@ function renderProjects(dataset) {
         
         tbody.innerHTML += `
             <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                <td class="py-4 px-6 text-sm text-slate-400">#${p.id}</td>
                 <td class="py-4 px-6">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
@@ -213,6 +228,9 @@ function renderProjects(dataset) {
                     <a href="project-details.html?id=${p.id}" class="inline-flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
                         <span class="material-symbols-outlined text-[14px]">settings</span> Manage
                     </a>
+                    <button onclick='editProject(${JSON.stringify(p).replace(/'/g, "&#39;")})' class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
                     <button onclick="deleteProject(${p.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
                         <span class="material-symbols-outlined text-[16px]">delete</span>
                     </button>
@@ -230,6 +248,19 @@ document.getElementById('searchProjects').addEventListener('input', (e) => {
 
 function showAddModal() {
     document.getElementById('projectForm').reset();
+    document.getElementById('modalTitle').innerText = 'Create New Project';
+    document.getElementById('saveProjectBtn').innerText = 'Create Project';
+    currentEditProjectId = null;
+    document.getElementById('addProjectModal').classList.remove('hidden');
+}
+
+function editProject(project) {
+    document.getElementById('projectForm').reset();
+    document.getElementById('modalTitle').innerText = 'Edit Project';
+    document.getElementById('saveProjectBtn').innerText = 'Save Changes';
+    currentEditProjectId = project.id;
+    document.getElementById('p_name').value = project.name;
+    document.getElementById('p_desc').value = project.description || '';
     document.getElementById('addProjectModal').classList.remove('hidden');
 }
 
@@ -243,8 +274,15 @@ async function saveProject() {
     
     if(!name) return alert("Project Name is required");
 
-    await fetch('/api/projects.php', {
-        method: 'POST',
+    let url = '/api/projects.php';
+    let method = 'POST';
+    if(currentEditProjectId) {
+        url += `?id=${currentEditProjectId}`;
+        method = 'PUT';
+    }
+
+    await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, description: desc })
     });

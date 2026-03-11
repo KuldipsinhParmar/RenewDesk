@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST, PUT, DELETE");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 require_once dirname(__DIR__, 2) . '/api/config/auth.php';
 require_once dirname(__DIR__, 2) . '/api/config/db.php';
@@ -10,7 +10,12 @@ $db = (new Database())->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    if ($method === 'POST') {
+    if ($method === 'GET') {
+        $stmt = $db->query("SELECT d.*, p.name as project_name FROM domains d JOIN projects p ON d.project_id = p.id ORDER BY d.renewal_date ASC");
+        $domains = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $domains]);
+    }
+    elseif ($method === 'POST') {
         $input = json_decode(file_get_contents("php://input"), true);
         $stmt = $db->prepare("INSERT INTO domains (project_id, domain_name, registrar, renewal_date, price, auto_renew, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
