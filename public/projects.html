@@ -43,58 +43,49 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden">
-<div class="flex h-full w-full">
-    <!-- Sidebar -->
-    <aside class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d121d] flex flex-col">
-        <div class="p-6 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                <span class="material-symbols-outlined">shield_lock</span>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col">
+
+<!-- Top Navigation -->
+<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
+    <div class="flex items-center gap-8 h-full">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-[18px]">shield_lock</span>
             </div>
-            <div>
-                <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">RenewDesk</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Executive</p>
+            <h1 class="text-base font-bold tracking-tight text-slate-900 dark:text-white leading-none">RenewDesk</h1>
+        </div>
+
+        <!-- Links -->
+        <div class="hidden lg:flex items-center h-full gap-2">
+            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
+            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all bg-primary/10 text-primary border border-primary/20"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
+            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
+            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
+            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
+            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
+        </div>
+    </div>
+
+    <!-- Right Side Actions -->
+    <div class="flex items-center gap-3">
+        <a href="logs.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Logs"><span class="material-symbols-outlined text-[20px]">history</span></a>
+        <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
+        
+        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+        
+        <div class="hidden sm:flex items-center gap-2 mr-2">
+            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
+            <div class="text-left">
+                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
             </div>
         </div>
-        <nav class="flex-1 px-4 mt-6 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="dashboard.html">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="text-sm font-semibold">Dashboard</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item-active text-primary transition-all" href="projects.html">
-                <span class="material-symbols-outlined">folder</span>
-                <span class="text-sm font-medium">Projects</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="domains.html">
-                <span class="material-symbols-outlined">language</span>
-                <span class="text-sm font-medium">Domains</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="hosting.html">
-                <span class="material-symbols-outlined">dns</span>
-                <span class="text-sm font-medium">Hosting</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="maintenance.html">
-                <span class="material-symbols-outlined">engineering</span>
-                <span class="text-sm font-medium">Maintenance/AMC</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="backups.html">
-                <span class="material-symbols-outlined">backup</span>
-                <span class="text-sm font-medium">Backups</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="logs.html">
-                <span class="material-symbols-outlined">history</span>
-                <span class="text-sm font-medium">Logs</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all" href="settings.html">
-                <span class="material-symbols-outlined">settings</span>
-                <span class="text-sm font-medium">Settings</span>
-            </a>
-            <button id="logoutBtn" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all mt-4">
-                <span class="material-symbols-outlined">logout</span>
-                <span class="text-sm font-medium">Logout</span>
-            </button>
-        </nav>
-    </aside>
+        
+        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
+    </div>
+</nav>
+
+    
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
@@ -104,16 +95,7 @@
                 <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Projects Portfolio</h2>
             </div>
             <div class="flex items-center gap-4">
-                <div class="h-8 w-[1px] bg-slate-200 dark:border-slate-800 mx-2"></div>
-                <div class="flex items-center gap-3 pl-2">
-                    <div class="text-right">
-                        <p class="text-sm font-bold dark:text-white">Admin</p>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-full ring-2 ring-primary/20 p-0.5 bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-white font-bold bg-slate-800">
-                        AD
-                    </div>
-                </div>
+                
             </div>
         </header>
 
