@@ -113,10 +113,10 @@
                     <thead>
                         <tr class="bg-slate-100 dark:bg-slate-800/50">
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Start Date</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">End Date</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Maintenance Period</th>
                             <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Price</th>
-                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-32">Actions</th>
+                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Paid Status</th>
+                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="dataTable">
@@ -171,17 +171,96 @@ function renderData(dataset) {
                         <a href="project-details.html?id=${item.project_id}" class="font-semibold text-sm text-slate-900 dark:text-white hover:text-primary transition-colors hover:underline">${item.project_name}</a>
                     </div>
                 </td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${formatD(item.start_date)}</td>
-                <td class="py-4 px-6 text-sm font-medium ${new Date(item.end_date) < new Date() ? 'text-red-500' : 'text-emerald-500'}">${formatD(item.end_date)}</td>
+                <td class="py-4 px-6">
+                    <div class="font-bold text-sm ${item.client_paid == 1 ? 'text-emerald-500' : (new Date(item.end_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Ends: ${formatD(item.end_date)}</div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Starts: ${formatD(item.start_date)}</div>
+                </td>
                 <td class="py-4 px-6 text-right font-medium text-slate-600 dark:text-slate-300">₹${item.price}</td>
+                <td class="py-4 px-6 text-center">
+                    <div class="flex justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full ${item.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${item.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
+                    </div>
+                </td>
                 <td class="py-4 px-6 text-right space-x-2">
-                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        <span class="material-symbols-outlined text-[14px]">open_in_new</span> Manage
+                    ${item.client_paid == 1 ? '' : `
+                    <button onclick="markRenewed(${item.id}, '${item.start_date}', '${item.end_date}')" class="inline-flex items-center gap-1.5 bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">check_circle</span> Renew Done
+                    </button>
+                    `}
+                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
                     </a>
                 </td>
             </tr>
         `;
     });
+}
+
+async function markRenewed(id, oldStart, oldEnd) {
+    const result = await Swal.fire({
+        title: 'Renew AMC?',
+        text: "This will extend the period by 1 year and mark as paid.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#f43f5e',
+        confirmButtonText: 'Yes, Renew it!',
+        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+    });
+
+    if (!result.isConfirmed) return;
+    
+    let ds = new Date(oldStart);
+    ds.setFullYear(ds.getFullYear() + 1);
+    const newStart = ds.toISOString().split('T')[0];
+    
+    let de = new Date(oldEnd);
+    de.setFullYear(de.getFullYear() + 1);
+    const newEnd = de.toISOString().split('T')[0];
+
+    const item = listData.find(x => x.id == id);
+    
+    try {
+        // 1. Update current record to PAID
+        await fetch(`/api/maintenance.php?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
+        });
+
+        // 2. Insert NEW record for the next year
+        const nextPayload = {
+            project_id: item.project_id,
+            start_date: newStart,
+            end_date: newEnd,
+            price: item.price,
+            client_paid: 0,
+            status: 'active',
+            notes: item.notes
+        };
+
+        await fetch(`/api/maintenance.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nextPayload)
+        });
+        
+        Swal.fire({
+            title: 'Success!',
+            text: 'AMC renewed and next cycle added.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+        });
+        
+        loadData();
+    } catch(e) {
+        console.error("Failed to renew", e);
+        Swal.fire('Error', 'Failed to process renewal.', 'error');
+    }
 }
 
 document.getElementById('searchData').addEventListener('input', (e) => {
@@ -197,5 +276,6 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 
 loadData();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

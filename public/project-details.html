@@ -133,11 +133,11 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Domain</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Registrar</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Expiry</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Domain & Registrar</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Renewal Date</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-32">Actions</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-domains">
@@ -163,8 +163,7 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Plan</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Provider</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Plan & Provider</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Renewal Date</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
@@ -194,10 +193,10 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Start Date</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">End Date</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Maintenance Period</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-32">Actions</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-maintenance">
@@ -290,22 +289,10 @@ async function loadData() {
         // DOMAINS
         document.getElementById('tb-domains').innerHTML = currentProjectData.domains.map(i => `
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6 font-semibold text-sm text-slate-900 dark:text-white">${i.domain_name}</td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${i.registrar || '-'}</td>
-                <td class="py-4 px-6 text-sm text-slate-600 dark:text-slate-300 text-center">${formatD(i.renewal_date)}</td>
-                <td class="py-4 px-6 text-sm font-medium text-right"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-300">₹${i.price}</span></td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    <button onclick="openModal('domain', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-primary/10 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('domains', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                <td class="py-4 px-6">
+                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.domain_name}</div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.registrar || '-'}</div>
                 </td>
-            </tr>
-        `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No domains added.</td></tr>`;
-
-        // HOSTING
-        document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6 font-semibold text-sm text-slate-900 dark:text-white">${i.plan_name}</td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${i.provider || '-'}</td>
                 <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
                 <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${i.price}</td>
                 <td class="py-4 px-6 text-center">
@@ -314,7 +301,29 @@ async function loadData() {
                     </div>
                 </td>
                 <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    <button onclick="markRenewed(${i.id}, '${i.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>
+                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('domains', ${i.id}, '${i.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
+                    <button onclick="openModal('domain', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                    <button onclick="delEntity('domains', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-500/10 hover:text-rose-500 transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                </td>
+            </tr>
+        `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No domains added.</td></tr>`;
+
+        // HOSTING
+        document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                <td class="py-4 px-6">
+                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.plan_name}</div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.provider || '-'}</div>
+                </td>
+                <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
+                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${i.price}</td>
+                <td class="py-4 px-6 text-center">
+                    <div class="flex justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
+                    </div>
+                </td>
+                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('hosting', ${i.id}, '${i.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
                     <button onclick="openModal('hosting', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">edit</span></button>
                     <button onclick="delEntity('hosting', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">delete</span></button>
                 </td>
@@ -324,10 +333,18 @@ async function loadData() {
         // AMC
         document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.map(i => `
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6 text-sm text-slate-600 dark:text-slate-300">${formatD(i.start_date)}</td>
-                <td class="py-4 px-6 font-semibold text-sm text-slate-900 dark:text-white">${formatD(i.end_date)}</td>
+                <td class="py-4 px-6">
+                    <div class="font-bold text-sm ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.end_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Ends: ${formatD(i.end_date)}</div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Starts: ${formatD(i.start_date)}</div>
+                </td>
                 <td class="py-4 px-6 text-sm font-medium text-right"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-300">₹${i.price}</span></td>
+                <td class="py-4 px-6 text-center">
+                    <div class="flex justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
+                    </div>
+                </td>
                 <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('maintenance', ${i.id}, '${i.start_date}', '${i.end_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
                     <button onclick="openModal('maintenance', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-amber-500/10 hover:text-amber-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
                     <button onclick="delEntity('maintenance', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
                 </td>
@@ -398,6 +415,10 @@ function openModal(type, id = null) {
                 <div><label class="${labelClass}">Renewal Date <span class="text-red-500">*</span></label><input type="date" id="f_renewal_date" class="${inputClass}" required value="${item?.renewal_date||''}"></div>
                 <div><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
             </div>
+            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
+                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
+            </div>
         `;
     } else if(type === 'hosting') {
         formHtml += `
@@ -407,9 +428,9 @@ function openModal(type, id = null) {
                 <div><label class="${labelClass}">Renewal Date <span class="text-red-500">*</span></label><input type="date" id="f_renewal_date" class="${inputClass}" required value="${item?.renewal_date||''}"></div>
                 <div><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2">
-                <input type="checkbox" id="f_client_paid" class="rounded border-slate-300 text-primary focus:ring-primary" ${item?.client_paid == 1 ? 'checked' : ''}>
-                <label for="f_client_paid" class="text-sm font-semibold text-slate-700 dark:text-slate-300">Client has paid for this renewal</label>
+            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
+                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
             </div>
         `;
     } else if(type === 'maintenance') {
@@ -419,6 +440,10 @@ function openModal(type, id = null) {
                 <div><label class="${labelClass}" style="mt-0">End Date <span class="text-red-500">*</span></label><input type="date" id="f_end_date" class="${inputClass}" required value="${item?.end_date||''}"></div>
             </div>
             <div><label class="${labelClass}">Yearly Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
+            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
+                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
+            </div>
         `;
     } else if(type === 'backup') {
         let freq = item?.frequency || 'monthly';
@@ -450,19 +475,27 @@ function openModal(type, id = null) {
     showModal();
 
     // Auto-increment date logic when paid status is checked
-    if(type === 'hosting') {
+    if(type === 'hosting' || type === 'domain' || type === 'maintenance') {
         const paidToggle = document.getElementById('f_client_paid');
-        const dateInput = document.getElementById('f_renewal_date');
+        const dateInput = type === 'maintenance' ? document.getElementById('f_end_date') : document.getElementById('f_renewal_date');
+        const startInput = type === 'maintenance' ? document.getElementById('f_start_date') : null;
+        
         paidToggle.addEventListener('change', (e) => {
             if(e.target.checked) {
+                // End date + 1 year
                 let dt = new Date(dateInput.value);
                 if(!isNaN(dt.getTime())) {
                     dt.setFullYear(dt.getFullYear() + 1);
                     dateInput.value = dt.toISOString().split('T')[0];
                 }
-            } else {
-                // If unchecked, optionally roll back? 
-                // For now, only auto-add on check is safer as per request.
+                // Start date + 1 year if maintenance
+                if(startInput) {
+                    let dts = new Date(startInput.value);
+                    if(!isNaN(dts.getTime())) {
+                        dts.setFullYear(dts.getFullYear() + 1);
+                        startInput.value = dts.toISOString().split('T')[0];
+                    }
+                }
             }
         });
     }
@@ -483,6 +516,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.registrar = document.getElementById('f_registrar').value;
         payload.renewal_date = document.getElementById('f_renewal_date').value;
         payload.price = document.getElementById('f_price').value;
+        payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
     } else if (currentModalType === 'hosting') {
         payload.plan_name = document.getElementById('f_plan_name').value;
         payload.provider = document.getElementById('f_provider').value;
@@ -493,6 +527,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.start_date = document.getElementById('f_start_date').value;
         payload.end_date = document.getElementById('f_end_date').value;
         payload.price = document.getElementById('f_price').value;
+        payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
     } else if (currentModalType === 'backup') {
         payload.frequency = document.getElementById('f_frequency').value;
         payload.last_backup = document.getElementById('f_last_backup').value || null;
@@ -524,21 +559,30 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         body: JSON.stringify(payload)
     });
 
-    // Automatically create next year record if this one was marked as paid
-    if(currentModalType === 'hosting' && payload.client_paid == 1) {
-        let dn = new Date(payload.renewal_date);
-        dn.setFullYear(dn.getFullYear() + 1);
-        const nextDate = dn.toISOString().split('T')[0];
-        
-        const nextPayload = {
-            ...payload,
-            renewal_date: nextDate,
-            client_paid: 0,
-            status: 'active'
-        };
-        delete nextPayload.id; // Ensure it's treated as new
+    // Automatically create next year record ONLY if this one was just changed to PAID
+    const wasPaidAlready = currentEditId && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance') && 
+                           ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentProjectData.maintenance).find(x=>x.id==currentEditId)?.client_paid == 1);
 
-        await fetch(`/api/hosting.php`, {
+    if(!wasPaidAlready && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance') && payload.client_paid == 1) {
+        const isMaint = currentModalType === 'maintenance';
+        let dn = new Date(isMaint ? payload.end_date : payload.renewal_date);
+        dn.setFullYear(dn.getFullYear() + 1);
+        const nextEndDate = dn.toISOString().split('T')[0];
+        
+        let nextPayload = { ...payload, client_paid: 0, status: 'active' };
+        if(isMaint) {
+            let ds = new Date(payload.start_date);
+            ds.setFullYear(ds.getFullYear() + 1);
+            nextPayload.start_date = ds.toISOString().split('T')[0];
+            nextPayload.end_date = nextEndDate;
+        } else {
+            nextPayload.renewal_date = nextEndDate;
+        }
+        delete nextPayload.id;
+
+        const nextUrl = currentModalType === 'hosting' ? `/api/hosting.php` : 
+                        currentModalType === 'domain' ? `/api/domains.php` : `/api/maintenance.php`;
+        await fetch(nextUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nextPayload)
@@ -552,10 +596,11 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     loadData();
 });
 
-async function markRenewed(id, oldDate) {
+async function markRenewed(type, id, oldS, oldE) {
+    const isMaint = type === 'maintenance';
     const result = await Swal.fire({
-        title: 'Renew Hosting?',
-        text: "This will extend the renewal date by 1 year and mark as paid.",
+        title: `Renew ${isMaint ? 'AMC' : type.slice(0,-1)}?`,
+        text: "This will extend the period by 1 year and mark as paid.",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
@@ -567,49 +612,44 @@ async function markRenewed(id, oldDate) {
 
     if (!result.isConfirmed) return;
     
-    let dt = new Date(oldDate);
-    dt.setFullYear(dt.getFullYear() + 1);
-    const newDate = dt.toISOString().split('T')[0];
-    
-    const item = currentProjectData.hosting.find(x => x.id == id);
-    const payload = {
-        ...item,
-        renewal_date: newDate,
-        client_paid: 1
-    };
-    
     try {
+        const arr = type === 'hosting' ? currentProjectData.hosting : 
+                    type === 'domain' ? currentProjectData.domains : currentProjectData.maintenance;
+        const item = arr.find(x => x.id == id);
+
         // 1. Update current record to PAID
-        const item = currentProjectData.hosting.find(x => x.id == id);
-        await fetch(`/api/hosting.php?id=${id}`, {
+        await fetch(`/api/${type}.php?id=${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
         });
 
         // 2. Insert NEW record for the next year
-        const nextPayload = {
-            project_id: pId,
-            provider: item.provider,
-            plan_name: item.plan_name,
-            renewal_date: newDate,
-            price: item.price,
-            client_paid: 0,
-            status: 'active',
-            notes: item.notes
-        };
+        let nextPayload = { ...item, client_paid: 0, status: 'active' };
+        if(isMaint) {
+            let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
+            let de = new Date(oldE); de.setFullYear(de.getFullYear() + 1);
+            nextPayload.start_date = ds.toISOString().split('T')[0];
+            nextPayload.end_date = de.toISOString().split('T')[0];
+        } else {
+            let dr = new Date(oldS); // in non-maint cases, oldS is passed as the renewal date
+            dr.setFullYear(dr.getFullYear() + 1);
+            nextPayload.renewal_date = dr.toISOString().split('T')[0];
+        }
+        delete nextPayload.id;
+        delete nextPayload.project_name;
 
-        await fetch(`/api/hosting.php`, {
+        await fetch(`/api/${type}.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nextPayload)
         });
         
         Swal.fire({
-            title: 'Success!',
-            text: 'Payment recorded and next year added to schedule.',
+            title: 'Renewed!',
+            text: 'Renewal updated successfully.',
             icon: 'success',
-            timer: 2500,
+            timer: 2000,
             showConfirmButton: false,
             background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
             color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
@@ -618,7 +658,7 @@ async function markRenewed(id, oldDate) {
         loadData();
     } catch(e) {
         console.error("Failed to renew", e);
-        Swal.fire('Error', 'Failed to process renewal.', 'error');
+        Swal.fire('Error', 'Failed to update renewal.', 'error');
     }
 }
 
