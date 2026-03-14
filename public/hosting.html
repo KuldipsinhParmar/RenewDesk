@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -117,7 +118,8 @@
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Provider</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Renewal Date</th>
                             <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Price</th>
-                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-32">Actions</th>
+                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Paid Status</th>
+                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="dataTable">
@@ -174,11 +176,23 @@ function renderData(dataset) {
                 </td>
                 <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400"><a href="project-details.html?id=${item.project_id}" class="hover:text-primary transition-colors hover:underline">${item.project_name}</a></td>
                 <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">${item.provider || '-'}</td>
-                <td class="py-4 px-6 text-sm font-medium ${new Date(item.renewal_date) < new Date() ? 'text-red-500' : 'text-emerald-500'}">${formatD(item.renewal_date)}</td>
-                <td class="py-4 px-6 text-right font-medium text-slate-600 dark:text-slate-300">₹${item.price}</td>
+                <td class="py-4 px-6 text-sm font-bold ${item.client_paid == 1 ? 'text-emerald-500' : (new Date(item.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">
+                    ${formatD(item.renewal_date)}
+                </td>
+                <td class="py-4 px-6 text-right font-bold text-slate-900 dark:text-white">
+                    ₹${item.price}
+                </td>
+                <td class="py-4 px-6 text-center">
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${item.client_paid == 1 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600 animate-pulse'}">
+                        ${item.client_paid == 1 ? 'PAID' : 'PENDING'}
+                    </span>
+                </td>
                 <td class="py-4 px-6 text-right space-x-2">
-                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        <span class="material-symbols-outlined text-[14px]">open_in_new</span> Manage
+                    <button onclick="markRenewed(${item.id}, '${item.renewal_date}')" class="inline-flex items-center gap-1.5 bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">check_circle</span> Renew Done
+                    </button>
+                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
                     </a>
                 </td>
             </tr>
@@ -196,6 +210,76 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     await fetch('/api/auth/logout.php', { method: 'POST' });
     window.location.href = 'login.html';
 });
+
+async function markRenewed(id, oldDate) {
+    const result = await Swal.fire({
+        title: 'Renew Hosting?',
+        text: "This will extend the renewal date by 1 year and mark as paid.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#f43f5e',
+        confirmButtonText: 'Yes, Renew it!',
+        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+    });
+
+    if (!result.isConfirmed) return;
+    
+    let dt = new Date(oldDate);
+    dt.setFullYear(dt.getFullYear() + 1);
+    const newDate = dt.toISOString().split('T')[0];
+    
+    const item = listData.find(x => x.id == id);
+    const payload = {
+        ...item,
+        renewal_date: newDate,
+        client_paid: 1
+    };
+    
+    try {
+        // 1. Update current record to PAID
+        const item = listData.find(x => x.id == id);
+        await fetch(`/api/hosting.php?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
+        });
+
+        // 2. Insert NEW record for the next year
+        const nextPayload = {
+            project_id: item.project_id,
+            provider: item.provider,
+            plan_name: item.plan_name,
+            renewal_date: newDate,
+            price: item.price,
+            client_paid: 0,
+            status: 'active',
+            notes: item.notes
+        };
+
+        await fetch(`/api/hosting.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nextPayload)
+        });
+        
+        Swal.fire({
+            title: 'Success!',
+            text: 'Current period marked as paid and next year scheduled.',
+            icon: 'success',
+            timer: 2500,
+            showConfirmButton: false,
+            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+        });
+        
+        loadData();
+    } catch(e) {
+        console.error("Failed to renew", e);
+        Swal.fire('Error', 'Failed to process renewal.', 'error');
+    }
+}
 
 loadData();
 </script>

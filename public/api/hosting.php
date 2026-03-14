@@ -17,10 +17,10 @@ try {
     }
     elseif ($method === 'POST') {
         $input = json_decode(file_get_contents("php://input"), true);
-        $stmt = $db->prepare("INSERT INTO hosting (project_id, provider, plan_name, renewal_date, price, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO hosting (project_id, provider, plan_name, renewal_date, price, client_paid, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $input['project_id'], $input['provider'], $input['plan_name'], $input['renewal_date'], 
-            $input['price'] ?? 0, 'active', $input['notes'] ?? null
+            $input['price'] ?? 0, $input['client_paid'] ?? 0, 'active', $input['notes'] ?? null
         ]);
         echo json_encode(["status" => "success", "message" => "Hosting added."]);
     }
@@ -29,10 +29,10 @@ try {
         if (!$id) throw new Exception("ID required");
         $input = json_decode(file_get_contents("php://input"), true);
         
-        $stmt = $db->prepare("UPDATE hosting SET provider=?, plan_name=?, renewal_date=?, price=?, status=?, notes=? WHERE id=?");
+        $stmt = $db->prepare("UPDATE hosting SET provider=?, plan_name=?, renewal_date=?, price=?, client_paid=?, status=?, notes=? WHERE id=?");
         $stmt->execute([
             $input['provider'], $input['plan_name'], $input['renewal_date'], 
-            $input['price'] ?? 0, $input['status'] ?? 'active', $input['notes'] ?? null, $id
+            $input['price'] ?? 0, $input['client_paid'] ?? 0, $input['status'] ?? 'active', $input['notes'] ?? null, $id
         ]);
         echo json_encode(["status" => "success", "message" => "Hosting updated."]);
     }
