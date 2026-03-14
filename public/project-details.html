@@ -225,8 +225,8 @@
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/5">Frequency</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Last Backup</th>
                                     <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Next Backup</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Storage</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-32">Actions</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-backups">
@@ -357,10 +357,15 @@ async function loadData() {
                 <td class="py-4 px-6">
                     <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 uppercase tracking-wider">${i.frequency}</span>
                 </td>
-                <td class="py-4 px-6 text-sm text-slate-600 dark:text-slate-300">${formatD(i.last_backup)}</td>
-                <td class="py-4 px-6 font-semibold text-sm text-emerald-600 dark:text-emerald-400">${formatD(i.next_backup)}</td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 text-right truncate max-w-[120px]">${i.storage_location || '-'}</td>
+                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-500">${formatD(i.last_backup)}</td>
+                <td class="py-4 px-6 text-sm font-bold ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.next_backup) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.next_backup)}</td>
+                <td class="py-4 px-6 text-center">
+                    <div class="flex justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
+                    </div>
+                </td>
                 <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('backup', ${i.id}, '${i.next_backup}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Mark Done"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
                     <button onclick="openModal('backup', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
                     <button onclick="delEntity('backups', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
                 </td>
@@ -462,6 +467,10 @@ function openModal(type, id = null) {
                 <div><label class="${labelClass}">Next Backup <span class="text-red-500">*</span></label><input type="date" id="f_next_backup" class="${inputClass}" value="${item?.next_backup||''}" required></div>
             </div>
             <div><label class="${labelClass}">Storage Location</label><input type="text" id="f_storage_location" class="${inputClass}" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
+            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
+                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
+            </div>
         `;
     } else if(type === 'project') {
         formHtml += `
@@ -475,26 +484,32 @@ function openModal(type, id = null) {
     showModal();
 
     // Auto-increment date logic when paid status is checked
-    if(type === 'hosting' || type === 'domain' || type === 'maintenance') {
+    if(type === 'hosting' || type === 'domain' || type === 'maintenance' || type === 'backup') {
         const paidToggle = document.getElementById('f_client_paid');
-        const dateInput = type === 'maintenance' ? document.getElementById('f_end_date') : document.getElementById('f_renewal_date');
+        const dateInput = type === 'maintenance' ? document.getElementById('f_end_date') : 
+                          type === 'backup' ? document.getElementById('f_next_backup') : document.getElementById('f_renewal_date');
         const startInput = type === 'maintenance' ? document.getElementById('f_start_date') : null;
+        const lastInput = type === 'backup' ? document.getElementById('f_last_backup') : null;
         
         paidToggle.addEventListener('change', (e) => {
             if(e.target.checked) {
-                // End date + 1 year
                 let dt = new Date(dateInput.value);
                 if(!isNaN(dt.getTime())) {
-                    dt.setFullYear(dt.getFullYear() + 1);
+                    if(type === 'backup') {
+                        const freq = document.getElementById('f_frequency').value;
+                        if(lastInput) lastInput.value = dateInput.value;
+                        if(freq === 'daily') dt.setDate(dt.getDate() + 1);
+                        else if(freq === 'weekly') dt.setDate(dt.getDate() + 7);
+                        else if(freq === 'monthly') dt.setMonth(dt.getMonth() + 1);
+                        else if(freq === 'manual') {} // Stay same
+                    } else {
+                        dt.setFullYear(dt.getFullYear() + 1);
+                    }
                     dateInput.value = dt.toISOString().split('T')[0];
                 }
-                // Start date + 1 year if maintenance
                 if(startInput) {
                     let dts = new Date(startInput.value);
-                    if(!isNaN(dts.getTime())) {
-                        dts.setFullYear(dts.getFullYear() + 1);
-                        startInput.value = dts.toISOString().split('T')[0];
-                    }
+                    if(!isNaN(dts.getTime())) { dts.setFullYear(dts.getFullYear() + 1); startInput.value = dts.toISOString().split('T')[0]; }
                 }
             }
         });
@@ -533,6 +548,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.last_backup = document.getElementById('f_last_backup').value || null;
         payload.next_backup = document.getElementById('f_next_backup').value;
         payload.storage_location = document.getElementById('f_storage_location').value;
+        payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
     } else if (currentModalType === 'project') {
         payload.name = document.getElementById('f_project_name').value;
         payload.description = document.getElementById('f_project_desc').value;
@@ -560,28 +576,34 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     });
 
     // Automatically create next year record ONLY if this one was just changed to PAID
-    const wasPaidAlready = currentEditId && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance') && 
-                           ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentProjectData.maintenance).find(x=>x.id==currentEditId)?.client_paid == 1);
+    const wasPaidAlready = currentEditId && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance' || currentModalType === 'backup') && 
+                           ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentModalType==='maintenance'?currentProjectData.maintenance:currentProjectData.backups).find(x=>x.id==currentEditId)?.client_paid == 1);
 
-    if(!wasPaidAlready && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance') && payload.client_paid == 1) {
+    if(!wasPaidAlready && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance' || currentModalType === 'backup') && payload.client_paid == 1) {
         const isMaint = currentModalType === 'maintenance';
-        let dn = new Date(isMaint ? payload.end_date : payload.renewal_date);
-        dn.setFullYear(dn.getFullYear() + 1);
-        const nextEndDate = dn.toISOString().split('T')[0];
+        const isBackup = currentModalType === 'backup';
         
+        let dn = new Date(isMaint ? payload.end_date : isBackup ? payload.next_backup : payload.renewal_date);
         let nextPayload = { ...payload, client_paid: 0, status: 'active' };
-        if(isMaint) {
-            let ds = new Date(payload.start_date);
-            ds.setFullYear(ds.getFullYear() + 1);
+
+        if(isBackup) {
+            nextPayload.last_backup = payload.next_backup;
+            if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+            else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+            else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            nextPayload.next_backup = dn.toISOString().split('T')[0];
+        } else if(isMaint) {
+            let ds = new Date(payload.start_date); ds.setFullYear(ds.getFullYear() + 1);
+            dn.setFullYear(dn.getFullYear() + 1);
             nextPayload.start_date = ds.toISOString().split('T')[0];
-            nextPayload.end_date = nextEndDate;
+            nextPayload.end_date = dn.toISOString().split('T')[0];
         } else {
-            nextPayload.renewal_date = nextEndDate;
+            dn.setFullYear(dn.getFullYear() + 1);
+            nextPayload.renewal_date = dn.toISOString().split('T')[0];
         }
         delete nextPayload.id;
 
-        const nextUrl = currentModalType === 'hosting' ? `/api/hosting.php` : 
-                        currentModalType === 'domain' ? `/api/domains.php` : `/api/maintenance.php`;
+        const nextUrl = `/api/${typeMap}.php`;
         await fetch(nextUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -598,14 +620,15 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 
 async function markRenewed(type, id, oldS, oldE) {
     const isMaint = type === 'maintenance';
+    const isBackup = type === 'backup';
     const result = await Swal.fire({
-        title: `Renew ${isMaint ? 'AMC' : type.slice(0,-1)}?`,
-        text: "This will extend the period by 1 year and mark as paid.",
+        title: isBackup ? 'Mark Backup Done?' : `Renew ${isMaint ? 'AMC' : type.slice(0,-1)}?`,
+        text: isBackup ? "This will calculate the next backup date and mark this one as paid." : "This will extend the period by 1 year and mark as paid.",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
         cancelButtonColor: '#f43f5e',
-        confirmButtonText: 'Yes, Renew it!',
+        confirmButtonText: 'Yes, Done!',
         background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
         color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
     });
@@ -614,32 +637,39 @@ async function markRenewed(type, id, oldS, oldE) {
     
     try {
         const arr = type === 'hosting' ? currentProjectData.hosting : 
-                    type === 'domain' ? currentProjectData.domains : currentProjectData.maintenance;
+                    type === 'domain' ? currentProjectData.domains : 
+                    type === 'maintenance' ? currentProjectData.maintenance : currentProjectData.backups;
         const item = arr.find(x => x.id == id);
 
         // 1. Update current record to PAID
-        await fetch(`/api/${type}.php?id=${id}`, {
+        await fetch(`/api/${type === 'backup' ? 'backups' : type}.php?id=${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
         });
 
-        // 2. Insert NEW record for the next year
+        // 2. Insert NEW record
         let nextPayload = { ...item, client_paid: 0, status: 'active' };
-        if(isMaint) {
+        if(isBackup) {
+            let dn = new Date(oldS);
+            nextPayload.last_backup = oldS;
+            if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+            else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+            else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            nextPayload.next_backup = dn.toISOString().split('T')[0];
+        } else if(isMaint) {
             let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
             let de = new Date(oldE); de.setFullYear(de.getFullYear() + 1);
             nextPayload.start_date = ds.toISOString().split('T')[0];
             nextPayload.end_date = de.toISOString().split('T')[0];
         } else {
-            let dr = new Date(oldS); // in non-maint cases, oldS is passed as the renewal date
-            dr.setFullYear(dr.getFullYear() + 1);
+            let dr = new Date(oldS); dr.setFullYear(dr.getFullYear() + 1);
             nextPayload.renewal_date = dr.toISOString().split('T')[0];
         }
         delete nextPayload.id;
         delete nextPayload.project_name;
 
-        await fetch(`/api/${type}.php`, {
+        await fetch(`/api/${type === 'backup' ? 'backups' : type}.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nextPayload)
