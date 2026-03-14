@@ -14,11 +14,17 @@ try {
     $stmt = $db->query("SELECT COUNT(*) as c FROM projects WHERE status='active'");
     $data['total_projects'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
 
-    $stmt = $db->query("SELECT COUNT(*) as c FROM domains WHERE status='active'");
-    $data['total_domains'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
-
     $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE status='active'");
     $data['amc_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+
+    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active'");
+    $data['hosting_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+
+    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active'");
+    $data['domain_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+
+    $stmt = $db->query("SELECT COUNT(*) as c FROM backups");
+    $data['total_backups'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
 
     // Expiring Soon (Next 30 Days)
     $upcoming = [];
@@ -39,6 +45,12 @@ try {
     $stmt = $db->query("SELECT 'Maintenance' as type, m.id, 'AMC Contract' as name, m.end_date as date, p.name as project, DATEDIFF(m.end_date, CURDATE()) as days_left 
                         FROM maintenance m JOIN projects p ON m.project_id = p.id 
                         WHERE m.status = 'active' AND m.end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY m.end_date ASC");
+    $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
+
+    // Backups
+    $stmt = $db->query("SELECT 'Backup' as type, b.id, CONCAT('Backup (', b.frequency, ')') as name, b.next_backup as date, p.name as project, DATEDIFF(b.next_backup, CURDATE()) as days_left 
+                        FROM backups b JOIN projects p ON b.project_id = p.id 
+                        WHERE b.next_backup BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY b.next_backup ASC");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Sort by days left

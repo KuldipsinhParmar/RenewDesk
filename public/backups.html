@@ -199,9 +199,34 @@ function renderData(dataset) {
 }
 
 async function markDone(id, nextDate) {
+    const item = listData.find(x => x.id == id);
+    let dn = new Date(nextDate);
+    
+    // Calculate interval based on current record
+    if (item.last_backup && item.next_backup) {
+        let start = new Date(item.last_backup);
+        let end = new Date(item.next_backup);
+        let diffTime = end.getTime() - start.getTime();
+        // If difference is 0 or negative, use default frequency logic
+        if (diffTime > 0) {
+            dn = new Date(dn.getTime() + diffTime);
+        } else {
+            if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+            else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+            else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+        }
+    } else {
+        if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+        else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+        else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+    }
+    const newNext = dn.toISOString().split('T')[0];
+
     const result = await Swal.fire({
         title: 'Mark Backup Done?',
-        text: "This will set the next schedule based on frequency and mark as completed.",
+        html: `This will complete the current cycle and create a new one:<br><br>
+               <b>New Last Backup:</b> ${formatD(nextDate)}<br>
+               <b>New Next Backup:</b> ${formatD(newNext)}`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
@@ -212,15 +237,6 @@ async function markDone(id, nextDate) {
     });
 
     if (!result.isConfirmed) return;
-    
-    const item = listData.find(x => x.id == id);
-    let dn = new Date(nextDate);
-    if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-    else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-    else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
-    
-    const newNext = dn.toISOString().split('T')[0];
-
     try {
         // 1. Update current record to PAID
         await fetch(`/api/backups.php?id=${id}`, {

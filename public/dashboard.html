@@ -115,73 +115,58 @@
         <div class="flex-1 overflow-y-auto px-8 pb-10 custom-scrollbar z-10 relative">
             
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-10">
                 
-                <!-- Active Projects Card -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-primary/20 hover:border-primary/30 flex flex-col justify-between p-6 h-full border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-all duration-500"></div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Active Projects</p>
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center ring-1 ring-primary/20 shadow-inner">
-                                <span class="material-symbols-outlined text-[20px]">folder</span>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <h3 class="text-4xl font-black tracking-tight text-slate-800 dark:text-white" id="stat-projects">0</h3>
-                        </div>
+                <!-- Active Projects -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Projects</p>
+                        <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center ring-1 ring-primary/20 transition-all group-hover:bg-primary group-hover:text-white group-hover:shadow-[0_0_15px_rgba(43,108,238,0.4)]"><span class="material-symbols-outlined text-[18px]">folder</span></div>
                     </div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-projects">0</h3>
                 </div>
 
-                <!-- Active Domains Card -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-purple-500/20 hover:border-purple-500/30 flex flex-col justify-between p-6 h-full border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/20 dark:group-hover:bg-purple-500/30 transition-all duration-500"></div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Active Domains</p>
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 text-purple-600 dark:text-purple-400 flex items-center justify-center ring-1 ring-purple-500/20 shadow-inner">
-                                <span class="material-symbols-outlined text-[20px]">language</span>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <h3 class="text-4xl font-black tracking-tight text-slate-800 dark:text-white" id="stat-domains">0</h3>
-                        </div>
+                <!-- Domains Amount -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Domains Amt</p>
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 ring-1 ring-purple-500/20 transition-all group-hover:bg-purple-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]"><span class="material-symbols-outlined text-[18px]">language</span></div>
                     </div>
+                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-domain-rev">0</h3></div>
                 </div>
 
-                <!-- Total AMC Card -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-amber-500/20 hover:border-amber-500/30 flex flex-col justify-between p-6 h-full border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-500/30 transition-all duration-500"></div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Total AMC Revenue</p>
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-600 dark:text-amber-500 flex items-center justify-center ring-1 ring-amber-500/20 shadow-inner">
-                                <span class="material-symbols-outlined text-[20px]">payments</span>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline gap-1 mt-1">
-                            <span class="text-xl font-bold text-slate-400">₹</span>
-                            <h3 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-800 dark:text-white truncate" id="stat-amc">0</h3>
-                        </div>
+                <!-- Hosting Amount -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Hosting Amt</p>
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 ring-1 ring-blue-500/20 transition-all group-hover:bg-blue-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"><span class="material-symbols-outlined text-[18px]">dns</span></div>
                     </div>
+                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-hosting-rev">0</h3></div>
                 </div>
 
-                <!-- Pending Renewals Card -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-emerald-500/20 hover:border-emerald-500/30 flex flex-col justify-between p-6 h-full border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/20 dark:group-hover:bg-emerald-500/30 transition-all duration-500"></div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                                Pending Renewals <span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500">30d</span>
-                            </p>
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-600 dark:text-emerald-400 flex items-center justify-center ring-1 ring-emerald-500/20 shadow-inner">
-                                <span class="material-symbols-outlined text-[20px]">notification_important</span>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <h3 class="text-4xl font-black tracking-tight text-slate-800 dark:text-white" id="stat-pending">0</h3>
-                        </div>
+                <!-- AMC Amount -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">AMC Amt</p>
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/20 transition-all group-hover:bg-amber-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(245,158,11,0.4)]"><span class="material-symbols-outlined text-[18px]">payments</span></div>
                     </div>
+                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-amc">0</h3></div>
+                </div>
+
+                <!-- Backups Count -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Backups</p>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 transition-all group-hover:bg-emerald-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"><span class="material-symbols-outlined text-[18px]">backup</span></div>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-backups">0</h3>
+                </div>                <!-- Alert Count -->
+                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Alerts (30d)</p>
+                        <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 ring-1 ring-rose-500/20 transition-all group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"><span class="material-symbols-outlined text-[18px]">notification_important</span></div>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-pending">0</h3>
                 </div>
 
             </div>
@@ -230,11 +215,13 @@ async function loadDashboard() {
         if (data.status === 'success') {
             const d = data.data;
             document.getElementById('stat-projects').innerText = d.total_projects;
-            document.getElementById('stat-domains').innerText = d.total_domains;
+            document.getElementById('stat-backups').innerText = d.total_backups || 0;
             
-            // Format currency
-            let val = parseFloat(d.amc_revenue) || 0;
-            document.getElementById('stat-amc').innerText = new Intl.NumberFormat('en-IN').format(val);
+            // Format currencies
+            const formatVal = (v) => new Intl.NumberFormat('en-IN').format(parseFloat(v)||0);
+            document.getElementById('stat-amc').innerText = formatVal(d.amc_revenue);
+            document.getElementById('stat-hosting-rev').innerText = formatVal(d.hosting_revenue);
+            document.getElementById('stat-domain-rev').innerText = formatVal(d.domain_revenue);
 
             document.getElementById('stat-pending').innerText = d.upcoming.length;
 
@@ -251,9 +238,10 @@ async function loadDashboard() {
                                  (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
                                  'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
                 
-                let iconParts = item.type === 'Domain' ? ['public', 'text-primary', 'bg-primary/10'] : 
+                let iconParts = item.type === 'Domain' ? ['language', 'text-primary', 'bg-primary/10'] : 
                                 (item.type === 'Hosting' ? ['dns', 'text-purple-500', 'bg-purple-500/10'] : 
-                                ['engineering', 'text-emerald-500', 'bg-emerald-500/10']);
+                                (item.type === 'Backup' ? ['backup', 'text-emerald-500', 'bg-emerald-500/10'] : 
+                                ['engineering', 'text-amber-500', 'bg-amber-500/10']));
 
                 let dt = new Date(item.date);
                 let fDate = `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;

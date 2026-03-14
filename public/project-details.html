@@ -483,37 +483,7 @@ function openModal(type, id = null) {
     
     showModal();
 
-    // Auto-increment date logic when paid status is checked
-    if(type === 'hosting' || type === 'domain' || type === 'maintenance' || type === 'backup') {
-        const paidToggle = document.getElementById('f_client_paid');
-        const dateInput = type === 'maintenance' ? document.getElementById('f_end_date') : 
-                          type === 'backup' ? document.getElementById('f_next_backup') : document.getElementById('f_renewal_date');
-        const startInput = type === 'maintenance' ? document.getElementById('f_start_date') : null;
-        const lastInput = type === 'backup' ? document.getElementById('f_last_backup') : null;
-        
-        paidToggle.addEventListener('change', (e) => {
-            if(e.target.checked) {
-                let dt = new Date(dateInput.value);
-                if(!isNaN(dt.getTime())) {
-                    if(type === 'backup') {
-                        const freq = document.getElementById('f_frequency').value;
-                        if(lastInput) lastInput.value = dateInput.value;
-                        if(freq === 'daily') dt.setDate(dt.getDate() + 1);
-                        else if(freq === 'weekly') dt.setDate(dt.getDate() + 7);
-                        else if(freq === 'monthly') dt.setMonth(dt.getMonth() + 1);
-                        else if(freq === 'manual') {} // Stay same
-                    } else {
-                        dt.setFullYear(dt.getFullYear() + 1);
-                    }
-                    dateInput.value = dt.toISOString().split('T')[0];
-                }
-                if(startInput) {
-                    let dts = new Date(startInput.value);
-                    if(!isNaN(dts.getTime())) { dts.setFullYear(dts.getFullYear() + 1); startInput.value = dts.toISOString().split('T')[0]; }
-                }
-            }
-        });
-    }
+
 }
 
 document.getElementById('saveEntityBtn').addEventListener('click', async () => {
@@ -583,23 +553,39 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         const isMaint = currentModalType === 'maintenance';
         const isBackup = currentModalType === 'backup';
         
-        let dn = new Date(isMaint ? payload.end_date : isBackup ? payload.next_backup : payload.renewal_date);
+        // Calculate dates for the NEXT record based on the CURRENT record's dates
         let nextPayload = { ...payload, client_paid: 0, status: 'active' };
-
+        
         if(isBackup) {
+            let dn = new Date(payload.next_backup);
             nextPayload.last_backup = payload.next_backup;
-            if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-            else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-            else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            
+            // Calculate interval if last_backup exists
+            if (payload.last_backup) {
+                let start = new Date(payload.last_backup);
+                let end = new Date(payload.next_backup);
+                let diffTime = end.getTime() - start.getTime();
+                if (diffTime > 0) {
+                    dn = new Date(dn.getTime() + diffTime);
+                } else {
+                    if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+                    else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+                    else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                }
+            } else {
+                if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+                else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+                else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            }
             nextPayload.next_backup = dn.toISOString().split('T')[0];
         } else if(isMaint) {
             let ds = new Date(payload.start_date); ds.setFullYear(ds.getFullYear() + 1);
-            dn.setFullYear(dn.getFullYear() + 1);
+            let de = new Date(payload.end_date); de.setFullYear(de.getFullYear() + 1);
             nextPayload.start_date = ds.toISOString().split('T')[0];
-            nextPayload.end_date = dn.toISOString().split('T')[0];
+            nextPayload.end_date = de.toISOString().split('T')[0];
         } else {
-            dn.setFullYear(dn.getFullYear() + 1);
-            nextPayload.renewal_date = dn.toISOString().split('T')[0];
+            let dr = new Date(payload.renewal_date); dr.setFullYear(dr.getFullYear() + 1);
+            nextPayload.renewal_date = dr.toISOString().split('T')[0];
         }
         delete nextPayload.id;
 
@@ -621,9 +607,64 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 async function markRenewed(type, id, oldS, oldE) {
     const isMaint = type === 'maintenance';
     const isBackup = type === 'backup';
+    const arr = type === 'hosting' ? currentProjectData.hosting : 
+                type === 'domain' ? currentProjectData.domains : 
+                type === 'maintenance' ? currentProjectData.maintenance : currentProjectData.backups;
+    const item = arr.find(x => x.id == id);
+
+    let nextLabel = "Renewal Date";
+    let nextDate = "";
+    let startLabel = "";
+    let startDate = "";
+
+    if(isBackup) {
+        let dn = new Date(oldS);
+        
+        // Calculate interval from existing item dates
+        if (item.last_backup && item.next_backup) {
+            let start = new Date(item.last_backup);
+            let end = new Date(item.next_backup);
+            let diffTime = end.getTime() - start.getTime();
+            if (diffTime > 0) {
+                dn = new Date(dn.getTime() + diffTime);
+            } else {
+                if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+                else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+                else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            }
+        } else {
+            if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+            else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+            else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+        }
+        
+        nextDate = dn.toISOString().split('T')[0];
+        startDate = oldS;
+        startLabel = "Last Backup";
+        nextLabel = "Next Backup";
+    } else if(isMaint) {
+        let de = new Date(oldE); de.setFullYear(de.getFullYear() + 1);
+        let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
+        nextDate = de.toISOString().split('T')[0];
+        startDate = ds.toISOString().split('T')[0];
+        startLabel = "Next Start";
+        nextLabel = "Next End";
+    } else {
+        let dr = new Date(oldS); dr.setFullYear(dr.getFullYear() + 1);
+        nextDate = dr.toISOString().split('T')[0];
+    }
+
+    const formatDLocal = (d) => {
+        if (!d) return '-';
+        let dt = new Date(d);
+        return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+    };
+
     const result = await Swal.fire({
         title: isBackup ? 'Mark Backup Done?' : `Renew ${isMaint ? 'AMC' : type.slice(0,-1)}?`,
-        text: isBackup ? "This will calculate the next backup date and mark this one as paid." : "This will extend the period by 1 year and mark as paid.",
+        html: `This will complete the current period and schedule the next:<br><br>
+               ${startDate ? `<b>${startLabel}:</b> ${formatDLocal(startDate)}<br>` : ''}
+               <b>${nextLabel}:</b> ${formatDLocal(nextDate)}`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
@@ -653,9 +694,24 @@ async function markRenewed(type, id, oldS, oldE) {
         if(isBackup) {
             let dn = new Date(oldS);
             nextPayload.last_backup = oldS;
-            if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-            else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-            else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            
+            // Calculate interval from existing item dates
+            if (item.last_backup && item.next_backup) {
+                let start = new Date(item.last_backup);
+                let end = new Date(item.next_backup);
+                let diffTime = end.getTime() - start.getTime();
+                if (diffTime > 0) {
+                    dn = new Date(dn.getTime() + diffTime);
+                } else {
+                    if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+                    else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+                    else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                }
+            } else {
+                if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
+                else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
+                else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            }
             nextPayload.next_backup = dn.toISOString().split('T')[0];
         } else if(isMaint) {
             let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
