@@ -70,11 +70,11 @@
 <!-- Navigation -->
 <nav class="fixed top-0 w-full z-50 glass-nav transition-all py-4">
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2 group">
-            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined">shield_lock</span>
+        <a href="#" class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
+                <span class="material-symbols-outlined text-[24px]">autorenew</span>
             </div>
-            <span class="text-xl font-bold tracking-tight text-slate-900">RenewDesk</span>
+            <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 leading-none">RenewDesk</h1>
         </a>
         <div class="flex items-center gap-4">
             <a href="login.html" class="hidden sm:block text-slate-600 font-semibold hover:text-primary transition-colors px-4 py-2">Admin Login</a>
@@ -293,8 +293,10 @@
 
 <!-- Footer -->
 <footer class="border-t border-slate-200 bg-white py-12 text-center text-slate-400 font-medium">
-    <div class="flex items-center justify-center gap-2 mb-4 opacity-50">
-        <span class="material-symbols-outlined text-3xl">shield_lock</span>
+    <div class="flex items-center justify-center gap-3 mb-4 opacity-70">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">autorenew</span>
+        </div>
         <span class="text-xl font-bold tracking-tight text-slate-900">RenewDesk</span>
     </div>
     <p>&copy; 2026 RenewDesk Application. All rights reserved.</p>
