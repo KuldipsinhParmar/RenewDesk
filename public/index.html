@@ -1,323 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>RenewDesk - Infrastructure Renewal Management</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>RenewDesk Premium Landing Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         "primary": "#2b6cee",
+                        "primary-accent": "#6c5ce7",
                         "background-light": "#fafafa",
+                        "background-dark": "#101622",
                     },
                     fontFamily: {
                         "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
                     },
                 },
             },
         }
     </script>
-    <style>
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .hero-section {
-            background: radial-gradient(circle at top right, rgba(108, 92, 231, 0.05), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(43, 108, 238, 0.05), transparent 40%);
-        }
-        
-        .feature-card {
-            background: rgba(255, 255, 255, 0.9); 
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1); border-color: rgba(43, 108, 238, 0.2);}
-        
-        .dashboard-mockup {
-            box-shadow: 0 30px 80px -20px rgba(43, 108, 238, 0.2);
-            border: 1px solid rgba(0,0,0,0.05);
-            transform: perspective(1000px) rotateY(-8deg) rotateX(5deg);
-            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        .dashboard-mockup:hover { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
-
-        .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
-        .d-1 { animation-delay: 0.1s; } .d-2 { animation-delay: 0.2s; } .d-3 { animation-delay: 0.3s; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        .cta-bg {
-            background: linear-gradient(135deg, #2b6cee, #6c5ce7);
-            position: relative;
-            overflow: hidden;
-        }
-        .cta-bg::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-<body class="bg-background-light font-display text-slate-900 antialiased overflow-x-hidden">
-
-<!-- Navigation -->
-<nav class="fixed top-0 w-full z-50 glass-nav transition-all py-4">
-    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
-                <span class="material-symbols-outlined text-[24px]">autorenew</span>
-            </div>
-            <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 leading-none">RenewDesk</h1>
-        </a>
-        <div class="flex items-center gap-4">
-            <a href="login.html" class="hidden sm:block text-slate-600 font-semibold hover:text-primary transition-colors px-4 py-2">Admin Login</a>
-            <a href="login.html" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] hover:shadow-primary/40 transition-all">Get Started</a>
-        </div>
-    </div>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+<nav class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between shadow-sm border border-slate-200/50">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-2xl">autorenew</span>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-slate-900">RenewDesk</span>
+<div class="flex items-center gap-3">
+<a href="login.html" class="hidden sm:flex px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-all">
+                        Admin Login
+                    </a>
+<a href="login.html" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/25 transition-all">
+                        Get Started
+                    </a>
+</div>
 </nav>
-
+</header>
+<main class="flex-grow pt-32">
 <!-- Hero Section -->
-<section class="hero-section pt-40 pb-24 relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 h-full">
-        <div class="grid lg:grid-cols-2 gap-12 align-items-center h-full">
-            <div class="fade-in-up z-10 flex flex-col justify-center">
-                <div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full mb-6 w-max font-semibold text-sm">
-                    <span class="material-symbols-outlined text-[18px]">verified</span> Simplify Your Infrastructure
-                </div>
-                <h1 class="text-5xl md:text-6xl font-[800] leading-tight tracking-tight text-slate-900 mb-6">
-                    Never Miss a<br/>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">Renewal Again.</span>
-                </h1>
-                <p class="text-lg text-slate-500 mb-8 max-w-xl leading-relaxed">
-                    The ultimate dashboard to track your clients' domains, hosting, maintenance contracts, and backup schedules. Beautifully organized with automated email alerts.
-                </p>
-                <div class="flex flex-wrap items-center gap-4">
-                    <a href="login.html" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-xl hover:bg-slate-800 hover:scale-[1.02] transition-all flex items-center gap-2">
-                        Enter Dashboard <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                    </a>
-                    <a href="#features" class="hidden sm:flex text-slate-600 hover:text-primary font-semibold px-6 py-4 transition-colors items-center gap-2">
-                        Explore Features
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Dashboard Mockup -->
-            <div class="fade-in-up d-1 relative z-10 flex items-center justify-center lg:justify-end">
-                <div class="dashboard-mockup bg-white rounded-2xl w-full max-w-lg aspect-[4/3] flex flex-col overflow-hidden">
-                    <div class="bg-slate-100 px-4 py-3 flex gap-2 items-center border-b border-slate-200">
-                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-                        <div class="mx-auto bg-white px-8 py-1 rounded text-xs text-slate-400 font-medium">renewdesk.app / dashboard</div>
-                    </div>
-                    <div class="p-6 bg-slate-50 flex-1">
-                        <div class="flex justify-between mb-6">
-                            <div class="w-1/2 h-5 bg-slate-200 rounded-md"></div>
-                            <div class="w-1/6 h-5 bg-slate-200 rounded-md"></div>
+<section class="max-w-7xl mx-auto px-6 py-12 lg:py-24">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                            New: Multi-Cloud Support
                         </div>
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-primary">
-                                <div class="w-8 h-8 rounded-lg bg-primary/10 mb-3"></div>
-                                <div class="w-2/3 h-2 bg-slate-200 rounded-full"></div>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 mb-3"></div>
-                                <div class="w-3/4 h-2 bg-slate-200 rounded-full"></div>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500">
-                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 mb-3"></div>
-                                <div class="w-1/2 h-2 bg-slate-200 rounded-full"></div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-                            <div class="flex items-center mb-4">
-                                <div class="w-2.5 h-2.5 rounded-full bg-red-500 mr-3"></div>
-                                <div class="w-1/3 h-3 bg-slate-200 rounded-full"></div>
-                            </div>
-                            <div class="w-full h-[1px] bg-slate-100 mb-4"></div>
-                            <div class="flex justify-between items-center">
-                                <div class="w-1/4 h-2 bg-slate-200 rounded-full"></div>
-                                <div class="w-1/6 h-6 bg-red-100 rounded-full"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<h1 class="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
+                            Never Miss a <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-accent">Renewal</span> Again
+                        </h1>
+<p class="text-xl text-slate-600 leading-relaxed max-w-xl">
+                            RenewDesk helps elite IT teams manage infrastructure lifecycles with ease. Track domains, hosting, and backups in one executive dashboard.
+                        </p>
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<a href="login.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl shadow-primary/30 transition-all flex items-center justify-center gap-2">
+                                Start Free Trial <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+<a href="login.html" class="bg-white border border-slate-200 hover:border-primary text-slate-700 px-8 py-4 rounded-xl text-lg font-bold transition-all flex items-center justify-center gap-2">
+                                View Demo
+                            </a>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-gradient-to-tr from-primary/10 to-primary-accent/10 rounded-2xl blur-3xl"></div>
+<div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden aspect-video">
+<div class="bg-slate-900/5 h-8 w-full border-b border-slate-200 flex items-center px-4 gap-1.5">
+<div class="size-2.5 rounded-full bg-red-400"></div>
+<div class="size-2.5 rounded-full bg-amber-400"></div>
+<div class="size-2.5 rounded-full bg-green-400"></div>
+</div>
+<div class="p-6 bg-white h-full" data-alt="Premium dashboard showing IT infrastructure analytics and upcoming renewals">
+<div class="flex gap-4 h-full">
+<div class="w-1/4 space-y-3">
+<div class="h-4 w-20 bg-slate-100 rounded"></div>
+<div class="h-32 bg-slate-50 rounded-lg border border-slate-100"></div>
+<div class="h-4 w-24 bg-slate-100 rounded"></div>
+<div class="h-20 bg-slate-50 rounded-lg border border-slate-100"></div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex justify-between items-center">
+<div class="h-6 w-32 bg-slate-200 rounded"></div>
+<div class="h-8 w-24 bg-primary/20 rounded-lg"></div>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
+<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
+<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
+</div>
+<div class="h-48 bg-slate-50 rounded-xl border border-slate-100"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid -->
+<section class="max-w-7xl mx-auto px-6 py-24">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-3xl lg:text-4xl font-black text-slate-900">Infrastructure Management</h2>
+<p class="text-slate-600 max-w-2xl mx-auto text-lg">Comprehensive tracking for all your critical IT assets. Minimal effort, maximum control.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Feature Card: Domains -->
+<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
+<div class="size-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">language</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 mb-3">Domains</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                            Monitor expiry dates and auto-renewal status for all your global web properties in one view.
+                        </p>
+</div>
+<!-- Feature Card: Hosting -->
+<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
+<div class="size-12 rounded-xl bg-purple-50 flex items-center justify-center text-primary-accent mb-6">
+<span class="material-symbols-outlined text-3xl">cloud</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 mb-3">Hosting</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                            Keep track of server instances, storage nodes, and cloud hosting costs across providers.
+                        </p>
+</div>
+<!-- Feature Card: Maintenance -->
+<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
+<div class="size-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 mb-6">
+<span class="material-symbols-outlined text-3xl">settings_suggest</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 mb-3">Maintenance</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                            Manage annual maintenance contracts (AMC) and complex service level agreements with ease.
+                        </p>
+</div>
+<!-- Feature Card: Backups -->
+<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
+<div class="size-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 mb-6">
+<span class="material-symbols-outlined text-3xl">backup</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 mb-3">Backups</h3>
+<p class="text-slate-600 text-sm leading-relaxed">
+                            Ensure business continuity with scheduled health monitoring for all your data backup routines.
+                        </p>
+</div>
+</div>
 </section>
 
-<!-- Features Section -->
-<section id="features" class="py-24 bg-white relative z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.02)]">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 fade-in-up">
-            <h2 class="text-4xl font-bold tracking-tight text-slate-900 mb-4">
-                Everything you need in <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">one place.</span>
-            </h2>
-            <p class="text-lg text-slate-500 max-w-2xl mx-auto">
-                Stop managing spreadsheets. RenewDesk gives you granular control over every asset tied to your clients.
-            </p>
+<!-- Deep Dive Feature 1 -->
+<section class="max-w-7xl mx-auto px-6 py-16 lg:py-24 border-t border-slate-100">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="space-y-6 order-2 lg:order-1">
+        <div class="size-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 mb-6">
+            <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
         </div>
-        
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="feature-card p-8 rounded-3xl fade-in-up d-1">
-                <div class="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-3xl">language</span>
-                </div>
-                <h4 class="text-xl font-bold text-slate-900 mb-3">Domains</h4>
-                <p class="text-slate-500 leading-relaxed">
-                    Track registrars, purchase prices, and exact expiration dates for thousands of client domains.
-                </p>
-            </div>
-            
-            <div class="feature-card p-8 rounded-3xl fade-in-up d-2">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-3xl">dns</span>
-                </div>
-                <h4 class="text-xl font-bold text-slate-900 mb-3">Hosting Plans</h4>
-                <p class="text-slate-500 leading-relaxed">
-                    Attach hosting plans to projects, monitor providers, and never let a critical server go offline.
-                </p>
-            </div>
-            
-            <div class="feature-card p-8 rounded-3xl fade-in-up d-3">
-                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-3xl">engineering</span>
-                </div>
-                <h4 class="text-xl font-bold text-slate-900 mb-3">Maintenance / AMC</h4>
-                <p class="text-slate-500 leading-relaxed">
-                    Log Annual Maintenance Contracts. Automatically track recurring revenue and renewal cycles.
-                </p>
-            </div>
-            
-            <div class="feature-card p-8 rounded-3xl fade-in-up d-3">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-3xl">backup</span>
-                </div>
-                <h4 class="text-xl font-bold text-slate-900 mb-3">Backup Schedules</h4>
-                <p class="text-slate-500 leading-relaxed">
-                    Ensure data integrity by tracking when a client's project was last backed up and when the next one is due.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Alerts Section -->
-<section class="py-24 bg-background-light border-y border-slate-200">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid lg:grid-cols-2 gap-16 items-center">
-            <div class="fade-in-up">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-6 shadow-sm">
-                    <span class="material-symbols-outlined text-3xl">mark_email_read</span>
-                </div>
-                <h2 class="text-4xl font-bold tracking-tight text-slate-900 mb-6">
-                    Automated <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">Cron Alerts.</span>
-                </h2>
-                <p class="text-lg text-slate-500 mb-8 leading-relaxed">
-                    Configure custom warning thresholds (e.g., 30 days, 15 days, 7 days). RenewDesk runs in the background and emails you exactly when things need your attention.
-                </p>
-                <ul class="space-y-4">
-                    <li class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-                        <span class="text-slate-700 font-semibold">Direct SMTP Integration</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-                        <span class="text-slate-700 font-semibold">Color-coded Delivery Logs</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-                        <span class="text-slate-700 font-semibold">Consolidated Project Reports</span>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="fade-in-up d-1">
-                <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
-                    <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary/5 p-3 rounded-full text-primary">
-                                <span class="material-symbols-outlined text-2xl">mail</span>
-                            </div>
-                            <div>
-                                <h5 class="font-bold text-slate-900">Daily Expiration Report</h5>
-                                <p class="text-sm text-slate-400">Today at 08:00 AM</p>
-                            </div>
-                        </div>
-                        <span class="bg-red-500/10 text-red-500 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide">URGENT</span>
-                    </div>
-                    <p class="text-slate-700 font-semibold mb-4">The following items require your attention:</p>
-                    
-                    <div class="space-y-3">
-                        <div class="bg-slate-50 p-4 rounded-xl border-l-4 border-primary flex items-center justify-between">
-                            <div>
-                                <span class="font-bold text-slate-900">Acme Corp</span>
-                                <span class="text-slate-500 text-sm ml-2">&mdash; Domain: acme.com</span>
-                            </div>
-                            <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">Expiring in 7 days</span>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-xl border-l-4 border-amber-500 flex items-center justify-between">
-                            <div>
-                                <span class="font-bold text-slate-900">Stark Industries</span>
-                                <span class="text-slate-500 text-sm ml-2">&mdash; AMC Contract</span>
-                            </div>
-                            <span class="text-xs font-bold text-amber-600 bg-amber-500/10 px-2 py-1 rounded">Expiring in 15 days</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<div class="max-w-7xl mx-auto px-6 pb-24 top-[-20px] relative z-30">
-    <div class="cta-bg rounded-[3rem] p-16 text-center shadow-2xl fade-in-up">
-        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to take control?</h2>
-        <p class="text-white/80 text-xl font-medium mb-10 max-w-2xl mx-auto">
-            Join now and deploy a centralized hub for all your client assets instantly.
+        <h2 class="text-3xl lg:text-4xl font-black text-slate-900 leading-tight">Automated Reporting & Alerts</h2>
+        <p class="text-lg text-slate-600 leading-relaxed">
+            Stop relying on manual calendar reminders. RenewDesk's built-in email engine sends automated, beautiful HTML summaries directly to your inbox 30, 15, and 7 days before any infrastructure asset expires.
         </p>
-        <a href="login.html" class="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-transform">
-            Go to Login Panel <span class="material-symbols-outlined">arrow_forward</span>
-        </a>
+        <ul class="space-y-4 pt-4">
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Daily cron job scanning
+            </li>
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Project-specific filtering
+            </li>
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Beautiful HTML email templates
+            </li>
+        </ul>
+    </div>
+    <div class="relative order-1 lg:order-2">
+        <div class="absolute -inset-4 bg-gradient-to-tr from-orange-500/10 to-transparent rounded-3xl blur-2xl"></div>
+        <div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden bg-white">
+            <div class="bg-slate-100 h-10 w-full border-b border-slate-200 flex items-center px-4 gap-2">
+                <div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div>
+                <div class="ml-4 h-5 w-48 bg-white rounded-md border border-slate-200 shadow-sm flex items-center px-2">
+                    <span class="text-[10px] text-slate-400 font-medium">email.renewdesk.app</span>
+                </div>
+            </div>
+            <div class="p-8">
+                <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
+                    <div class="p-6 bg-slate-900 text-center">
+                        <div class="w-10 h-10 bg-primary rounded-lg mx-auto flex items-center justify-center text-white mb-2"><span class="material-symbols-outlined text-sm">autorenew</span></div>
+                        <h4 class="text-white font-bold text-lg">Upcoming Renewals</h4>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                            <div><div class="text-sm font-bold text-slate-800">example.com</div><div class="text-[11px] text-slate-400">Domain</div></div>
+                            <div class="text-right"><div class="text-xs font-bold text-red-500">Expires in 7 days</div><div class="text-[11px] font-bold text-slate-800">₹1,200.00</div></div>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                            <div><div class="text-sm font-bold text-slate-800">Cloud VPS Premium</div><div class="text-[11px] text-slate-400">Hosting</div></div>
+                            <div class="text-right"><div class="text-xs font-bold text-amber-500">Expires in 14 days</div><div class="text-[11px] font-bold text-slate-800">₹8,500.00</div></div>
+                        </div>
+                        <div class="pt-4 text-center">
+                            <div class="inline-block bg-primary text-white text-xs font-bold px-6 py-2.5 rounded-lg">Log in to Manage</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+</section>
 
-<!-- Footer -->
-<footer class="border-t border-slate-200 bg-white py-12 text-center text-slate-400 font-medium">
-    <div class="flex items-center justify-center gap-3 mb-4 opacity-70">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm">
-            <span class="material-symbols-outlined text-[18px]">autorenew</span>
+<!-- Deep Dive Feature 2 -->
+<section class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="relative">
+        <div class="absolute -inset-4 bg-gradient-to-br from-primary/10 to-transparent rounded-3xl blur-2xl"></div>
+        <div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden bg-white">
+            <div class="bg-slate-100 h-10 w-full border-b border-slate-200 flex items-center px-4 gap-2">
+                <div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div>
+                <div class="ml-4 h-5 w-48 bg-white rounded-md border border-slate-200 shadow-sm flex items-center px-2">
+                    <span class="text-[10px] text-slate-400 font-medium">app.renewdesk.app/dashboard</span>
+                </div>
+            </div>
+            <div class="flex h-[320px]">
+                <div class="w-16 bg-slate-50 border-r border-slate-100 p-3 flex flex-col gap-4 items-center">
+                    <div class="w-8 h-8 rounded bg-primary text-white flex justify-center items-center"><span class="material-symbols-outlined text-[16px]">autorenew</span></div>
+                    <div class="w-8 h-8 rounded bg-slate-200 mt-4"></div>
+                    <div class="w-8 h-8 rounded bg-slate-200"></div>
+                    <div class="w-8 h-8 rounded bg-slate-200"></div>
+                </div>
+                <div class="flex-1 p-6 bg-background-light">
+                    <div class="h-6 w-40 bg-slate-200 rounded mb-6"></div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <div class="h-3 w-20 bg-slate-200 rounded mb-3"></div>
+                            <div class="h-8 w-16 bg-emerald-500/20 rounded"></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <div class="h-3 w-20 bg-slate-200 rounded mb-3"></div>
+                            <div class="h-8 w-24 bg-primary/20 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4 flex-col">
+                        <div class="h-10 w-full bg-slate-50 rounded border border-slate-100 flex items-center px-3 gap-3">
+                            <div class="w-6 h-6 rounded-full bg-red-100"></div><div class="h-3 w-32 bg-slate-200 rounded"></div>
+                        </div>
+                        <div class="h-10 w-full bg-slate-50 rounded border border-slate-100 flex items-center px-3 gap-3">
+                            <div class="w-6 h-6 rounded-full bg-amber-100"></div><div class="h-3 w-24 bg-slate-200 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <span class="text-xl font-bold tracking-tight text-slate-900">RenewDesk</span>
     </div>
-    <p>&copy; 2026 RenewDesk Application. All rights reserved.</p>
+    <div class="space-y-6">
+        <div class="size-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary mb-6">
+            <span class="material-symbols-outlined text-3xl">dashboard</span>
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-black text-slate-900 leading-tight">Executive Dashboard</h2>
+        <p class="text-lg text-slate-600 leading-relaxed">
+            Get a birds-eye view of your entire IT infrastructure. Track total project ROI, outstanding renewal costs, and critical upcoming task lists in a unified, premium interface.
+        </p>
+        <ul class="space-y-4 pt-4">
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-primary">check_circle</span> Instant financial breakdown
+            </li>
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-primary">check_circle</span> One-click renewal processing
+            </li>
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+                <span class="material-symbols-outlined text-primary">check_circle</span> Advanced search and filtering
+            </li>
+        </ul>
+    </div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="max-w-7xl mx-auto px-6 pb-24">
+<div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-primary to-primary-accent p-12 lg:p-20 text-center shadow-2xl">
+<!-- Decorative patterns -->
+<div class="absolute top-0 right-0 p-20 opacity-10">
+<span class="material-symbols-outlined text-[200px] rotate-12">sync_alt</span>
+</div>
+<div class="absolute bottom-0 left-0 p-20 opacity-10">
+<span class="material-symbols-outlined text-[150px] -rotate-12">verified_user</span>
+</div>
+<div class="relative z-10 space-y-8 max-w-3xl mx-auto">
+<h2 class="text-4xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+                            Start tracking your infrastructure today.
+                        </h2>
+<p class="text-white/80 text-xl font-medium">
+                            Join the elite IT teams managing their stack with RenewDesk. No credit card required to start.
+                        </p>
+<div class="pt-6 flex flex-col sm:flex-row justify-center gap-4">
+<a href="login.html" class="bg-white text-primary hover:bg-slate-100 px-10 py-4 rounded-xl text-lg font-bold shadow-xl transition-all">
+                                Get Started Now
+                            </a>
+<a href="login.html" class="bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-10 py-4 rounded-xl text-lg font-bold border border-white/20 transition-all">
+                                Contact Sales
+                            </a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Minimalist Footer -->
+<footer class="max-w-7xl mx-auto w-full px-6 py-12 border-t border-slate-200">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-lg">autorenew</span>
+</div>
+<span class="text-lg font-extrabold tracking-tight text-slate-900">RenewDesk</span>
+</div>
+<div class="flex gap-8 text-sm font-medium text-slate-500">
+<a class="hover:text-primary" href="login.html">Admin Login</a>
+</div>
+<div class="text-sm text-slate-400 font-medium">
+                    © 2024 RenewDesk SaaS. All rights reserved.
+                </div>
+</div>
 </footer>
-
-<script>
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in-up').forEach(el => {
-        el.style.animationPlayState = 'paused';
-        observer.observe(el);
-    });
-</script>
-
-</body>
-</html>
+</div>
+</body></html>
