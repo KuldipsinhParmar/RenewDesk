@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -174,12 +175,12 @@
             <!-- Upcoming Renewals Table -->
             <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-emerald-500">upcoming</span>
+                    <span class="material-symbols-outlined text-amber-500">upcoming</span>
                     <h4 class="text-lg font-bold text-slate-900 dark:text-white">Upcoming Renewals</h4>
                 </div>
             </div>
             
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-primary/20 overflow-hidden shadow-sm shadow-primary/5">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-primary/20 overflow-hidden shadow-sm shadow-primary/5 mb-10">
                 <table class="w-full border-collapse">
                     <thead>
                         <tr class="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
@@ -191,8 +192,34 @@
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="upcomingTable">
-                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading data...</td></tr>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="renewTable">
+                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading renewals...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Upcoming Backups Table -->
+            <div class="mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-500">backup</span>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">Upcoming Backups</h4>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-primary/20 overflow-hidden shadow-sm shadow-primary/5">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Backup Info</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Next Due</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Last Backup</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Days Left</th>
+                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="backupTable">
+                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading backups...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -218,62 +245,111 @@ async function loadDashboard() {
             document.getElementById('stat-backups').innerText = d.total_backups || 0;
             
             // Format currencies
-            const formatVal = (v) => new Intl.NumberFormat('en-IN').format(parseFloat(v)||0);
+            const formatVal = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
             document.getElementById('stat-amc').innerText = formatVal(d.amc_revenue);
             document.getElementById('stat-hosting-rev').innerText = formatVal(d.hosting_revenue);
             document.getElementById('stat-domain-rev').innerText = formatVal(d.domain_revenue);
 
             document.getElementById('stat-pending').innerText = d.upcoming.length;
 
-            const tbody = document.getElementById('upcomingTable');
-            tbody.innerHTML = '';
+            const renewBody = document.getElementById('renewTable');
+            const backupBody = document.getElementById('backupTable');
+            renewBody.innerHTML = '';
+            backupBody.innerHTML = '';
             
-            if (d.upcoming.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 text-emerald-500 block">check_circle</span>You are all caught up! No renewals in 30 days.</td></tr>';
-                return;
+            const renewals = d.upcoming.filter(i => i.type !== 'Backup');
+            const backups = d.upcoming.filter(i => i.type === 'Backup');
+
+            // Render Renewals
+            if (renewals.length === 0) {
+                renewBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 dark:text-slate-400">No upcoming renewals in 30 days.</td></tr>';
+            } else {
+                renewals.forEach(item => {
+                    let badgeClass = item.days_left <= 7 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
+                                     (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
+                                     'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
+                    
+                    let iconParts = item.type === 'Domain' ? ['language', 'text-primary', 'bg-primary/10'] : 
+                                    (item.type === 'Hosting' ? ['dns', 'text-purple-500', 'bg-purple-500/10'] : 
+                                    ['engineering', 'text-amber-500', 'bg-amber-500/10']);
+
+                    let dt = new Date(item.date);
+                    let fDate = `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+
+                    let statusBadge = item.days_left <= 7 ? `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" title="Urgent: ${item.days_left} Days"></span>` : 
+                                     (item.days_left <= 15 ? `<span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" title="Soon: ${item.days_left} Days"></span>` : 
+                                     `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="Safe: ${item.days_left} Days"></span>`);
+
+                    renewBody.innerHTML += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="py-5 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg ${iconParts[2]} flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm ${iconParts[1]}">${iconParts[0]}</span>
+                                    </div>
+                                    <span class="font-bold text-sm text-slate-900 dark:text-white">${item.name}</span>
+                                </div>
+                            </td>
+                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.project}</td>
+                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.type}</td>
+                            <td class="py-5 px-6 text-sm font-bold text-slate-900 dark:text-white">${fDate}</td>
+                            <td class="py-5 px-6">
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">${item.days_left} Days Left</span>
+                            </td>
+                            <td class="py-5 px-6">
+                                <div class="flex items-center gap-1.5">
+                                    ${statusBadge}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
             }
 
-            d.upcoming.forEach(item => {
-                let badgeClass = item.days_left <= 7 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                                 (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
-                                 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
-                
-                let iconParts = item.type === 'Domain' ? ['language', 'text-primary', 'bg-primary/10'] : 
-                                (item.type === 'Hosting' ? ['dns', 'text-purple-500', 'bg-purple-500/10'] : 
-                                (item.type === 'Backup' ? ['backup', 'text-emerald-500', 'bg-emerald-500/10'] : 
-                                ['engineering', 'text-amber-500', 'bg-amber-500/10']));
+            // Render Backups
+            if (backups.length === 0) {
+                backupBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 dark:text-slate-400">No upcoming backups in 30 days.</td></tr>';
+            } else {
+                backups.forEach(item => {
+                    let badgeClass = item.days_left <= 7 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
+                                     (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
+                                     'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
+                    
+                    const formatD = (d) => {
+                        if(!d) return '-';
+                        let dt = new Date(d);
+                        return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+                    };
 
-                let dt = new Date(item.date);
-                let fDate = `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+                    let statusBadge = item.days_left <= 7 ? `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" title="Urgent: ${item.days_left} Days"></span>` : 
+                                     (item.days_left <= 15 ? `<span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" title="Soon: ${item.days_left} Days"></span>` : 
+                                     `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="On Track: ${item.days_left} Days"></span>`);
 
-                let statusBadge = item.days_left <= 7 ? '<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span><span class="text-xs font-bold uppercase text-red-500">Urgent</span>' : 
-                                 (item.days_left <= 15 ? '<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-xs font-bold uppercase text-amber-500">Soon</span>' : 
-                                 '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-bold uppercase text-emerald-500">Safe</span>');
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                        <td class="py-5 px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg ${iconParts[2]} flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-sm ${iconParts[1]}">${iconParts[0]}</span>
+                    backupBody.innerHTML += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="py-5 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm text-emerald-500">backup</span>
+                                    </div>
+                                    <span class="font-bold text-sm text-slate-900 dark:text-white">${item.name}</span>
                                 </div>
-                                <span class="font-semibold text-sm dark:text-slate-200">${item.name}</span>
-                            </div>
-                        </td>
-                        <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.project}</td>
-                        <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.type}</td>
-                        <td class="py-5 px-6 text-sm font-medium dark:text-slate-200">${fDate}</td>
-                        <td class="py-5 px-6">
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">${item.days_left} Days Left</span>
-                        </td>
-                        <td class="py-5 px-6">
-                            <div class="flex items-center gap-1.5">
-                                ${statusBadge}
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
+                            </td>
+                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.project}</td>
+                            <td class="py-5 px-6 text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap">${formatD(item.date)}</td>
+                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">${formatD(item.extra)}</td>
+                            <td class="py-5 px-6">
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">${item.days_left} Days Left</span>
+                            </td>
+                            <td class="py-5 px-6">
+                                <div class="flex items-center gap-1.5">
+                                    ${statusBadge}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
         }
     } catch(e) {
         console.error("Dashboard failed to load", e);

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Project Details - RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -295,7 +296,7 @@ async function loadData() {
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.registrar || '-'}</div>
                 </td>
                 <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
-                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${i.price}</td>
+                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center">
                         <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
@@ -317,7 +318,7 @@ async function loadData() {
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.provider || '-'}</div>
                 </td>
                 <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
-                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${i.price}</td>
+                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center">
                         <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
@@ -338,7 +339,7 @@ async function loadData() {
                     <div class="font-bold text-sm ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.end_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Ends: ${formatD(i.end_date)}</div>
                     <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Starts: ${formatD(i.start_date)}</div>
                 </td>
-                <td class="py-4 px-6 text-sm font-medium text-right"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-300">₹${i.price}</span></td>
+                <td class="py-4 px-6 text-sm font-bold text-right"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-300">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</span></td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center">
                         <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>

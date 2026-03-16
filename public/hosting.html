@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Hosting - RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -41,6 +42,26 @@
         .sidebar-item-active {
             background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
             border-left: 3px solid #2b6cee;
+        }
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none !important;
+        }
+        select::-ms-expand {
+            display: none;
+        }
+        .custom-select-container::after {
+            content: 'expand_more';
+            font-family: 'Material Symbols Outlined';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #94a3b8;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -103,10 +124,15 @@
 
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
-            <div class="flex items-center justify-between mb-8">
-                <div class="relative w-96">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="relative flex-1 max-w-md">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
                     <input id="searchData" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all" placeholder="Search hosting..." type="text"/>
+                </div>
+                <div class="relative w-40 custom-select-container">
+                    <select id="yearFilter" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 pr-10 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all outline-none">
+                        <option value="">All Years</option>
+                    </select>
                 </div>
             </div>
             
@@ -118,7 +144,7 @@
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Renewal Date</th>
                             <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Price</th>
-                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Paid Status</th>
+                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
                             <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
                         </tr>
                     </thead>
@@ -142,7 +168,16 @@ async function loadData() {
         if (res.status === 401) window.location.href = 'login.html';
         const data = await res.json();
         listData = data.data;
-        renderData(listData);
+        populateYearFilter();
+        
+        // Default to current year if available
+        const currentYear = new Date().getFullYear().toString();
+        const yearSelect = document.getElementById('yearFilter');
+        if ([...yearSelect.options].some(opt => opt.value === currentYear)) {
+            yearSelect.value = currentYear;
+        }
+        
+        filterData();
     } catch(e) {
         console.error("Failed to load hosting", e);
     }
@@ -182,17 +217,17 @@ function renderData(dataset) {
                     ${formatD(item.renewal_date)}
                 </td>
                 <td class="py-4 px-6 text-right font-bold text-slate-900 dark:text-white">
-                    ₹${item.price}
+                    ₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}
                 </td>
                 <td class="py-4 px-6 text-center">
-                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${item.client_paid == 1 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600 animate-pulse'}">
-                        ${item.client_paid == 1 ? 'PAID' : 'PENDING'}
-                    </span>
+                    <div class="flex justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full ${item.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${item.client_paid == 1 ? 'PAID' : 'PENDING'}"></span>
+                    </div>
                 </td>
                 <td class="py-4 px-6 text-right space-x-2">
                     ${item.client_paid == 1 ? '' : `
-                    <button onclick="markRenewed(${item.id}, '${item.renewal_date}')" class="inline-flex items-center gap-1.5 bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[16px]">check_circle</span> Renew Done
+                    <button onclick="markRenewed(${item.id}, '${item.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Renew Done">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
                     </button>
                     `}
                     <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all">
@@ -204,11 +239,33 @@ function renderData(dataset) {
     });
 }
 
-document.getElementById('searchData').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = listData.filter(p => p.plan_name.toLowerCase().includes(term) || (p.project_name && p.project_name.toLowerCase().includes(term)));
+function populateYearFilter() {
+    const yearSelect = document.getElementById('yearFilter');
+    const years = [...new Set(listData.map(item => {
+        const d = new Date(item.renewal_date);
+        return d.getFullYear();
+    }))].filter(y => y && !isNaN(y) && y > 2000).sort((a, b) => b - a);
+    
+    yearSelect.innerHTML = '<option value="">All Years</option>';
+    years.forEach(year => {
+        yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+    });
+}
+
+function filterData() {
+    const term = document.getElementById('searchData').value.toLowerCase();
+    const year = document.getElementById('yearFilter').value;
+    
+    const filtered = listData.filter(p => {
+        const matchesTerm = p.plan_name.toLowerCase().includes(term) || (p.project_name && p.project_name.toLowerCase().includes(term));
+        const matchesYear = year === "" || new Date(p.renewal_date).getFullYear().toString() === year;
+        return matchesTerm && matchesYear;
+    });
     renderData(filtered);
-});
+}
+
+document.getElementById('searchData').addEventListener('input', filterData);
+document.getElementById('yearFilter').addEventListener('change', filterData);
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     await fetch('/api/auth/logout.php', { method: 'POST' });

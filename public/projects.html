@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Projects - RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -208,8 +209,8 @@ function renderProjects(dataset) {
                     <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badge}">${p.status.toUpperCase()}</span>
                 </td>
                 <td class="py-4 px-6 text-right space-x-2">
-                    <a href="project-details.html?id=${p.id}" class="inline-flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        <span class="material-symbols-outlined text-[14px]">settings</span> Manage
+                    <a href="project-details.html?id=${p.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all shadow-sm" title="Manage Project">
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
                     </a>
                     <button onclick='editProject(${JSON.stringify(p).replace(/'/g, "&#39;")})' class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors">
                         <span class="material-symbols-outlined text-[16px]">edit</span>

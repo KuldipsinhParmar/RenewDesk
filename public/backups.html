@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Backups - RenewDesk Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -116,7 +117,7 @@
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Frequency</th>
                             <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Backups</th>
-                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Paid Status</th>
+                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
                             <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
                         </tr>
                     </thead>
@@ -176,8 +177,8 @@ function renderData(dataset) {
                     <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 uppercase tracking-wider">${item.frequency}</span>
                 </td>
                 <td class="py-4 px-6">
-                    <div class="font-bold text-sm ${item.client_paid == 1 ? 'text-emerald-500' : (new Date(item.next_backup) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Next: ${formatD(item.next_backup)}</div>
-                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Last: ${formatD(item.last_backup)}</div>
+                    <div class="font-bold text-sm ${item.client_paid == 1 ? 'text-emerald-500' : (new Date(item.next_backup) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Last: ${formatD(item.last_backup)}</div>
+                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Next: ${formatD(item.next_backup)}</div>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center">
@@ -186,8 +187,8 @@ function renderData(dataset) {
                 </td>
                 <td class="py-4 px-6 text-right space-x-2">
                     ${item.client_paid == 1 ? '' : `
-                    <button onclick="markDone(${item.id}, '${item.next_backup}')" class="inline-flex items-center gap-1.5 bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[16px]">check_circle</span> Done
+                    <button onclick="markDone(${item.id}, '${item.next_backup}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Mark Done">
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
                     </button>
                     `}
                     <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all">
