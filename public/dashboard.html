@@ -229,9 +229,10 @@
         </div>
     </main>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 async function checkAuth() {
-    const res = await fetch('/api/dashboard.php');
+    const res = await fetch(rdApi('api/dashboard.php'), { credentials: 'same-origin' });
     if (res.status === 401) window.location.href = 'login.html';
     return await res.json();
 }
@@ -357,7 +358,7 @@ async function loadDashboard() {
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 

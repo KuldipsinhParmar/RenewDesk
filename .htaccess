@@ -1,0 +1,33 @@
+# Use when the server document root is this project folder (not `public`).
+# Routes requests into `public/` and blocks direct access to private paths.
+
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+DirectoryIndex public/index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block sensitive paths before any file exists check (api/config lives under project root)
+    RewriteRule ^\.env$ - [F,L]
+    RewriteRule ^\.git/ - [F,L]
+    RewriteRule ^api/config/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+    RewriteRule ^composer\.json$ - [F,L]
+    RewriteRule ^composer\.lock$ - [F,L]
+    RewriteRule ^cron/ - [F,L]
+
+    # Already targeting /public/ — stop
+    RewriteCond %{REQUEST_URI} ^/public/
+    RewriteRule ^ - [L]
+
+    # Existing file/dir at project root only — serve as-is (rare)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else is served from public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

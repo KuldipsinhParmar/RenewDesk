@@ -157,12 +157,13 @@
         </div>
     </main>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 let listData = [];
 
 async function loadData() {
     try {
-        const res = await fetch('/api/maintenance.php');
+        const res = await fetch(rdApi('api/maintenance.php'), { credentials: 'same-origin' });
         if (res.status === 401) window.location.href = 'login.html';
         const data = await res.json();
         listData = data.data;
@@ -259,9 +260,10 @@ async function markRenewed(id, oldStart, oldEnd) {
     
     try {
         // 1. Update current record to PAID
-        await fetch(`/api/maintenance.php?id=${id}`, {
+        await fetch(rdApi(`api/maintenance.php?id=${id}`), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
         });
 
@@ -276,9 +278,10 @@ async function markRenewed(id, oldStart, oldEnd) {
             notes: item.notes
         };
 
-        await fetch(`/api/maintenance.php`, {
+        await fetch(rdApi(`api/maintenance.php`), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(nextPayload)
         });
         
@@ -328,7 +331,7 @@ document.getElementById('searchData').addEventListener('input', filterData);
 document.getElementById('yearFilter').addEventListener('change', filterData);
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 

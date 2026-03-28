@@ -264,6 +264,7 @@
     </div>
 </div>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const pId = urlParams.get('id');
@@ -274,7 +275,7 @@ let currentEditId = null;
 
 async function loadData() {
     try {
-        const res = await fetch(`/api/projects.php?id=${pId}`);
+        const res = await fetch(rdApi(`api/projects.php?id=${pId}`), { credentials: 'same-origin' });
         if (res.status === 401) window.location.href = 'login.html';
         const json = await res.json();
         currentProjectData = json.data;
@@ -526,11 +527,11 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.description = document.getElementById('f_project_desc').value;
     }
 
-    let url = `/api/${typeMap}.php`;
+    let url = rdApi(`api/${typeMap}.php`);
     let method = 'POST';
     
     if(currentModalType === 'project') {
-        url = `/api/projects.php?id=${pId}`;
+        url = rdApi(`api/projects.php?id=${pId}`);
         method = 'PUT';
     } else if(currentEditId) {
         url += `?id=${currentEditId}`;
@@ -544,6 +545,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     await fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(payload)
     });
 
@@ -591,10 +593,11 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         }
         delete nextPayload.id;
 
-        const nextUrl = `/api/${typeMap}.php`;
+        const nextUrl = rdApi(`api/${typeMap}.php`);
         await fetch(nextUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(nextPayload)
         });
     }
@@ -685,9 +688,10 @@ async function markRenewed(type, id, oldS, oldE) {
         const item = arr.find(x => x.id == id);
 
         // 1. Update current record to PAID
-        await fetch(`/api/${type === 'backup' ? 'backups' : type}.php?id=${id}`, {
+        await fetch(rdApi(`api/${type === 'backup' ? 'backups' : type}.php?id=${id}`), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
         });
 
@@ -727,9 +731,10 @@ async function markRenewed(type, id, oldS, oldE) {
         delete nextPayload.id;
         delete nextPayload.project_name;
 
-        await fetch(`/api/${type === 'backup' ? 'backups' : type}.php`, {
+        await fetch(rdApi(`api/${type === 'backup' ? 'backups' : type}.php`), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(nextPayload)
         });
         
@@ -764,7 +769,7 @@ async function delEntity(type, id) {
     });
 
     if (result.isConfirmed) {
-        await fetch(`/api/${type}.php?id=${id}`, { method: 'DELETE' });
+        await fetch(rdApi(`api/${type}.php?id=${id}`), { method: 'DELETE', credentials: 'same-origin' });
         
         Swal.fire({
             title: 'Deleted!',
@@ -781,7 +786,7 @@ async function delEntity(type, id) {
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 

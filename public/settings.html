@@ -188,10 +188,11 @@
         </div>
     </main>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 async function loadSettings() {
     try {
-        const res = await fetch('/api/settings.php');
+        const res = await fetch(rdApi('api/settings.php'), { credentials: 'same-origin' });
         if (res.status === 401) window.location.href = 'login.html';
         const json = await res.json();
         
@@ -215,9 +216,10 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     inputs.forEach(input => { payload[input.getAttribute('data-key')] = input.value; });
 
     try {
-        const res = await fetch('/api/settings.php', {
+        const res = await fetch(rdApi('api/settings.php'), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(payload)
         });
         
@@ -251,7 +253,7 @@ document.getElementById('testEmailBtn').addEventListener('click', async () => {
     btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Sending...';
     
     try {
-        const res = await fetch('/api/test_email.php', { method: 'POST' });
+        const res = await fetch(rdApi('api/test_email.php'), { method: 'POST', credentials: 'same-origin' });
         const json = await res.json();
         
         alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all';
@@ -274,7 +276,7 @@ document.getElementById('testEmailBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 

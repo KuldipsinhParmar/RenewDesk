@@ -141,12 +141,13 @@
         </div>
     </main>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 let logsData = [];
 
 async function loadLogs() {
     try {
-        const res = await fetch('/api/logs.php');
+        const res = await fetch(rdApi('api/logs.php'), { credentials: 'same-origin' });
         if (res.status === 401) window.location.href = 'login.html';
         const json = await res.json();
         logsData = json.data || [];
@@ -211,7 +212,7 @@ document.getElementById('searchLogs').addEventListener('input', (e) => {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 

@@ -1,0 +1,8 @@
+# Document root should be this `public` folder.
+# Avoid +FollowSymLinks here — many shared hosts forbid it and return 403 for the whole site.
+
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+DirectoryIndex index.html index.php

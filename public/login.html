@@ -91,6 +91,7 @@
         
     </div>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -106,12 +107,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
 
     try {
-        const res = await fetch('/api/auth/login.php', {
+        const res = await fetch(rdApi('api/auth/login.php'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({ email, password })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            alertBox.innerHTML = `<span class="material-symbols-outlined text-[18px]">error</span> Server returned HTTP ${res.status} with a non-JSON response. Check that PHP is enabled and the site root is the <code class="text-xs">public</code> folder.`;
+            alertBox.classList.remove('hidden');
+            btn.disabled = false;
+            btn.innerHTML = originalContent;
+            return;
+        }
 
         if (data.status === 'success') {
             btn.classList.remove('bg-primary');

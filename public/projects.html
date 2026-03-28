@@ -164,13 +164,14 @@
     </div>
 </div>
 
+<script src="assets/js/rd-api.js"></script>
 <script>
 let projectsData = [];
 let currentEditProjectId = null;
 
 async function loadProjects() {
     try {
-        const res = await fetch('/api/projects.php');
+        const res = await fetch(rdApi('api/projects.php'), { credentials: 'same-origin' });
         if (res.status === 401) window.location.href = 'login.html';
         const data = await res.json();
         projectsData = data.data;
@@ -258,7 +259,7 @@ async function saveProject() {
     
     if(!name) return alert("Project Name is required");
 
-    let url = '/api/projects.php';
+    let url = rdApi('api/projects.php');
     let method = 'POST';
     if(currentEditProjectId) {
         url += `?id=${currentEditProjectId}`;
@@ -268,6 +269,7 @@ async function saveProject() {
     await fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ name, description: desc })
     });
     
@@ -277,13 +279,13 @@ async function saveProject() {
 
 async function deleteProject(id) {
     if(confirm("Are you sure you want to delete this project? ALL related domains & hosting will be removed permanently!")) {
-        await fetch(`/api/projects.php?id=${id}`, { method: 'DELETE' });
+        await fetch(rdApi(`api/projects.php?id=${id}`), { method: 'DELETE', credentials: 'same-origin' });
         loadProjects();
     }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout.php', { method: 'POST' });
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
 
