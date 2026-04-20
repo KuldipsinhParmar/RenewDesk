@@ -106,65 +106,26 @@
             <div class="max-w-4xl mx-auto">
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Configuration</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1">Configure email servers and reminder schedules.</p>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Configure reminder schedules. Alerts are sent directly to <strong class="text-slate-700 dark:text-slate-200">kuldipparmar18@gmail.com</strong>.</p>
                 </div>
 
                 <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all"></div>
 
                 <form id="settingsForm">
-                    <!-- SMTP Settings -->
-                    <div class="glass-card rounded-2xl p-8 mb-6">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-2xl">mail</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">SMTP Configuration</h3>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-primary/5 rounded-2xl border border-primary/10">
-                            <div class="col-span-1 md:col-span-2 lg:col-span-1">
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Host</label>
-                                <input type="text" data-key="smtp_host" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="smtp.gmail.com">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Port</label>
-                                <input type="text" data-key="smtp_port" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="587">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Username</label>
-                                <input type="text" data-key="smtp_user" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="email@address.com">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">SMTP Password</label>
-                                <input type="password" data-key="smtp_pass" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="••••••••">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">From Email</label>
-                                <input type="email" data-key="smtp_from_email" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="noreply@renewdesk.app">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">From Name</label>
-                                <input type="text" data-key="smtp_from_name" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="RenewDesk System">
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Alert Preferences -->
                     <div class="glass-card rounded-2xl p-8 mb-8">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                                 <span class="material-symbols-outlined text-2xl">notifications_active</span>
                             </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Alert Preferences</h3>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Alert Preferences</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Reminders are sent to <span class="font-semibold text-slate-700 dark:text-slate-300">kuldipparmar18@gmail.com</span></p>
+                            </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-amber-500/5 rounded-2xl border border-amber-500/10">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Admin Notify Email</label>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">The email address that will receive the reminder logs.</p>
-                                <input type="email" data-key="admin_notify_email" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 dark:text-white transition-colors outline-none shadow-sm">
-                            </div>
-                            <div>
+                        <div class="p-6 bg-amber-500/5 rounded-2xl border border-amber-500/10">
+                            <div class="max-w-md">
                                 <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Reminder Thresholds</label>
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">Days before expiry to send alert (comma separated).</p>
                                 <input type="text" data-key="remind_days" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="30,15,7,1">
@@ -174,7 +135,7 @@
 
                     <div class="flex justify-end gap-4">
                         <button type="button" id="testEmailBtn" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-6 py-3 rounded-xl font-bold text-sm shadow-sm hover:bg-emerald-500/20 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">send</span> Test Email
+                            <span class="material-symbols-outlined text-[18px]">send</span> Send Test Email
                         </button>
                         <button type="submit" id="saveBtn" class="flex items-center gap-2 bg-primary px-8 py-3 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
                             <span class="material-symbols-outlined text-[18px]">save</span> Save Configuration
