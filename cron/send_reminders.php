@@ -220,10 +220,7 @@ function processAsset($type, $db, $adminEmail, $remindDaysArr, $query, $projectN
             $subject = "🚨 RenewDesk: $type Expiry Alert — {$item[$assetNameCol]} ($daysLeft days left)";
             $success = sendAlertEmail($adminEmail, $subject, $htmlBody);
             
-            // Log it
-            $logMsg = "Project: {$item[$projectNameCol]} | Item: {$item[$assetNameCol]} ({$type}) | Expires: {$item[$dateCol]} (in $daysLeft days) | Price: {$item[$priceCol]}";
-            $logStmt = $db->prepare("INSERT INTO reminder_logs (project_id, type, sent_to, subject, message, success) VALUES (?, ?, ?, ?, ?, ?)");
-            $logStmt->execute([$item['project_id'] ?? null, strtolower($type), $adminEmail, $subject, $logMsg, $success ? 1 : 0]);
+            
             
             echo "Sent summary for $type: {$item[$assetNameCol]}\n";
         }

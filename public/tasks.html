@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Task Tracker - RenewDesk Executive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0e17",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+        .date-group-header {
+            background: linear-gradient(135deg, rgba(43, 108, 238, 0.08) 0%, rgba(139, 92, 246, 0.06) 100%);
+            border-left: 3px solid #2b6cee;
+        }
+        .task-row:hover .task-actions { opacity: 1; }
+        .task-row .task-actions { opacity: 0.3; transition: opacity 0.2s; }
+        .hours-badge {
+            background: linear-gradient(135deg, #2b6cee 0%, #8b5cf6 100%);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-in { animation: slideIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col">
+
+<!-- Top Navigation -->
+<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
+    <div class="flex items-center gap-8 h-full">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
+                <span class="material-symbols-outlined text-[18px]">autorenew</span>
+            </div>
+            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 leading-none">RenewDesk</h1>
+        </div>
+
+        <!-- Links -->
+        <div class="hidden lg:flex items-center h-full gap-2">
+            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
+            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
+            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
+            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
+            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
+            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
+            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all bg-primary/10 text-primary border border-primary/20"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
+        </div>
+    </div>
+
+    <!-- Right Side Actions -->
+    <div class="flex items-center gap-3">
+        <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
+        
+        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+        
+        <div class="hidden sm:flex items-center gap-2 mr-2">
+            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
+            <div class="text-left">
+                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
+            </div>
+        </div>
+        
+        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
+    </div>
+</nav>
+
+    
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
+        <!-- Header -->
+        <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+            <div>
+                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Task Tracker</h2>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold mt-0.5">Date-wise work log across all projects</p>
+            </div>
+            <div class="flex items-center gap-4">
+                
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="glass-card rounded-2xl p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">checklist</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="statTotalTasks">0</p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Total Tasks</p>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-600 dark:text-violet-400">
+                        <span class="material-symbols-outlined text-2xl">schedule</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="statTotalHours">0</p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Total Hours</p>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <span class="material-symbols-outlined text-2xl">today</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="statTodayHours">0</p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Today's Hours</p>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                        <span class="material-symbols-outlined text-2xl">folder</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="statProjects">0</p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Active Projects</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Add Button -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="relative w-72">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input id="searchTasks" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all" placeholder="Search tasks..." type="text"/>
+                    </div>
+                    <select id="filterProject" class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all">
+                        <option value="">All Projects</option>
+                    </select>
+                    <input type="date" id="filterDate" class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all" />
+                </div>
+                <button onclick="showAddTaskModal()" class="flex items-center gap-2 bg-primary px-5 py-2.5 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform whitespace-nowrap">
+                    <span class="material-symbols-outlined text-lg">add</span>
+                    Add Task
+                </button>
+            </div>
+            
+            <!-- Tasks List (Grouped by Date) -->
+            <div id="tasksContainer">
+                <div class="text-center py-20 text-slate-500 dark:text-slate-400">
+                    <span class="material-symbols-outlined text-5xl block mb-3 text-slate-300 dark:text-slate-600">task_alt</span>
+                    <p class="font-semibold">Loading tasks...</p>
+                </div>
+            </div>
+
+            <!-- Footer area with decorative glow -->
+            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
+        </div>
+    </main>
+</div>
+
+<!-- Add/Edit Task Modal -->
+<div id="taskModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
+    <div class="bg-white dark:bg-[#131b2c] w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0a0e17]">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="taskModalTitle">Add New Task</h3>
+            <button onclick="hideTaskModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6">
+            <form id="taskForm">
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Project <span class="text-red-500">*</span></label>
+                    <select id="t_project_id" class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none" required>
+                        <option value="">Select Project</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="t_task_date" class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Hours Worked <span class="text-red-500">*</span></label>
+                        <input type="number" step="0.5" min="0" max="24" id="t_hours" class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none" placeholder="e.g. 2.5" required>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Task Title <span class="text-red-500">*</span></label>
+                    <input type="text" id="t_task_title" class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none" placeholder="e.g. Homepage redesign, API integration..." required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Notes <span class="text-slate-400">(optional)</span></label>
+                    <textarea id="t_notes" rows="3" class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none" placeholder="Any additional details..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0e17] flex justify-end gap-3">
+            <button onclick="hideTaskModal()" class="px-5 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+            <button onclick="saveTask()" id="saveTaskBtn" class="bg-primary px-6 py-2.5 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Add Task</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script>
+let allTasks = [];
+let allProjects = [];
+let currentEditTaskId = null;
+
+// Load projects for the dropdown
+async function loadProjects() {
+    try {
+        const res = await fetch(rdApi('api/projects.php'), { credentials: 'same-origin' });
+        if (res.status === 401) window.location.href = 'login.html';
+        const data = await res.json();
+        allProjects = data.data;
+        
+        const filterSelect = document.getElementById('filterProject');
+        const formSelect = document.getElementById('t_project_id');
+        
+        allProjects.forEach(p => {
+            filterSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+            formSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+        });
+    } catch(e) {
+        console.error("Failed to load projects", e);
+    }
+}
+
+// Load all tasks
+async function loadTasks() {
+    try {
+        const res = await fetch(rdApi('api/tasks.php'), { credentials: 'same-origin' });
+        if (res.status === 401) window.location.href = 'login.html';
+        const data = await res.json();
+        allTasks = data.data;
+        applyFiltersAndRender();
+    } catch(e) {
+        console.error("Failed to load tasks", e);
+    }
+}
+
+function applyFiltersAndRender() {
+    let filtered = [...allTasks];
+    
+    const search = document.getElementById('searchTasks').value.toLowerCase();
+    const projFilter = document.getElementById('filterProject').value;
+    const dateFilter = document.getElementById('filterDate').value;
+    
+    if (search) {
+        filtered = filtered.filter(t => 
+            t.task_title.toLowerCase().includes(search) || 
+            (t.project_name && t.project_name.toLowerCase().includes(search)) ||
+            (t.notes && t.notes.toLowerCase().includes(search))
+        );
+    }
+    if (projFilter) {
+        filtered = filtered.filter(t => t.project_id == projFilter);
+    }
+    if (dateFilter) {
+        filtered = filtered.filter(t => t.task_date === dateFilter);
+    }
+    
+    renderTasks(filtered);
+    updateStats(filtered);
+}
+
+function updateStats(tasks) {
+    document.getElementById('statTotalTasks').textContent = tasks.length;
+    
+    const totalHours = tasks.reduce((sum, t) => sum + parseFloat(t.hours || 0), 0);
+    document.getElementById('statTotalHours').textContent = totalHours.toFixed(1);
+    
+    const today = new Date().toISOString().split('T')[0];
+    const todayHours = tasks.filter(t => t.task_date === today).reduce((sum, t) => sum + parseFloat(t.hours || 0), 0);
+    document.getElementById('statTodayHours').textContent = todayHours.toFixed(1);
+    
+    const uniqueProjects = new Set(tasks.map(t => t.project_id));
+    document.getElementById('statProjects').textContent = uniqueProjects.size;
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    let dt = new Date(d + 'T00:00:00');
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${days[dt.getDay()]}, ${dt.getDate()} ${months[dt.getMonth()]} ${dt.getFullYear()}`;
+}
+
+function formatDateShort(d) {
+    if (!d) return '-';
+    let dt = new Date(d + 'T00:00:00');
+    return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+}
+
+function isToday(d) {
+    return d === new Date().toISOString().split('T')[0];
+}
+
+function renderTasks(tasks) {
+    const container = document.getElementById('tasksContainer');
+    
+    if (!tasks || tasks.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-20 text-slate-500 dark:text-slate-400">
+                <span class="material-symbols-outlined text-5xl block mb-3 text-slate-300 dark:text-slate-600">task_alt</span>
+                <p class="font-semibold">No tasks found</p>
+                <p class="text-xs mt-1">Click "Add Task" to log your first work entry</p>
+            </div>`;
+        return;
+    }
+    
+    // Group tasks by date
+    const grouped = {};
+    tasks.forEach(t => {
+        if (!grouped[t.task_date]) grouped[t.task_date] = [];
+        grouped[t.task_date].push(t);
+    });
+    
+    // Sort dates descending
+    const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+    
+    let html = '';
+    sortedDates.forEach((date, idx) => {
+        const dateTasks = grouped[date];
+        const dayTotal = dateTasks.reduce((sum, t) => sum + parseFloat(t.hours || 0), 0);
+        const todayClass = isToday(date) ? 'border-l-emerald-500 bg-gradient-to-r from-emerald-500/5 to-transparent' : '';
+        
+        html += `
+        <div class="mb-6 animate-slide-in" style="animation-delay: ${idx * 50}ms">
+            <!-- Date Header -->
+            <div class="date-group-header ${todayClass} rounded-xl px-5 py-3 flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">${isToday(date) ? 'today' : 'calendar_month'}</span>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">${formatDate(date)}</h3>
+                        ${isToday(date) ? '<span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Today</span>' : ''}
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${dateTasks.length} task${dateTasks.length > 1 ? 's' : ''}</span>
+                    <span class="hours-badge text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">${dayTotal.toFixed(1)} hrs</span>
+                </div>
+            </div>
+            
+            <!-- Task Rows -->
+            <div class="glass-card rounded-2xl overflow-hidden">`;
+        
+        dateTasks.forEach((t, tIdx) => {
+            const borderClass = tIdx < dateTasks.length - 1 ? 'border-b border-slate-100 dark:border-slate-800/50' : '';
+            html += `
+                <div class="task-row flex items-center gap-4 px-5 py-4 ${borderClass} hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <span class="material-symbols-outlined text-lg">task_alt</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(t.task_title)}</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[11px]">
+                            <span class="flex items-center gap-1 text-primary font-semibold">
+                                <span class="material-symbols-outlined text-[13px]">folder</span>
+                                ${escapeHtml(t.project_name || 'Unknown')}
+                            </span>
+                            ${t.notes ? `<span class="text-slate-400 dark:text-slate-500 truncate max-w-[200px]">• ${escapeHtml(t.notes)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="text-right mr-2">
+                            <span class="text-lg font-bold text-slate-900 dark:text-white">${parseFloat(t.hours).toFixed(1)}</span>
+                            <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">hours</span>
+                        </div>
+                        <div class="task-actions flex items-center gap-1">
+                            <button onclick='editTask(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-amber-500/10 hover:text-amber-500 transition-all" title="Edit">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
+                            <button onclick="deleteTask(${t.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all" title="Delete">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        
+        html += `</div></div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Modal functions
+function showAddTaskModal() {
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskModalTitle').innerText = 'Add New Task';
+    document.getElementById('saveTaskBtn').innerText = 'Add Task';
+    currentEditTaskId = null;
+    
+    // Default date to today
+    document.getElementById('t_task_date').value = new Date().toISOString().split('T')[0];
+    
+    document.getElementById('taskModal').classList.remove('hidden');
+}
+
+function editTask(task) {
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskModalTitle').innerText = 'Edit Task';
+    document.getElementById('saveTaskBtn').innerText = 'Save Changes';
+    currentEditTaskId = task.id;
+    
+    document.getElementById('t_project_id').value = task.project_id;
+    document.getElementById('t_task_date').value = task.task_date;
+    document.getElementById('t_task_title').value = task.task_title;
+    document.getElementById('t_hours').value = task.hours;
+    document.getElementById('t_notes').value = task.notes || '';
+    
+    document.getElementById('taskModal').classList.remove('hidden');
+}
+
+function hideTaskModal() {
+    document.getElementById('taskModal').classList.add('hidden');
+}
+
+async function saveTask() {
+    const form = document.getElementById('taskForm');
+    if (!form.reportValidity()) return;
+    
+    const payload = {
+        project_id: document.getElementById('t_project_id').value,
+        task_date: document.getElementById('t_task_date').value,
+        task_title: document.getElementById('t_task_title').value,
+        hours: document.getElementById('t_hours').value,
+        notes: document.getElementById('t_notes').value
+    };
+    
+    const btn = document.getElementById('saveTaskBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Saving...';
+    
+    let url = rdApi('api/tasks.php');
+    let method = 'POST';
+    if (currentEditTaskId) {
+        url += `?id=${currentEditTaskId}`;
+        method = 'PUT';
+    }
+    
+    try {
+        await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+        });
+        
+        hideTaskModal();
+        loadTasks();
+        
+        Swal.fire({
+            title: currentEditTaskId ? 'Updated!' : 'Added!',
+            text: `Task ${currentEditTaskId ? 'updated' : 'added'} successfully.`,
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+        });
+    } catch(e) {
+        console.error("Failed to save task", e);
+        Swal.fire('Error', 'Failed to save task.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = currentEditTaskId ? 'Save Changes' : 'Add Task';
+    }
+}
+
+async function deleteTask(id) {
+    const result = await Swal.fire({
+        title: 'Delete this task?',
+        text: "This action cannot be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f43f5e',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Yes, delete it!',
+        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+    });
+    
+    if (result.isConfirmed) {
+        await fetch(rdApi(`api/tasks.php?id=${id}`), { method: 'DELETE', credentials: 'same-origin' });
+        
+        Swal.fire({
+            title: 'Deleted!',
+            text: 'Task has been removed.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+        });
+        
+        loadTasks();
+    }
+}
+
+// Filter listeners
+document.getElementById('searchTasks').addEventListener('input', () => applyFiltersAndRender());
+document.getElementById('filterProject').addEventListener('change', () => applyFiltersAndRender());
+document.getElementById('filterDate').addEventListener('change', () => applyFiltersAndRender());
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
+    window.location.href = 'login.html';
+});
+
+// Initialize
+loadProjects().then(() => loadTasks());
+</script>
+</body>
+</html>

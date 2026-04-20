@@ -66,12 +66,12 @@
             <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
             <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
             <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
+            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
         </div>
     </div>
 
     <!-- Right Side Actions -->
     <div class="flex items-center gap-3">
-        <a href="logs.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Logs"><span class="material-symbols-outlined text-[20px]">history</span></a>
         <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
         
         <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
@@ -237,6 +237,35 @@
                     </div>
                 </div>
 
+                <!-- TASKS -->
+                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col md:col-span-2 xl:col-span-2">
+                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                <span class="material-symbols-outlined text-2xl">task_alt</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Tasks</h3>
+                        </div>
+                        <button onclick="openModal('task')" class="flex items-center gap-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                            <span class="material-symbols-outlined text-sm">add</span> Add Task
+                        </button>
+                    </div>
+                    <div class="p-0 overflow-x-auto flex-1">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/30">
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/5">Date</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/2">Task Title & Notes</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Hours</th>
+                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-32">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-tasks">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer area with decorative glow -->
@@ -375,6 +404,22 @@ async function loadData() {
             </tr>
         `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No backup schedules.</td></tr>`;
 
+        // TASKS
+        document.getElementById('tb-tasks').innerHTML = currentProjectData.tasks.map(i => `
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                <td class="py-4 px-6 text-sm font-bold text-slate-900 dark:text-white">${formatD(i.task_date)}</td>
+                <td class="py-4 px-6">
+                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.task_title}</div>
+                    ${i.notes ? `<div class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">${i.notes}</div>` : ''}
+                </td>
+                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">${parseFloat(i.hours).toFixed(1)}</td>
+                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                    <button onclick="openModal('task', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-blue-500/10 hover:text-blue-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                    <button onclick="delEntity('tasks', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                </td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No tasks added.</td></tr>`;
+
     } catch(e) {
         console.error("Failed to load project details", e);
     }
@@ -405,6 +450,7 @@ function openModal(type, id = null) {
             let arr = type === 'domain' ? currentProjectData.domains : 
                       type === 'hosting' ? currentProjectData.hosting :
                       type === 'maintenance' ? currentProjectData.maintenance :
+                      type === 'task' ? currentProjectData.tasks :
                       currentProjectData.backups;
             item = arr.find(x => x.id == id);
         }
@@ -475,6 +521,15 @@ function openModal(type, id = null) {
                 <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
             </div>
         `;
+    } else if(type === 'task') {
+        formHtml += `
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="${labelClass}" style="mt-0">Date <span class="text-red-500">*</span></label><input type="date" id="f_task_date" class="${inputClass}" required value="${item?.task_date||new Date().toISOString().split('T')[0]}"></div>
+                <div><label class="${labelClass}" style="mt-0">Hours <span class="text-red-500">*</span></label><input type="number" step="0.5" id="f_hours" class="${inputClass}" required value="${item?.hours||'0'}"></div>
+            </div>
+            <div><label class="${labelClass}">Task Title <span class="text-red-500">*</span></label><input type="text" id="f_task_title" class="${inputClass}" required value="${item?.task_title||''}"></div>
+            <div><label class="${labelClass}">Notes</label><textarea id="f_notes" rows="3" class="${inputClass}">${item?.notes||''}</textarea></div>
+        `;
     } else if(type === 'project') {
         formHtml += `
             <div><label class="${labelClass}" style="mt-0">Project Name <span class="text-red-500">*</span></label><input type="text" id="f_project_name" class="${inputClass}" required value="${item?.name||''}"></div>
@@ -498,6 +553,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     let typeMap = currentModalType;
     if(currentModalType === 'backup') typeMap = 'backups';
     if(currentModalType === 'domain') typeMap = 'domains';
+    if(currentModalType === 'task') typeMap = 'tasks';
     
     if (currentModalType === 'domain') {
         payload.domain_name = document.getElementById('f_domain_name').value;
@@ -522,6 +578,11 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.next_backup = document.getElementById('f_next_backup').value;
         payload.storage_location = document.getElementById('f_storage_location').value;
         payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
+    } else if (currentModalType === 'task') {
+        payload.task_date = document.getElementById('f_task_date').value;
+        payload.task_title = document.getElementById('f_task_title').value;
+        payload.hours = document.getElementById('f_hours').value;
+        payload.notes = document.getElementById('f_notes').value;
     } else if (currentModalType === 'project') {
         payload.name = document.getElementById('f_project_name').value;
         payload.description = document.getElementById('f_project_desc').value;

@@ -39,6 +39,11 @@ try {
                 $stmt->execute([$id]);
                 $project['backups'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+                // Fetch tasks
+                $stmt = $db->prepare("SELECT * FROM tasks WHERE project_id = ? ORDER BY task_date DESC, created_at DESC");
+                $stmt->execute([$id]);
+                $project['tasks'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
                 echo json_encode(["status" => "success", "data" => $project]);
             } else {
                 http_response_code(404);
