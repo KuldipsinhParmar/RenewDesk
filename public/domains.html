@@ -4,160 +4,82 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Domains - RenewDesk Executive Dashboard</title>
+    <title>Domains - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2b6cee",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#0a0e17",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
+            theme: { extend: { colors: { "primary": "#0f9d76" }, fontFamily: { "display": ["IBM Plex Sans", "sans-serif"] } } }
         }
     </script>
-    <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-        }
-        .sidebar-item-active {
-            background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
-            border-left: 3px solid #2b6cee;
-        }
-        select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: none !important;
-        }
-        select::-ms-expand {
-            display: none;
-        }
-        .custom-select-container::after {
-            content: 'expand_more';
-            font-family: 'Material Symbols Outlined';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #94a3b8;
-            font-size: 20px;
-        }
-    </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col">
+<body class="rd-body">
+<div class="rd-layout">
 
-<!-- Top Navigation -->
-<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
-    <div class="flex items-center gap-8 h-full">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
-                <span class="material-symbols-outlined text-[18px]">autorenew</span>
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar">
+        <div class="rd-sidebar-logo">
+            <div class="rd-logo-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+            <span class="rd-logo-text">RenewDesk</span>
+        </div>
+        <div class="rd-nav-label">Workspace</div>
+        <nav class="rd-nav">
+            <a href="dashboard.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+            <a href="projects.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a>
+        </nav>
+        <div class="rd-nav-label">Assets</div>
+        <nav class="rd-nav">
+            <a href="domains.html" class="rd-nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>Domains</a>
+            <a href="hosting.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>Hosting</a>
+            <a href="maintenance.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>Maintenance</a>
+            <a href="backups.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>Backups</a>
+            <a href="tasks.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>Tasks</a>
+        </nav>
+        <div class="rd-sidebar-footer">
+            <div class="rd-user-row">
+                <div class="rd-user-avatar">AD</div>
+                <div class="rd-user-info"><div class="rd-user-name">Admin</div><div class="rd-user-role">IT Manager</div></div>
+                <button id="logoutBtn" class="rd-logout-btn" title="Sign out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
             </div>
-            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 leading-none">RenewDesk</h1>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header">
+            <div><h1 class="rd-page-title">All Domains</h1><p class="rd-page-subtitle">Manage domain renewals across all projects</p></div>
         </div>
 
-        <!-- Links -->
-        <div class="hidden lg:flex items-center h-full gap-2">
-            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
-            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
-            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all bg-primary/10 text-primary border border-primary/20"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
-            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
-            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
-            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
-            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
+        <div class="rd-toolbar">
+            <div class="rd-search-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                <input id="searchData" class="rd-search-input" placeholder="Search domains…" type="text"/>
+            </div>
+            <select id="yearFilter" class="rd-filter-select"><option value="">All Years</option></select>
+        </div>
+
+        <div class="rd-card">
+            <table class="w-full border-collapse">
+                <thead><tr>
+                    <th class="text-left py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Domain & Registrar</th>
+                    <th class="text-left py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
+                    <th class="text-left py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Renewal Date</th>
+                    <th class="text-right py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Price</th>
+                    <th class="text-center py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th class="text-right py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                </tr></thead>
+                <tbody id="dataTable">
+                    <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-3)">Loading domains…</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-3">
-        <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
-        
-        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-        
-        <div class="hidden sm:flex items-center gap-2 mr-2">
-            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
-            <div class="text-left">
-                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
-                <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
-            </div>
-        </div>
-        
-        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
-    </div>
-</nav>
-
-    
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
-        <!-- Header -->
-        <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
-            <div>
-                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">All Domains</h2>
-            </div>
-            <div class="flex items-center gap-4">
-                
-            </div>
-        </header>
-
-        <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="relative flex-1 max-w-md">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                    <input id="searchData" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all" placeholder="Search domains..." type="text"/>
-                </div>
-                <div class="relative w-40 custom-select-container">
-                    <select id="yearFilter" class="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 pr-10 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-slate-200 shadow-sm transition-all outline-none">
-                        <option value="">All Years</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="glass-card rounded-2xl overflow-hidden border-slate-200 dark:border-slate-800">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-slate-100 dark:bg-slate-800/50">
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Domain & Registrar</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Renewal Date</th>
-                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Price</th>
-                            <th class="text-center py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                            <th class="text-right py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-48">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="dataTable">
-                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading domains...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Footer area with decorative glow -->
-            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
-        </div>
-    </main>
+</div>
 
 <script src="assets/js/rd-api.js"></script>
 <script>
@@ -166,172 +88,98 @@ let listData = [];
 async function loadData() {
     try {
         const res = await fetch(rdApi('api/domains.php'), { credentials: 'same-origin' });
-        if (res.status === 401) window.location.href = 'login.html';
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
         const data = await res.json();
         listData = data.data;
         populateYearFilter();
-        
-        // Default to current year if available
         const currentYear = new Date().getFullYear().toString();
         const yearSelect = document.getElementById('yearFilter');
-        if ([...yearSelect.options].some(opt => opt.value === currentYear)) {
-            yearSelect.value = currentYear;
-        }
-        
+        if ([...yearSelect.options].some(opt => opt.value === currentYear)) yearSelect.value = currentYear;
         filterData();
-    } catch(e) {
-        console.error("Failed to load domains", e);
-    }
+    } catch(e) { console.error("Failed to load domains", e); }
 }
 
 function formatD(d) {
-    if (!d) return '-';
+    if (!d) return '—';
     let dt = new Date(d);
     return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
 }
 
+function paidPill(paid) {
+    return paid == 1
+        ? `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--good-soft);color:var(--good);font-size:11.5px;font-weight:700"><span style="width:6px;height:6px;border-radius:50%;background:var(--good)"></span>Paid</span>`
+        : `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--bad-soft);color:var(--bad);font-size:11.5px;font-weight:700"><span style="width:6px;height:6px;border-radius:50%;background:var(--bad)"></span>Due</span>`;
+}
+
+function dateColor(paid, dateStr) {
+    if (paid == 1) return 'var(--good)';
+    return new Date(dateStr) < new Date() ? 'var(--bad)' : 'var(--good)';
+}
+
 function renderData(dataset) {
     const tbody = document.getElementById('dataTable');
-    tbody.innerHTML = '';
-    
     if (dataset.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined text-4xl block mb-2 text-slate-300 dark:text-slate-600">language</span>No domains found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">No domains found.</td></tr>';
         return;
     }
-
-    dataset.forEach(item => {
-        tbody.innerHTML += `
-            <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                <td class="py-4 px-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                            <span class="material-symbols-outlined text-sm">language</span>
-                        </div>
-                        <div>
-                            <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${item.domain_name}</div>
-                            <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${item.registrar || '-'}</div>
-                        </div>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400"><a href="project-details.html?id=${item.project_id}" class="hover:text-primary transition-colors hover:underline font-medium">${item.project_name}</a></td>
-                <td class="py-4 px-6 text-sm font-bold ${item.client_paid == 1 ? 'text-emerald-500' : (new Date(item.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">
-                    ${formatD(item.renewal_date)}
-                </td>
-                <td class="py-4 px-6 text-right font-bold text-slate-900 dark:text-white">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}</td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full ${item.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${item.client_paid == 1 ? 'PAID' : 'PENDING'}"></span>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-right space-x-2">
-                    ${item.client_paid == 1 ? '' : `
-                    <button onclick="markRenewed(${item.id}, '${item.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Renew Done">
-                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                    </button>
-                    `}
-                    <a href="project-details.html?id=${item.project_id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all">
-                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                    </a>
-                </td>
-            </tr>
-        `;
-    });
+    tbody.innerHTML = dataset.map(item => `
+        <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <div style="font-weight:600;font-size:14px;word-break:break-all">${item.domain_name}</div>
+                <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em">${item.registrar || '—'}</div>
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2)">
+                <a href="project-details.html?id=${item.project_id}" style="color:var(--text-2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-2)'">${item.project_name}</a>
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:${dateColor(item.client_paid, item.renewal_date)}">${formatD(item.renewal_date)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right;font-size:13.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">₹${new Intl.NumberFormat('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}).format(item.price)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${paidPill(item.client_paid)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;gap:7px;justify-content:flex-end">
+                    ${item.client_paid == 1 ? '' : `<button onclick="markRenewed(${item.id},'${item.renewal_date}')" class="rd-icon-btn success" title="Mark Renewed"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg></button>`}
+                    <a href="project-details.html?id=${item.project_id}" class="rd-icon-btn" title="Open Project"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
+                </div>
+            </td>
+        </tr>`).join('');
 }
 
 function populateYearFilter() {
     const yearSelect = document.getElementById('yearFilter');
-    const years = [...new Set(listData.map(item => {
-        const d = new Date(item.renewal_date);
-        return d.getFullYear();
-    }))].filter(y => y && !isNaN(y) && y > 2000).sort((a, b) => b - a);
-    
-    yearSelect.innerHTML = '<option value="">All Years</option>';
-    years.forEach(year => {
-        yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
-    });
+    const years = [...new Set(listData.map(i => new Date(i.renewal_date).getFullYear()))].filter(y => y && !isNaN(y) && y > 2000).sort((a,b)=>b-a);
+    yearSelect.innerHTML = '<option value="">All Years</option>' + years.map(y=>`<option value="${y}">${y}</option>`).join('');
 }
 
 function filterData() {
     const term = document.getElementById('searchData').value.toLowerCase();
     const year = document.getElementById('yearFilter').value;
-    
-    const filtered = listData.filter(p => {
+    renderData(listData.filter(p => {
         const matchesTerm = p.domain_name.toLowerCase().includes(term) || (p.project_name && p.project_name.toLowerCase().includes(term));
-        const matchesYear = year === "" || new Date(p.renewal_date).getFullYear().toString() === year;
+        const matchesYear = year === '' || new Date(p.renewal_date).getFullYear().toString() === year;
         return matchesTerm && matchesYear;
-    });
-    renderData(filtered);
+    }));
 }
 
 document.getElementById('searchData').addEventListener('input', filterData);
 document.getElementById('yearFilter').addEventListener('change', filterData);
 
 async function markRenewed(id, oldDate) {
-    const result = await Swal.fire({
-        title: 'Renew Domain?',
-        text: "This will record payment and schedule the next year's renewal.",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#f43f5e',
-        confirmButtonText: 'Yes, Renew it!',
-        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-    });
-
+    const result = await Swal.fire({ title:'Renew Domain?', text:'This will mark as paid and schedule the next year\'s renewal.', icon:'question', showCancelButton:true, confirmButtonColor:'#0f9d76', cancelButtonColor:'#df433f', confirmButtonText:'Yes, Renew!' });
     if (!result.isConfirmed) return;
-    
-    let dt = new Date(oldDate);
-    dt.setFullYear(dt.getFullYear() + 1);
+    let dt = new Date(oldDate); dt.setFullYear(dt.getFullYear()+1);
     const newDate = dt.toISOString().split('T')[0];
-    
     try {
-        const item = listData.find(x => x.id == id);
-        
-        // 1. Update current record to PAID
-        await fetch(rdApi(`api/domains.php?id=${id}`), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
-        });
-
-        // 2. Insert NEW record for the next year
-        const nextPayload = {
-            project_id: item.project_id,
-            domain_name: item.domain_name,
-            registrar: item.registrar,
-            renewal_date: newDate,
-            price: item.price,
-            client_paid: 0,
-            auto_renew: item.auto_renew,
-            status: 'active',
-            notes: item.notes
-        };
-
-        await fetch(rdApi(`api/domains.php`), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify(nextPayload)
-        });
-        
-        Swal.fire({
-            title: 'Processed!',
-            text: 'Domain renewal and payment tracked successfully.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false,
-            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-        });
-        
+        const item = listData.find(x=>x.id==id);
+        await fetch(rdApi(`api/domains.php?id=${id}`), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({...item,client_paid:1,status:'renewed'}) });
+        await fetch(rdApi('api/domains.php'), { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({project_id:item.project_id,domain_name:item.domain_name,registrar:item.registrar,renewal_date:newDate,price:item.price,client_paid:0,auto_renew:item.auto_renew,status:'active',notes:item.notes}) });
+        Swal.fire({ title:'Done!', text:'Domain renewed.', icon:'success', timer:1800, showConfirmButton:false });
         loadData();
-    } catch(e) {
-        console.error("Failed to renew", e);
-        Swal.fire('Error', 'Failed to process domain renewal.', 'error');
-    }
+    } catch(e) { Swal.fire('Error','Failed to renew domain.','error'); }
 }
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch(rdApi('api/auth/logout.php'), { method:'POST', credentials:'same-origin' });
+    window.location.href = 'login.html';
+});
 
 loadData();
 </script>

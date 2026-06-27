@@ -99,7 +99,7 @@ public/storage/
 storage/app/public/
 
 # ─── DevTracker (local tool) ─────────────────────────────────
-.devtracker/
+.devCodeTracker/
 
 # ─── Misc ────────────────────────────────────────────────────
 *.zip

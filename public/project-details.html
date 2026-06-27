@@ -4,291 +4,203 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Project Details - RenewDesk Executive Dashboard</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <title>Project Details - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2b6cee",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#0a0e17",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-        }
-        .sidebar-item-active {
-            background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
-            border-left: 3px solid #2b6cee;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/v2.css">
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col">
+<body class="rd-body">
+<div class="rd-layout">
 
-<!-- Top Navigation -->
-<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
-    <div class="flex items-center gap-8 h-full">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
-                <span class="material-symbols-outlined text-[18px]">autorenew</span>
-            </div>
-            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 leading-none">RenewDesk</h1>
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar">
+        <div class="rd-sidebar-logo">
+            <div class="rd-logo-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+            <span class="rd-logo-text">RenewDesk</span>
         </div>
-
-        <!-- Links -->
-        <div class="hidden lg:flex items-center h-full gap-2">
-            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
-            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all bg-primary/10 text-primary border border-primary/20"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
-            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
-            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
-            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
-            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
-            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
-        </div>
-    </div>
-
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-3">
-        <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
-        
-        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-        
-        <div class="hidden sm:flex items-center gap-2 mr-2">
-            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
-            <div class="text-left">
-                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
-                <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
+        <div class="rd-nav-label">Workspace</div>
+        <nav class="rd-nav">
+            <a href="dashboard.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+            <a href="projects.html" class="rd-nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a>
+        </nav>
+        <div class="rd-nav-label">Assets</div>
+        <nav class="rd-nav">
+            <a href="domains.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>Domains</a>
+            <a href="hosting.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>Hosting</a>
+            <a href="maintenance.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>Maintenance</a>
+            <a href="backups.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>Backups</a>
+            <a href="tasks.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>Tasks</a>
+        </nav>
+        <div class="rd-sidebar-footer">
+            <div class="rd-user-row">
+                <div class="rd-user-avatar">AD</div>
+                <div class="rd-user-info"><div class="rd-user-name">Admin</div><div class="rd-user-role">IT Manager</div></div>
+                <button id="logoutBtn" class="rd-logout-btn" title="Sign out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
             </div>
         </div>
-        
-        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
-    </div>
-</nav>
+    </aside>
 
-    
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
-        <!-- Header -->
-        <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
-            <div class="flex items-center gap-4">
-                <a href="projects.html" class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined">arrow_back</span>
+    <!-- MAIN -->
+    <div class="rd-main">
+        <!-- Page header with back button -->
+        <div class="rd-page-header" style="align-items:center">
+            <div style="display:flex;align-items:center;gap:14px">
+                <a href="projects.html" style="width:38px;height:38px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);text-decoration:none;flex-shrink:0" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-2)'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 </a>
                 <div>
-                    <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                        <span id="projTitle">Loading...</span>
-                        <button onclick="openModal('project', pId)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-colors" title="Edit Project">
-                            <span class="material-symbols-outlined text-[16px]">edit</span>
-                        </button>
-                    </h2>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold" id="projDesc">Loading details</p>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <h1 class="rd-page-title" id="projTitle" style="margin:0">Loading…</h1>
+                        <button onclick="openModal('project', pId)" class="rd-icon-btn" title="Edit Project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+                    </div>
+                    <p class="rd-page-subtitle" id="projDesc" style="margin:0">Loading details…</p>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-4">
-                
-            </div>
-        </header>
-
-        <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                
-                <!-- DOMAINS -->
-                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col">
-                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-2xl">language</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Domains</h3>
-                        </div>
-                        <button onclick="openModal('domain')" class="flex items-center gap-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                            <span class="material-symbols-outlined text-sm">add</span> Add Domain
-                        </button>
-                    </div>
-                    <div class="p-0 overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Domain & Registrar</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Renewal Date</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-domains">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- HOSTING -->
-                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col">
-                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                                <span class="material-symbols-outlined text-2xl">dns</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hosting</h3>
-                        </div>
-                        <button onclick="openModal('hosting')" class="flex items-center gap-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                            <span class="material-symbols-outlined text-sm">add</span> Add Hosting
-                        </button>
-                    </div>
-                    <div class="p-0 overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Plan & Provider</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Renewal Date</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-hosting">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- MAINTENANCE / AMC -->
-                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col">
-                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                                <span class="material-symbols-outlined text-2xl">engineering</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Maintenance/AMC</h3>
-                        </div>
-                        <button onclick="openModal('maintenance')" class="flex items-center gap-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                            <span class="material-symbols-outlined text-sm">add</span> Add AMC
-                        </button>
-                    </div>
-                    <div class="p-0 overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/3">Maintenance Period</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Price</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-maintenance">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- BACKUPS -->
-                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col">
-                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                                <span class="material-symbols-outlined text-2xl">backup</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Backups</h3>
-                        </div>
-                        <button onclick="openModal('backup')" class="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                            <span class="material-symbols-outlined text-sm">add</span> Add Schedule
-                        </button>
-                    </div>
-                    <div class="p-0 overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/5">Frequency</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Last Backup</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700">Next Backup</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-center">Paid</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-44">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-backups">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TASKS -->
-                <div class="glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col md:col-span-2 xl:col-span-2">
-                    <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-900/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                <span class="material-symbols-outlined text-2xl">task_alt</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Tasks</h3>
-                        </div>
-                        <button onclick="openModal('task')" class="flex items-center gap-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                            <span class="material-symbols-outlined text-sm">add</span> Add Task
-                        </button>
-                    </div>
-                    <div class="p-0 overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 dark:bg-slate-800/30">
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/5">Date</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 w-1/2">Task Title & Notes</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right">Hours</th>
-                                    <th class="py-3 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700 text-right w-32">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50" id="tb-tasks">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Footer area with decorative glow -->
-            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
         </div>
-    </main>
+
+        <!-- 2-column grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+
+            <!-- DOMAINS -->
+            <div class="rd-card" style="overflow:hidden;padding:0">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Domains</h3>
+                    </div>
+                    <button onclick="openModal('domain')" class="rd-btn rd-btn-primary" style="padding:6px 14px;font-size:12.5px;gap:5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Domain</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Domain & Registrar</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Renewal</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Price</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Paid</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-domains"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HOSTING -->
+            <div class="rd-card" style="overflow:hidden;padding:0">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(91,105,230,.13);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Hosting</h3>
+                    </div>
+                    <button onclick="openModal('hosting')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:9px;background:rgba(91,105,230,.13);color:var(--c-blue);font-size:12.5px;font-weight:700;border:none;cursor:pointer" onmouseover="this.style.background='var(--c-blue)';this.style.color='#fff'" onmouseout="this.style.background='rgba(91,105,230,.13)';this.style.color='var(--c-blue)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Hosting</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Plan & Provider</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Renewal</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Price</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Paid</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-hosting"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MAINTENANCE / AMC -->
+            <div class="rd-card" style="overflow:hidden;padding:0">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(224,144,42,.13);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Maintenance / AMC</h3>
+                    </div>
+                    <button onclick="openModal('maintenance')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:9px;background:rgba(224,144,42,.13);color:var(--c-amber);font-size:12.5px;font-weight:700;border:none;cursor:pointer" onmouseover="this.style.background='var(--c-amber)';this.style.color='#fff'" onmouseout="this.style.background='rgba(224,144,42,.13)';this.style.color='var(--c-amber)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add AMC</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Period</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Price</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Paid</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-maintenance"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- BACKUPS -->
+            <div class="rd-card" style="overflow:hidden;padding:0">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:var(--good-soft);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--good)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Backups</h3>
+                    </div>
+                    <button onclick="openModal('backup')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:9px;background:var(--good-soft);color:var(--good);font-size:12.5px;font-weight:700;border:none;cursor:pointer" onmouseover="this.style.background='var(--good)';this.style.color='#fff'" onmouseout="this.style.background='var(--good-soft)';this.style.color='var(--good)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Schedule</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Freq</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last Backup</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Backup</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Paid</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-backups"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TASKS (full width) -->
+            <div class="rd-card" style="overflow:hidden;padding:0;grid-column:1/-1">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(91,105,230,.13);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Recent Tasks</h3>
+                    </div>
+                    <button onclick="openModal('task')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:9px;background:rgba(91,105,230,.13);color:var(--c-blue);font-size:12.5px;font-weight:700;border:none;cursor:pointer" onmouseover="this.style.background='var(--c-blue)';this.style.color='#fff'" onmouseout="this.style.background='rgba(91,105,230,.13)';this.style.color='var(--c-blue)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Task</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Date</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Task Title & Notes</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Hours</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-tasks"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /grid -->
+    </div>
 </div>
 
-<!-- Dynamic Modal -->
-<div id="entityModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
-    <div class="bg-white dark:bg-[#131b2c] w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
-        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0a0e17]">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="modalTitle">Manage Entry</h3>
-            <button onclick="hideModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+<!-- Dynamic Entity Modal -->
+<div id="entityModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(20,22,18,.35);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+    <div class="rd-modal" style="width:100%;max-width:500px">
+        <div class="rd-modal-header">
+            <h3 class="rd-modal-title" id="modalTitle">Manage Entry</h3>
+            <button onclick="hideModal()" class="rd-icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
         </div>
-        <div class="p-6" id="modalBody">
-            <!-- Form injected here -->
-        </div>
-        <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0a0e17] flex justify-end gap-3">
-            <button onclick="hideModal()" class="px-5 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Close</button>
-            <button id="saveEntityBtn" class="bg-primary px-6 py-2.5 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Save</button>
+        <div class="rd-modal-body" id="modalBody"></div>
+        <div class="rd-modal-footer">
+            <button onclick="hideModal()" class="rd-btn">Close</button>
+            <button id="saveEntityBtn" class="rd-btn rd-btn-primary">Save</button>
         </div>
     </div>
 </div>
@@ -302,259 +214,228 @@ let currentProjectData = {};
 let currentModalType = '';
 let currentEditId = null;
 
+function formatD(d) {
+    if (!d) return '—';
+    let dt = new Date(d);
+    return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
+}
+
+function paidDot(paid) {
+    const c = paid == 1 ? 'var(--good)' : 'var(--bad)';
+    return `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c}" title="${paid==1?'Paid':'Pending'}"></span>`;
+}
+
+function actBtns(type, id, extraBtns) {
+    return `<div style="display:flex;gap:6px;justify-content:flex-end">${extraBtns}<button onclick="openModal('${type}',${id})" class="rd-icon-btn" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button onclick="delEntity('${type==='domain'?'domains':type==='backup'?'backups':type}',${id})" class="rd-icon-btn danger" title="Delete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`;
+}
+
+function renewBtn(type, id, arg1, arg2) {
+    const args = arg2 ? `'${type}',${id},'${arg1}','${arg2}'` : `'${type}',${id},'${arg1}'`;
+    return `<button onclick="markRenewed(${args})" class="rd-icon-btn success" title="Renew"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg></button>`;
+}
+
+function dateColor(paid, dateStr) {
+    return paid == 1 ? 'var(--good)' : (new Date(dateStr) < new Date() ? 'var(--bad)' : 'var(--good)');
+}
+
+function price(v) {
+    return `₹${new Intl.NumberFormat('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v)}`;
+}
+
+const tdRow = 'padding:11px 16px;border-bottom:1px solid var(--border)';
+const emptyRow = (cols, msg) => `<tr><td colspan="${cols}" style="${tdRow};text-align:center;color:var(--text-3);font-size:13px">${msg}</td></tr>`;
+
 async function loadData() {
     try {
         const res = await fetch(rdApi(`api/projects.php?id=${pId}`), { credentials: 'same-origin' });
-        if (res.status === 401) window.location.href = 'login.html';
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
         const json = await res.json();
         currentProjectData = json.data;
 
         document.getElementById('projTitle').innerText = currentProjectData.name;
         document.getElementById('projDesc').innerText = currentProjectData.description || 'No description provided.';
 
-        function formatD(d) { 
-            if (!d) return '-';
-            let dt = new Date(d);
-            return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-        }
-
         // DOMAINS
-        document.getElementById('tb-domains').innerHTML = currentProjectData.domains.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6">
-                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.domain_name}</div>
-                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.registrar || '-'}</div>
-                </td>
-                <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
-                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('domains', ${i.id}, '${i.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
-                    <button onclick="openModal('domain', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('domains', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-500/10 hover:text-rose-500 transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">delete</span></button>
-                </td>
-            </tr>
-        `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No domains added.</td></tr>`;
+        document.getElementById('tb-domains').innerHTML = currentProjectData.domains.length
+            ? currentProjectData.domains.map(i => `
+                <tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow}">
+                        <div style="font-weight:600;font-size:13.5px">${i.domain_name}</div>
+                        <div style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em">${i.registrar||'—'}</div>
+                    </td>
+                    <td style="${tdRow};text-align:center;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${dateColor(i.client_paid,i.renewal_date)}">${formatD(i.renewal_date)}</td>
+                    <td style="${tdRow};text-align:right;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">${price(i.price)}</td>
+                    <td style="${tdRow};text-align:center">${paidDot(i.client_paid)}</td>
+                    <td style="${tdRow}">${actBtns('domain',i.id,i.client_paid==1?'':renewBtn('domains',i.id,i.renewal_date))}</td>
+                </tr>`).join('')
+            : emptyRow(5, 'No domains added.');
 
         // HOSTING
-        document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6">
-                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.plan_name}</div>
-                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">${i.provider || '-'}</div>
-                </td>
-                <td class="py-4 px-6 text-sm font-bold text-center ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.renewal_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.renewal_date)}</td>
-                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('hosting', ${i.id}, '${i.renewal_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
-                    <button onclick="openModal('hosting', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('hosting', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all shadow-sm"><span class="material-symbols-outlined text-[16px]">delete</span></button>
-                </td>
-            </tr>
-        `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No hosting plans added.</td></tr>`;
+        document.getElementById('tb-hosting').innerHTML = currentProjectData.hosting.length
+            ? currentProjectData.hosting.map(i => `
+                <tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow}">
+                        <div style="font-weight:600;font-size:13.5px">${i.plan_name}</div>
+                        <div style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em">${i.provider||'—'}</div>
+                    </td>
+                    <td style="${tdRow};text-align:center;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${dateColor(i.client_paid,i.renewal_date)}">${formatD(i.renewal_date)}</td>
+                    <td style="${tdRow};text-align:right;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">${price(i.price)}</td>
+                    <td style="${tdRow};text-align:center">${paidDot(i.client_paid)}</td>
+                    <td style="${tdRow}">${actBtns('hosting',i.id,i.client_paid==1?'':renewBtn('hosting',i.id,i.renewal_date))}</td>
+                </tr>`).join('')
+            : emptyRow(5, 'No hosting plans added.');
 
-        // AMC
-        document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6">
-                    <div class="font-bold text-sm ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.end_date) < new Date() ? 'text-rose-500' : 'text-emerald-500')} leading-tight">Ends: ${formatD(i.end_date)}</div>
-                    <div class="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mt-0.5">Starts: ${formatD(i.start_date)}</div>
-                </td>
-                <td class="py-4 px-6 text-sm font-bold text-right"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-300">₹${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(i.price)}</span></td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('maintenance', ${i.id}, '${i.start_date}', '${i.end_date}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Quick Renew"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
-                    <button onclick="openModal('maintenance', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-amber-500/10 hover:text-amber-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('maintenance', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
-                </td>
-            </tr>
-        `).join('') || `<tr><td colspan="4" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No maintenance contracts.</td></tr>`;
+        // MAINTENANCE
+        document.getElementById('tb-maintenance').innerHTML = currentProjectData.maintenance.length
+            ? currentProjectData.maintenance.map(i => {
+                const endC = i.client_paid==1?'var(--good)':(new Date(i.end_date)<new Date()?'var(--bad)':'var(--good)');
+                return `<tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow}">
+                        <div style="font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${endC}">Ends: ${formatD(i.end_date)}</div>
+                        <div style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em">Starts: ${formatD(i.start_date)}</div>
+                    </td>
+                    <td style="${tdRow};text-align:right;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">${price(i.price)}</td>
+                    <td style="${tdRow};text-align:center">${paidDot(i.client_paid)}</td>
+                    <td style="${tdRow}">${actBtns('maintenance',i.id,i.client_paid==1?'':renewBtn('maintenance',i.id,i.start_date,i.end_date))}</td>
+                </tr>`;}).join('')
+            : emptyRow(4, 'No maintenance contracts.');
 
         // BACKUPS
-        document.getElementById('tb-backups').innerHTML = currentProjectData.backups.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6">
-                    <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 uppercase tracking-wider">${i.frequency}</span>
-                </td>
-                <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-500">${formatD(i.last_backup)}</td>
-                <td class="py-4 px-6 text-sm font-bold ${i.client_paid == 1 ? 'text-emerald-500' : (new Date(i.next_backup) < new Date() ? 'text-rose-500' : 'text-emerald-500')}">${formatD(i.next_backup)}</td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full ${i.client_paid == 1 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}" title="${i.client_paid == 1 ? 'Paid' : 'Pending'}"></span>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    ${i.client_paid == 1 ? '' : `<button onclick="markRenewed('backup', ${i.id}, '${i.next_backup}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="Mark Done"><span class="material-symbols-outlined text-[16px]">check_circle</span></button>`}
-                    <button onclick="openModal('backup', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('backups', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
-                </td>
-            </tr>
-        `).join('') || `<tr><td colspan="5" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No backup schedules.</td></tr>`;
+        document.getElementById('tb-backups').innerHTML = currentProjectData.backups.length
+            ? currentProjectData.backups.map(i => {
+                const nextC = i.client_paid==1?'var(--good)':(new Date(i.next_backup)<new Date()?'var(--bad)':'var(--good)');
+                return `<tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow}"><span style="display:inline-block;padding:2px 9px;border-radius:999px;background:var(--surface-3);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-2)">${i.frequency}</span></td>
+                    <td style="${tdRow};font-size:12.5px;font-family:'IBM Plex Mono',monospace;color:var(--text-2)">${formatD(i.last_backup)}</td>
+                    <td style="${tdRow};font-size:12.5px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:${nextC}">${formatD(i.next_backup)}</td>
+                    <td style="${tdRow};text-align:center">${paidDot(i.client_paid)}</td>
+                    <td style="${tdRow}">${actBtns('backup',i.id,i.client_paid==1?'':renewBtn('backup',i.id,i.next_backup))}</td>
+                </tr>`;}).join('')
+            : emptyRow(5, 'No backup schedules.');
 
         // TASKS
-        document.getElementById('tb-tasks').innerHTML = currentProjectData.tasks.map(i => `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                <td class="py-4 px-6 text-sm font-bold text-slate-900 dark:text-white">${formatD(i.task_date)}</td>
-                <td class="py-4 px-6">
-                    <div class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${i.task_title}</div>
-                    ${i.notes ? `<div class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">${i.notes}</div>` : ''}
-                </td>
-                <td class="py-4 px-6 text-sm font-bold text-right text-slate-900 dark:text-white">${parseFloat(i.hours).toFixed(1)}</td>
-                <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    <button onclick="openModal('task', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-blue-500/10 hover:text-blue-500 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-                    <button onclick="delEntity('tasks', ${i.id})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-[16px]">delete</span></button>
-                </td>
-            </tr>
-        `).join('') || `<tr><td colspan="4" class="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">No tasks added.</td></tr>`;
+        document.getElementById('tb-tasks').innerHTML = currentProjectData.tasks.length
+            ? currentProjectData.tasks.map(i => `
+                <tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow};font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--text-2)">${formatD(i.task_date)}</td>
+                    <td style="${tdRow}">
+                        <div style="font-weight:600;font-size:13.5px">${i.task_title}</div>
+                        ${i.notes?`<div style="font-size:11px;color:var(--text-3);margin-top:2px">${i.notes}</div>`:''}
+                    </td>
+                    <td style="${tdRow};text-align:right;font-size:14px;font-weight:700;font-family:'IBM Plex Mono',monospace">${parseFloat(i.hours).toFixed(1)}</td>
+                    <td style="${tdRow}">${actBtns('task',i.id,'')}</td>
+                </tr>`).join('')
+            : emptyRow(4, 'No tasks added.');
 
-    } catch(e) {
-        console.error("Failed to load project details", e);
-    }
+    } catch(e) { console.error("Failed to load project details", e); }
 }
 
-function showModal() {
-    document.getElementById('entityModal').classList.remove('hidden');
-}
-
-function hideModal() {
-    document.getElementById('entityModal').classList.add('hidden');
-}
+function showModal() { const m=document.getElementById('entityModal'); m.style.display='flex'; }
+function hideModal() { document.getElementById('entityModal').style.display='none'; }
 
 function openModal(type, id = null) {
     currentModalType = type;
     currentEditId = id;
-    
-    let title = id ? `Edit ${type}` : `Add ${type}`;
-    document.getElementById('modalTitle').innerText = title.charAt(0).toUpperCase() + title.slice(1);
-    
+    let title = id ? `Edit ${type.charAt(0).toUpperCase()+type.slice(1)}` : `Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+    document.getElementById('modalTitle').innerText = title;
+
     const body = document.getElementById('modalBody');
     let item = null;
-    
-    if(id) {
-        if (type === 'project') {
-            item = currentProjectData;
-        } else {
-            let arr = type === 'domain' ? currentProjectData.domains : 
-                      type === 'hosting' ? currentProjectData.hosting :
-                      type === 'maintenance' ? currentProjectData.maintenance :
-                      type === 'task' ? currentProjectData.tasks :
-                      currentProjectData.backups;
+    if (id) {
+        if (type === 'project') { item = currentProjectData; }
+        else {
+            let arr = type==='domain'?currentProjectData.domains:type==='hosting'?currentProjectData.hosting:type==='maintenance'?currentProjectData.maintenance:type==='task'?currentProjectData.tasks:currentProjectData.backups;
             item = arr.find(x => x.id == id);
         }
     }
-    
-    let inputClass = "w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/40 dark:text-white transition-colors outline-none";
-    let labelClass = "block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 mt-4";
-    
-    // Dynamic Form Generation
+
+    const ic = 'rd-input';
+    const lc = 'rd-label';
     let formHtml = `<form id="entityForm">`;
-    if(type === 'domain') {
+
+    if (type === 'domain') {
         formHtml += `
-            <div><label class="${labelClass}" style="mt-0">Domain Name <span class="text-red-500">*</span></label><input type="text" id="f_domain_name" class="${inputClass}" required value="${item?.domain_name||''}"></div>
-            <div><label class="${labelClass}">Registrar</label><input type="text" id="f_registrar" class="${inputClass}" value="${item?.registrar||''}"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="${labelClass}">Renewal Date <span class="text-red-500">*</span></label><input type="date" id="f_renewal_date" class="${inputClass}" required value="${item?.renewal_date||''}"></div>
-                <div><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
+            <div class="rd-form-group"><label class="${lc}">Domain Name <span style="color:var(--bad)">*</span></label><input type="text" id="f_domain_name" class="${ic}" required value="${item?.domain_name||''}"></div>
+            <div class="rd-form-group"><label class="${lc}">Registrar</label><input type="text" id="f_registrar" class="${ic}" value="${item?.registrar||''}"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-form-group"><label class="${lc}">Renewal Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_renewal_date" class="${ic}" required value="${item?.renewal_date||''}"></div>
+                <div class="rd-form-group"><label class="${lc}">Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
-                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
-            </div>
-        `;
-    } else if(type === 'hosting') {
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+                <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
+                <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
+            </div>`;
+    } else if (type === 'hosting') {
         formHtml += `
-            <div><label class="${labelClass}" style="mt-0">Plan Name <span class="text-red-500">*</span></label><input type="text" id="f_plan_name" class="${inputClass}" required value="${item?.plan_name||''}"></div>
-            <div><label class="${labelClass}">Provider</label><input type="text" id="f_provider" class="${inputClass}" value="${item?.provider||''}"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="${labelClass}">Renewal Date <span class="text-red-500">*</span></label><input type="date" id="f_renewal_date" class="${inputClass}" required value="${item?.renewal_date||''}"></div>
-                <div><label class="${labelClass}">Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
+            <div class="rd-form-group"><label class="${lc}">Plan Name <span style="color:var(--bad)">*</span></label><input type="text" id="f_plan_name" class="${ic}" required value="${item?.plan_name||''}"></div>
+            <div class="rd-form-group"><label class="${lc}">Provider</label><input type="text" id="f_provider" class="${ic}" value="${item?.provider||''}"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-form-group"><label class="${lc}">Renewal Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_renewal_date" class="${ic}" required value="${item?.renewal_date||''}"></div>
+                <div class="rd-form-group"><label class="${lc}">Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
-                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
-            </div>
-        `;
-    } else if(type === 'maintenance') {
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+                <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
+                <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
+            </div>`;
+    } else if (type === 'maintenance') {
         formHtml += `
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="${labelClass}" style="mt-0">Start Date <span class="text-red-500">*</span></label><input type="date" id="f_start_date" class="${inputClass}" required value="${item?.start_date||''}"></div>
-                <div><label class="${labelClass}" style="mt-0">End Date <span class="text-red-500">*</span></label><input type="date" id="f_end_date" class="${inputClass}" required value="${item?.end_date||''}"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-form-group"><label class="${lc}">Start Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_start_date" class="${ic}" required value="${item?.start_date||''}"></div>
+                <div class="rd-form-group"><label class="${lc}">End Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_end_date" class="${ic}" required value="${item?.end_date||''}"></div>
             </div>
-            <div><label class="${labelClass}">Yearly Price</label><input type="number" step="0.01" id="f_price" class="${inputClass}" value="${item?.price||'0'}"></div>
-            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
-                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
-            </div>
-        `;
-    } else if(type === 'backup') {
+            <div class="rd-form-group"><label class="${lc}">Yearly Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+                <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
+                <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
+            </div>`;
+    } else if (type === 'backup') {
         let freq = item?.frequency || 'monthly';
         formHtml += `
-            <div>
-                <label class="${labelClass}" style="mt-0">Frequency <span class="text-red-500">*</span></label>
-                <select id="f_frequency" class="${inputClass}">
+            <div class="rd-form-group"><label class="${lc}">Frequency <span style="color:var(--bad)">*</span></label>
+                <select id="f_frequency" class="${ic}">
                     <option value="daily" ${freq==='daily'?'selected':''}>Daily</option>
                     <option value="weekly" ${freq==='weekly'?'selected':''}>Weekly</option>
                     <option value="monthly" ${freq==='monthly'?'selected':''}>Monthly</option>
                     <option value="manual" ${freq==='manual'?'selected':''}>Manual</option>
                 </select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="${labelClass}">Last Backup</label><input type="date" id="f_last_backup" class="${inputClass}" value="${item?.last_backup||''}"></div>
-                <div><label class="${labelClass}">Next Backup <span class="text-red-500">*</span></label><input type="date" id="f_next_backup" class="${inputClass}" value="${item?.next_backup||''}" required></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-form-group"><label class="${lc}">Last Backup</label><input type="date" id="f_last_backup" class="${ic}" value="${item?.last_backup||''}"></div>
+                <div class="rd-form-group"><label class="${lc}">Next Backup <span style="color:var(--bad)">*</span></label><input type="date" id="f_next_backup" class="${ic}" required value="${item?.next_backup||''}"></div>
             </div>
-            <div><label class="${labelClass}">Storage Location</label><input type="text" id="f_storage_location" class="${inputClass}" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
-            <div class="mt-4 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                <input type="checkbox" id="f_client_paid" class="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" ${item?.client_paid == 1 ? 'checked' : ''}>
-                <label for="f_client_paid" class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">Mark Client as Paid</label>
-            </div>
-        `;
-    } else if(type === 'task') {
+            <div class="rd-form-group"><label class="${lc}">Storage Location</label><input type="text" id="f_storage_location" class="${ic}" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+                <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
+                <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
+            </div>`;
+    } else if (type === 'task') {
         formHtml += `
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="${labelClass}" style="mt-0">Date <span class="text-red-500">*</span></label><input type="date" id="f_task_date" class="${inputClass}" required value="${item?.task_date||new Date().toISOString().split('T')[0]}"></div>
-                <div><label class="${labelClass}" style="mt-0">Hours <span class="text-red-500">*</span></label><input type="number" step="0.5" id="f_hours" class="${inputClass}" required value="${item?.hours||'0'}"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-form-group"><label class="${lc}">Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_task_date" class="${ic}" required value="${item?.task_date||new Date().toISOString().split('T')[0]}"></div>
+                <div class="rd-form-group"><label class="${lc}">Hours <span style="color:var(--bad)">*</span></label><input type="number" step="0.5" id="f_hours" class="${ic}" required value="${item?.hours||'0'}"></div>
             </div>
-            <div><label class="${labelClass}">Task Title <span class="text-red-500">*</span></label><input type="text" id="f_task_title" class="${inputClass}" required value="${item?.task_title||''}"></div>
-            <div><label class="${labelClass}">Notes</label><textarea id="f_notes" rows="3" class="${inputClass}">${item?.notes||''}</textarea></div>
-        `;
-    } else if(type === 'project') {
+            <div class="rd-form-group"><label class="${lc}">Task Title <span style="color:var(--bad)">*</span></label><input type="text" id="f_task_title" class="${ic}" required value="${item?.task_title||''}"></div>
+            <div class="rd-form-group"><label class="${lc}">Notes</label><textarea id="f_notes" rows="3" class="${ic}" style="resize:vertical">${item?.notes||''}</textarea></div>`;
+    } else if (type === 'project') {
         formHtml += `
-            <div><label class="${labelClass}" style="mt-0">Project Name <span class="text-red-500">*</span></label><input type="text" id="f_project_name" class="${inputClass}" required value="${item?.name||''}"></div>
-            <div><label class="${labelClass}">Description / Notes</label><textarea id="f_project_desc" rows="4" class="${inputClass}">${item?.description||''}</textarea></div>
-        `;
+            <div class="rd-form-group"><label class="${lc}">Project Name <span style="color:var(--bad)">*</span></label><input type="text" id="f_project_name" class="${ic}" required value="${item?.name||''}"></div>
+            <div class="rd-form-group"><label class="${lc}">Description / Notes</label><textarea id="f_project_desc" rows="4" class="${ic}" style="resize:vertical">${item?.description||''}</textarea></div>`;
     }
     formHtml += `</form>`;
     body.innerHTML = formHtml;
-    
     showModal();
-
-
 }
 
 document.getElementById('saveEntityBtn').addEventListener('click', async () => {
     const form = document.getElementById('entityForm');
-    if(!form.reportValidity()) return;
+    if (!form.reportValidity()) return;
 
     let payload = { project_id: pId };
-    
     let typeMap = currentModalType;
-    if(currentModalType === 'backup') typeMap = 'backups';
-    if(currentModalType === 'domain') typeMap = 'domains';
-    if(currentModalType === 'task') typeMap = 'tasks';
-    
+    if (currentModalType === 'backup') typeMap = 'backups';
+    if (currentModalType === 'domain') typeMap = 'domains';
+    if (currentModalType === 'task') typeMap = 'tasks';
+
     if (currentModalType === 'domain') {
         payload.domain_name = document.getElementById('f_domain_name').value;
         payload.registrar = document.getElementById('f_registrar').value;
@@ -590,264 +471,148 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 
     let url = rdApi(`api/${typeMap}.php`);
     let method = 'POST';
-    
-    if(currentModalType === 'project') {
-        url = rdApi(`api/projects.php?id=${pId}`);
-        method = 'PUT';
-    } else if(currentEditId) {
-        url += `?id=${currentEditId}`;
-        method = 'PUT';
+    if (currentModalType === 'project') {
+        url = rdApi(`api/projects.php?id=${pId}`); method = 'PUT';
+    } else if (currentEditId) {
+        url += `?id=${currentEditId}`; method = 'PUT';
     }
 
     const btn = document.getElementById('saveEntityBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> Saving...';
+    btn.disabled = true; btn.textContent = 'Saving…';
 
-    await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify(payload)
-    });
+    await fetch(url, { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(payload) });
 
-    // Automatically create next year record ONLY if this one was just changed to PAID
-    const wasPaidAlready = currentEditId && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance' || currentModalType === 'backup') && 
-                           ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentModalType==='maintenance'?currentProjectData.maintenance:currentProjectData.backups).find(x=>x.id==currentEditId)?.client_paid == 1);
+    const wasPaidAlready = currentEditId && (currentModalType === 'hosting'||currentModalType === 'domain'||currentModalType === 'maintenance'||currentModalType === 'backup') &&
+        ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentModalType==='maintenance'?currentProjectData.maintenance:currentProjectData.backups).find(x=>x.id==currentEditId)?.client_paid == 1);
 
-    if(!wasPaidAlready && (currentModalType === 'hosting' || currentModalType === 'domain' || currentModalType === 'maintenance' || currentModalType === 'backup') && payload.client_paid == 1) {
+    if (!wasPaidAlready && (currentModalType==='hosting'||currentModalType==='domain'||currentModalType==='maintenance'||currentModalType==='backup') && payload.client_paid == 1) {
         const isMaint = currentModalType === 'maintenance';
         const isBackup = currentModalType === 'backup';
-        
-        // Calculate dates for the NEXT record based on the CURRENT record's dates
-        let nextPayload = { ...payload, client_paid: 0, status: 'active' };
-        
-        if(isBackup) {
+        let nextPayload = { ...payload, client_paid:0, status:'active' };
+        if (isBackup) {
             let dn = new Date(payload.next_backup);
             nextPayload.last_backup = payload.next_backup;
-            
-            // Calculate interval if last_backup exists
             if (payload.last_backup) {
-                let start = new Date(payload.last_backup);
-                let end = new Date(payload.next_backup);
-                let diffTime = end.getTime() - start.getTime();
-                if (diffTime > 0) {
-                    dn = new Date(dn.getTime() + diffTime);
-                } else {
-                    if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-                    else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-                    else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                let diffTime = new Date(payload.next_backup).getTime() - new Date(payload.last_backup).getTime();
+                if (diffTime > 0) { dn = new Date(dn.getTime() + diffTime); }
+                else {
+                    if(payload.frequency==='daily') dn.setDate(dn.getDate()+1);
+                    else if(payload.frequency==='weekly') dn.setDate(dn.getDate()+7);
+                    else if(payload.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
                 }
             } else {
-                if(payload.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-                else if(payload.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-                else if(payload.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                if(payload.frequency==='daily') dn.setDate(dn.getDate()+1);
+                else if(payload.frequency==='weekly') dn.setDate(dn.getDate()+7);
+                else if(payload.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
             }
             nextPayload.next_backup = dn.toISOString().split('T')[0];
-        } else if(isMaint) {
-            let ds = new Date(payload.start_date); ds.setFullYear(ds.getFullYear() + 1);
-            let de = new Date(payload.end_date); de.setFullYear(de.getFullYear() + 1);
+        } else if (isMaint) {
+            let ds = new Date(payload.start_date); ds.setFullYear(ds.getFullYear()+1);
+            let de = new Date(payload.end_date); de.setFullYear(de.getFullYear()+1);
             nextPayload.start_date = ds.toISOString().split('T')[0];
             nextPayload.end_date = de.toISOString().split('T')[0];
         } else {
-            let dr = new Date(payload.renewal_date); dr.setFullYear(dr.getFullYear() + 1);
+            let dr = new Date(payload.renewal_date); dr.setFullYear(dr.getFullYear()+1);
             nextPayload.renewal_date = dr.toISOString().split('T')[0];
         }
         delete nextPayload.id;
-
-        const nextUrl = rdApi(`api/${typeMap}.php`);
-        await fetch(nextUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify(nextPayload)
-        });
+        await fetch(rdApi(`api/${typeMap}.php`), { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(nextPayload) });
     }
-    
+
     hideModal();
-    btn.disabled = false;
-    btn.innerHTML = 'Save';
-    
+    btn.disabled = false; btn.textContent = 'Save';
     loadData();
 });
 
 async function markRenewed(type, id, oldS, oldE) {
     const isMaint = type === 'maintenance';
     const isBackup = type === 'backup';
-    const arr = type === 'hosting' ? currentProjectData.hosting : 
-                type === 'domain' ? currentProjectData.domains : 
-                type === 'maintenance' ? currentProjectData.maintenance : currentProjectData.backups;
+    const arr = type==='hosting'?currentProjectData.hosting:type==='domain'?currentProjectData.domains:type==='maintenance'?currentProjectData.maintenance:currentProjectData.backups;
     const item = arr.find(x => x.id == id);
+    let nextDate = '', startDate = '', startLabel = '', nextLabel = 'Renewal Date';
 
-    let nextLabel = "Renewal Date";
-    let nextDate = "";
-    let startLabel = "";
-    let startDate = "";
-
-    if(isBackup) {
+    if (isBackup) {
         let dn = new Date(oldS);
-        
-        // Calculate interval from existing item dates
         if (item.last_backup && item.next_backup) {
-            let start = new Date(item.last_backup);
-            let end = new Date(item.next_backup);
-            let diffTime = end.getTime() - start.getTime();
-            if (diffTime > 0) {
-                dn = new Date(dn.getTime() + diffTime);
-            } else {
-                if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-                else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-                else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            let diffTime = new Date(item.next_backup).getTime() - new Date(item.last_backup).getTime();
+            if (diffTime > 0) { dn = new Date(dn.getTime() + diffTime); }
+            else {
+                if(item.frequency==='daily') dn.setDate(dn.getDate()+1);
+                else if(item.frequency==='weekly') dn.setDate(dn.getDate()+7);
+                else if(item.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
             }
         } else {
-            if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-            else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-            else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+            if(item.frequency==='daily') dn.setDate(dn.getDate()+1);
+            else if(item.frequency==='weekly') dn.setDate(dn.getDate()+7);
+            else if(item.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
         }
-        
         nextDate = dn.toISOString().split('T')[0];
-        startDate = oldS;
-        startLabel = "Last Backup";
-        nextLabel = "Next Backup";
-    } else if(isMaint) {
-        let de = new Date(oldE); de.setFullYear(de.getFullYear() + 1);
-        let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
+        startDate = oldS; startLabel = 'Last Backup'; nextLabel = 'Next Backup';
+    } else if (isMaint) {
+        let de = new Date(oldE); de.setFullYear(de.getFullYear()+1);
+        let ds = new Date(oldS); ds.setFullYear(ds.getFullYear()+1);
         nextDate = de.toISOString().split('T')[0];
         startDate = ds.toISOString().split('T')[0];
-        startLabel = "Next Start";
-        nextLabel = "Next End";
+        startLabel = 'Next Start'; nextLabel = 'Next End';
     } else {
-        let dr = new Date(oldS); dr.setFullYear(dr.getFullYear() + 1);
+        let dr = new Date(oldS); dr.setFullYear(dr.getFullYear()+1);
         nextDate = dr.toISOString().split('T')[0];
     }
 
-    const formatDLocal = (d) => {
-        if (!d) return '-';
-        let dt = new Date(d);
-        return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-    };
-
     const result = await Swal.fire({
-        title: isBackup ? 'Mark Backup Done?' : `Renew ${isMaint ? 'AMC' : type.slice(0,-1)}?`,
-        html: `This will complete the current period and schedule the next:<br><br>
-               ${startDate ? `<b>${startLabel}:</b> ${formatDLocal(startDate)}<br>` : ''}
-               <b>${nextLabel}:</b> ${formatDLocal(nextDate)}`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#f43f5e',
-        confirmButtonText: 'Yes, Done!',
-        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+        title: isBackup ? 'Mark Backup Done?' : `Renew ${isMaint ? 'AMC' : type}?`,
+        html: `This will complete the current period and schedule the next:<br><br>${startDate?`<b>${startLabel}:</b> ${formatD(startDate)}<br>`:''}<b>${nextLabel}:</b> ${formatD(nextDate)}`,
+        icon:'question', showCancelButton:true, confirmButtonColor:'#0f9d76', cancelButtonColor:'#df433f', confirmButtonText:'Yes, Done!'
     });
-
     if (!result.isConfirmed) return;
-    
+
     try {
-        const arr = type === 'hosting' ? currentProjectData.hosting : 
-                    type === 'domain' ? currentProjectData.domains : 
-                    type === 'maintenance' ? currentProjectData.maintenance : currentProjectData.backups;
-        const item = arr.find(x => x.id == id);
-
-        // 1. Update current record to PAID
-        await fetch(rdApi(`api/${type === 'backup' ? 'backups' : type}.php?id=${id}`), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify({ ...item, client_paid: 1, status: 'renewed' })
-        });
-
-        // 2. Insert NEW record
-        let nextPayload = { ...item, client_paid: 0, status: 'active' };
-        if(isBackup) {
+        await fetch(rdApi(`api/${type==='backup'?'backups':type==='domain'?'domains':type}.php?id=${id}`), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({...item,client_paid:1,status:'renewed'}) });
+        let nextPayload = { ...item, client_paid:0, status:'active' };
+        if (isBackup) {
             let dn = new Date(oldS);
             nextPayload.last_backup = oldS;
-            
-            // Calculate interval from existing item dates
             if (item.last_backup && item.next_backup) {
-                let start = new Date(item.last_backup);
-                let end = new Date(item.next_backup);
-                let diffTime = end.getTime() - start.getTime();
-                if (diffTime > 0) {
-                    dn = new Date(dn.getTime() + diffTime);
-                } else {
-                    if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-                    else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-                    else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                let diffTime = new Date(item.next_backup).getTime() - new Date(item.last_backup).getTime();
+                if (diffTime > 0) { dn = new Date(dn.getTime() + diffTime); }
+                else {
+                    if(item.frequency==='daily') dn.setDate(dn.getDate()+1);
+                    else if(item.frequency==='weekly') dn.setDate(dn.getDate()+7);
+                    else if(item.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
                 }
             } else {
-                if(item.frequency === 'daily') dn.setDate(dn.getDate() + 1);
-                else if(item.frequency === 'weekly') dn.setDate(dn.getDate() + 7);
-                else if(item.frequency === 'monthly') dn.setMonth(dn.getMonth() + 1);
+                if(item.frequency==='daily') dn.setDate(dn.getDate()+1);
+                else if(item.frequency==='weekly') dn.setDate(dn.getDate()+7);
+                else if(item.frequency==='monthly') dn.setMonth(dn.getMonth()+1);
             }
             nextPayload.next_backup = dn.toISOString().split('T')[0];
-        } else if(isMaint) {
-            let ds = new Date(oldS); ds.setFullYear(ds.getFullYear() + 1);
-            let de = new Date(oldE); de.setFullYear(de.getFullYear() + 1);
+        } else if (isMaint) {
+            let ds = new Date(oldS); ds.setFullYear(ds.getFullYear()+1);
+            let de = new Date(oldE); de.setFullYear(de.getFullYear()+1);
             nextPayload.start_date = ds.toISOString().split('T')[0];
             nextPayload.end_date = de.toISOString().split('T')[0];
         } else {
-            let dr = new Date(oldS); dr.setFullYear(dr.getFullYear() + 1);
+            let dr = new Date(oldS); dr.setFullYear(dr.getFullYear()+1);
             nextPayload.renewal_date = dr.toISOString().split('T')[0];
         }
-        delete nextPayload.id;
-        delete nextPayload.project_name;
-
-        await fetch(rdApi(`api/${type === 'backup' ? 'backups' : type}.php`), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify(nextPayload)
-        });
-        
-        Swal.fire({
-            title: 'Renewed!',
-            text: 'Renewal updated successfully.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false,
-            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-        });
-        
+        delete nextPayload.id; delete nextPayload.project_name;
+        await fetch(rdApi(`api/${type==='backup'?'backups':type==='domain'?'domains':type}.php`), { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(nextPayload) });
+        Swal.fire({ title:'Renewed!', text:'Renewal updated successfully.', icon:'success', timer:2000, showConfirmButton:false });
         loadData();
-    } catch(e) {
-        console.error("Failed to renew", e);
-        Swal.fire('Error', 'Failed to update renewal.', 'error');
-    }
+    } catch(e) { Swal.fire('Error','Failed to update renewal.','error'); }
 }
 
 async function delEntity(type, id) {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#f43f5e',
-        cancelButtonColor: '#94a3b8',
-        confirmButtonText: 'Yes, delete it!',
-        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-        color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-    });
-
+    const result = await Swal.fire({ title:'Are you sure?', text:"You won't be able to revert this!", icon:'warning', showCancelButton:true, confirmButtonColor:'#df433f', cancelButtonColor:'#979b92', confirmButtonText:'Yes, delete it!' });
     if (result.isConfirmed) {
-        await fetch(rdApi(`api/${type}.php?id=${id}`), { method: 'DELETE', credentials: 'same-origin' });
-        
-        Swal.fire({
-            title: 'Deleted!',
-            text: 'Entry has been removed.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false,
-            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
-            color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-        });
-        
+        await fetch(rdApi(`api/${type}.php?id=${id}`), { method:'DELETE', credentials:'same-origin' });
+        Swal.fire({ title:'Deleted!', text:'Entry has been removed.', icon:'success', timer:1500, showConfirmButton:false });
         loadData();
     }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
+    await fetch(rdApi('api/auth/logout.php'), { method:'POST', credentials:'same-origin' });
     window.location.href = 'login.html';
 });
 

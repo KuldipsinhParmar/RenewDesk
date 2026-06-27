@@ -5,91 +5,82 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Login - RenewDesk</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2b6cee",
-                        "background-light": "#f6f6f8",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                },
-            },
-        }
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/v2.css">
     <style>
-        .login-glass {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 25px 50px -12px rgba(43, 108, 238, 0.15);
-        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#f5f3ee;color:#15181a;min-height:100vh}
+        .login-wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+        .login-left{position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:46px;background:linear-gradient(155deg,#0b7c5e,#0f9d76);color:#fff;overflow:hidden}
+        .login-right{display:flex;align-items:center;justify-content:center;padding:40px;position:relative}
+        .login-form-box{width:100%;max-width:380px}
+        label{display:block;font-size:12.5px;font-weight:600;color:#5e635f;margin-bottom:7px}
+        input[type=email],input[type=password],input[type=text]{width:100%;border:1px solid #dcd6c6;background:#fff;border-radius:12px;padding:13px 15px;font-size:14.5px;color:#15181a;outline:none;font-family:inherit;margin-bottom:18px;transition:border-color .15s}
+        input[type=email]:focus,input[type=password]:focus{border-color:#0f9d76}
+        .login-btn{width:100%;border:none;border-radius:12px;padding:14px;background:#0f9d76;color:#fff;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+        .login-btn:hover{background:#0b7c5e}
+        .login-btn:disabled{opacity:.7;cursor:not-allowed}
+        .logo-icon{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.16);display:grid;place-items:center}
+        .logo-text{font-size:19px;font-weight:700;font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+        .stat-num{font-size:30px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+        .stat-lbl{font-size:13px;color:rgba(255,255,255,.75)}
+        @media(max-width:700px){.login-wrap{grid-template-columns:1fr}.login-left{display:none}}
     </style>
 </head>
-<body class="bg-background-light font-display text-slate-900 antialiased h-screen flex items-center justify-center relative overflow-hidden">
-
-    <!-- Decorative Gradients -->
-    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[100px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px]"></div>
+<body>
+<div class="login-wrap">
+    <!-- Left brand panel -->
+    <div class="login-left">
+        <div style="display:flex;align-items:center;gap:12px">
+            <div class="logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+            </div>
+            <span class="logo-text">RenewDesk</span>
+        </div>
+        <div style="max-width:420px">
+            <h1 style="font-family:'Space Grotesk',sans-serif;font-size:40px;line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 18px">Never miss a renewal again.</h1>
+            <p style="font-size:16px;line-height:1.6;color:rgba(255,255,255,.85);margin:0 0 28px">Track every domain, hosting plan, AMC and backup across your entire client portfolio — in one calm command center.</p>
+            <div style="display:flex;gap:30px">
+                <div><div class="stat-num" id="ll-projects">—</div><div class="stat-lbl">Active projects</div></div>
+                <div><div class="stat-num" id="ll-value">—</div><div class="stat-lbl">Tracked annually</div></div>
+                <div><div class="stat-num" id="ll-alerts">—</div><div class="stat-lbl">Upcoming renewals</div></div>
+            </div>
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7)">© 2026 RenewDesk · Infrastructure renewal management</div>
     </div>
 
-    <!-- Login Container -->
-    <div class="w-full max-w-md px-6 z-10">
-        
-        <!-- Logo Header -->
-        <div class="flex flex-col items-center justify-center mb-8">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white mb-6 shadow-xl shadow-primary/30 transform hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-3xl">autorenew</span>
-            </div>
-            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Welcome Back</h1>
-            <p class="text-slate-500 text-sm font-medium">Log in to the RenewDesk Executive Dashboard</p>
-        </div>
+    <!-- Right login panel -->
+    <div class="login-right">
+        <div class="login-form-box">
+            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px">Sign in</h2>
+            <p style="color:#5e635f;font-size:15px;margin:0 0 28px">Welcome back. Enter your details to continue.</p>
 
-        <!-- Login Card -->
-        <div class="login-glass rounded-3xl p-8 md:p-10 w-full relative">
-            
-            <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm font-semibold flex items-center gap-2 bg-red-500/10 text-red-600 border border-red-500/20"></div>
+            <div id="alertBox" style="display:none" class="rd-alert-error"></div>
 
-            <form id="loginForm" class="space-y-6">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" for="email">Email Address</label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">mail</span>
-                        <input type="email" id="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-colors shadow-sm outline-none placeholder-slate-400" placeholder="admin@renewdesk.local" required>
-                    </div>
+            <form id="loginForm">
+                <label for="email">Email address</label>
+                <input type="email" id="email" placeholder="admin@renewdesk.local" required>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                    <label for="password" style="margin:0">Password</label>
+                    <a href="#" style="font-size:12.5px;color:#0f9d76;font-weight:600;text-decoration:none">Forgot?</a>
                 </div>
-                
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider" for="password">Password</label>
-                        <a href="#" class="text-xs font-bold text-primary hover:text-purple-600 transition-colors">Forgot Password?</a>
-                    </div>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
-                        <input type="password" id="password" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-colors shadow-sm outline-none placeholder-slate-400" placeholder="••••••••" required>
-                    </div>
-                </div>
-                
-                <button type="submit" id="loginBtn" class="w-full bg-primary flex items-center justify-center gap-2 text-white px-6 py-4 rounded-xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] hover:shadow-primary/30 transition-all mt-8">
-                    Sign In <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <input type="password" id="password" placeholder="••••••••" required style="margin-bottom:24px">
+
+                <button type="submit" id="loginBtn" class="login-btn">
+                    Sign in
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
             </form>
-            
+
+            <p style="margin-top:24px;text-align:center;font-size:13px;color:#979b92">
+                <a href="index.html" style="color:#0f9d76;font-weight:600;text-decoration:none">← Return to Homepage</a>
+            </p>
         </div>
-        
-        <div class="mt-8 text-center text-sm font-semibold text-slate-500 flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-slate-400 text-[18px]">arrow_back</span>
-            <a href="index.html" class="hover:text-primary transition-colors">Return to Homepage</a>
-        </div>
-        
     </div>
+</div>
 
 <script src="assets/js/rd-api.js"></script>
 <script>
@@ -98,10 +89,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const btn = document.getElementById('loginBtn');
     const alertBox = document.getElementById('alertBox');
     const originalContent = btn.innerHTML;
-    
+
     btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Authenticating...';
-    alertBox.classList.add('hidden');
+    btn.innerHTML = 'Authenticating…';
+    alertBox.style.display = 'none';
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -115,37 +106,26 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         });
         const text = await res.text();
         let data;
-        try {
-            data = JSON.parse(text);
-        } catch {
-            alertBox.innerHTML = `<span class="material-symbols-outlined text-[18px]">error</span> Server returned HTTP ${res.status} with a non-JSON response. Check that PHP is enabled and the site root is the <code class="text-xs">public</code> folder.`;
-            alertBox.classList.remove('hidden');
-            btn.disabled = false;
-            btn.innerHTML = originalContent;
-            return;
+        try { data = JSON.parse(text); } catch {
+            alertBox.textContent = `Server returned HTTP ${res.status} with a non-JSON response. Check that PHP is enabled and the site root is the public folder.`;
+            alertBox.style.display = 'flex';
+            btn.disabled = false; btn.innerHTML = originalContent; return;
         }
 
         if (data.status === 'success') {
-            btn.classList.remove('bg-primary');
-            btn.classList.add('bg-emerald-500');
-            btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span> Success! Redirecting...';
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 600);
+            btn.innerHTML = '✓ Success! Redirecting…';
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
         } else {
-            alertBox.innerHTML = `<span class="material-symbols-outlined text-[18px]">error</span> ${data.message || 'Invalid login credentials.'}`;
-            alertBox.classList.remove('hidden');
-            btn.disabled = false;
-            btn.innerHTML = originalContent;
+            alertBox.textContent = data.message || 'Invalid login credentials.';
+            alertBox.style.display = 'flex';
+            btn.disabled = false; btn.innerHTML = originalContent;
         }
     } catch (err) {
-        alertBox.innerHTML = '<span class="material-symbols-outlined text-[18px]">wifi_off</span> Server connection error.';
-        alertBox.classList.remove('hidden');
-        btn.disabled = false;
-        btn.innerHTML = originalContent;
+        alertBox.textContent = 'Server connection error.';
+        alertBox.style.display = 'flex';
+        btn.disabled = false; btn.innerHTML = originalContent;
     }
 });
 </script>
-
 </body>
 </html>

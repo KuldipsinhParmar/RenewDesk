@@ -4,363 +4,307 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>RenewDesk Executive Dashboard</title>
+    <title>Dashboard - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/css/v2.css">
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#2b6cee",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#0a0e17",
+                        "primary": "#0f9d76",
+                        "background-light": "#f5f3ee",
                     },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
+                    fontFamily: { "display": ["IBM Plex Sans", "sans-serif"] },
                 },
             },
         }
     </script>
-    <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-        }
-        .neon-glow-primary {
-            box-shadow: 0 0 20px rgba(43, 108, 238, 0.15);
-        }
-        .sidebar-item-active {
-            background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
-            border-left: 3px solid #2b6cee;
-        }
-    </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col relative">
-    
-    <!-- Background grid -->
-    <div class="fixed inset-0 pointer-events-none bg-grid-pattern z-0 mix-blend-multiply dark:mix-blend-screen opacity-50"></div>
-    
-    <!-- Large ambient background glow -->
-    <div class="fixed top-0 left-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none -z-10 -translate-x-1/2 -translate-y-1/2"></div>
-    <div class="fixed bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3 translate-y-1/3"></div>
+<body class="rd-body">
+<div class="rd-layout">
 
-<!-- Top Navigation -->
-<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
-    <div class="flex items-center gap-8 h-full">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
-                <span class="material-symbols-outlined text-[18px]">autorenew</span>
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar">
+        <div class="rd-sidebar-logo">
+            <div class="rd-logo-icon">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
             </div>
-            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 leading-none">RenewDesk</h1>
+            <span class="rd-logo-text">RenewDesk</span>
         </div>
 
-        <!-- Links -->
-        <div class="hidden lg:flex items-center h-full gap-2">
-            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all bg-primary/10 text-primary border border-primary/20"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
-            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
-            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
-            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
-            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
-            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
-            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
-        </div>
-    </div>
+        <div class="rd-nav-label">Workspace</div>
+        <nav class="rd-nav">
+            <a href="dashboard.html" class="rd-nav-item active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+                Dashboard
+            </a>
+            <a href="projects.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Projects
+            </a>
+        </nav>
 
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-3">
-        <a href="settings.html" class="text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white w-8 h-8 rounded-lg flex items-center justify-center transition-all" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
-        
-        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-        
-        <div class="hidden sm:flex items-center gap-2 mr-2">
-            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
-            <div class="text-left">
-                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
-                <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
+        <div class="rd-nav-label">Assets</div>
+        <nav class="rd-nav">
+            <a href="domains.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+                Domains
+            </a>
+            <a href="hosting.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
+                Hosting
+            </a>
+            <a href="maintenance.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>
+                Maintenance
+            </a>
+            <a href="backups.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
+                Backups
+            </a>
+            <a href="tasks.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
+                Tasks
+            </a>
+        </nav>
+
+        <div class="rd-sidebar-footer">
+            <div class="rd-user-row">
+                <div class="rd-user-avatar">AD</div>
+                <div class="rd-user-info">
+                    <div class="rd-user-name">Admin</div>
+                    <div class="rd-user-role">IT Manager</div>
+                </div>
+                <button id="logoutBtn" class="rd-logout-btn" title="Sign out">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                </button>
             </div>
         </div>
-        
-        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
-    </div>
-</nav>
+    </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-transparent">
-        <!-- Header -->
-        <header class="pt-10 pb-4 px-8 flex items-center justify-between z-10">
+    <!-- MAIN -->
+    <div class="rd-main">
+        <!-- Page header -->
+        <div class="rd-page-header">
             <div>
-                <h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Workspace Overview</h2>
-                <p class="text-sm font-medium text-slate-500 mt-1">Intelligent insights for your entire infrastructure stack.</p>
+                <h1 class="rd-page-title">Workspace Overview</h1>
+                <p class="rd-page-subtitle" id="dashDate">Loading…</p>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="projects.html" class="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-primary to-blue-500 px-5 py-2.5 rounded-xl text-white font-semibold text-sm shadow-[0_4px_14px_rgba(43,108,238,0.3)] hover:shadow-[0_6px_20px_rgba(43,108,238,0.4)] hover:-translate-y-0.5 transition-all w-fit">
-                    <span class="material-symbols-outlined text-[20px]">add</span> New Project
+            <div style="display:flex;gap:10px">
+                <button style="border:1px solid var(--border-2);border-radius:999px;padding:11px 18px;background:var(--surface);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:8px" onclick="exportDashboard()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                    Export
+                </button>
+                <a href="projects.html" style="border:none;border-radius:999px;padding:11px 19px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;gap:8px;text-decoration:none">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    New Project
                 </a>
             </div>
-        </header>
-
-        <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto px-8 pb-10 custom-scrollbar z-10 relative">
-            
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-10">
-                
-                <!-- Active Projects -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Projects</p>
-                        <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center ring-1 ring-primary/20 transition-all group-hover:bg-primary group-hover:text-white group-hover:shadow-[0_0_15px_rgba(43,108,238,0.4)]"><span class="material-symbols-outlined text-[18px]">folder</span></div>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-projects">0</h3>
-                </div>
-
-                <!-- Domains Amount -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Domains Amt</p>
-                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 ring-1 ring-purple-500/20 transition-all flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]"><span class="material-symbols-outlined text-[18px]">language</span></div>
-                    </div>
-                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-domain-rev">0</h3></div>
-                </div>
-
-                <!-- Hosting Amount -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Hosting Amt</p>
-                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 ring-1 ring-blue-500/20 transition-all flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]"><span class="material-symbols-outlined text-[18px]">dns</span></div>
-                    </div>
-                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-hosting-rev">0</h3></div>
-                </div>
-
-                <!-- AMC Amount -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">AMC Amt</p>
-                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/20 transition-all flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(245,158,11,0.4)]"><span class="material-symbols-outlined text-[18px]">payments</span></div>
-                    </div>
-                    <div class="flex items-baseline gap-1"><span class="text-xs font-bold text-slate-400">₹</span><h3 class="text-xl font-black text-slate-800 dark:text-white" id="stat-amc">0</h3></div>
-                </div>
-
-                <!-- Backups Count -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Backups</p>
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 transition-all flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(16,185,129,0.4)]"><span class="material-symbols-outlined text-[18px]">backup</span></div>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-backups">0</h3>
-                </div>                <!-- Alert Count -->
-                <div class="glass-card rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 p-5 border border-slate-200/60 dark:border-slate-800/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">Alerts (30d)</p>
-                        <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 ring-1 ring-rose-500/20 transition-all flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(244,63,94,0.4)]"><span class="material-symbols-outlined text-[18px]">notification_important</span></div>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-800 dark:text-white" id="stat-pending">0</h3>
-                </div>
-
-            </div>
-
-            <!-- Upcoming Renewals Table -->
-            <div class="mb-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-500">upcoming</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">Upcoming Renewals</h4>
-                </div>
-            </div>
-            
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-primary/20 overflow-hidden shadow-sm shadow-primary/5 mb-10">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Asset Name</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Type</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Expiry Date</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Days Left</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="renewTable">
-                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading renewals...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Upcoming Backups Table -->
-            <div class="mb-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-emerald-500">backup</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">Upcoming Backups</h4>
-                </div>
-            </div>
-            
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-primary/20 overflow-hidden shadow-sm shadow-primary/5">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Backup Info</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Next Due</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Last Backup</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Days Left</th>
-                            <th class="text-left py-4 px-6 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="backupTable">
-                        <tr><td colspan="6" class="text-center py-6 text-slate-500">Loading backups...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Footer area with decorative glow -->
-            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/2 translate-y-1/2"></div>
         </div>
-    </main>
+
+        <!-- KPI cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:18px">
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Active Projects</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1" id="stat-projects">—</div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">in your portfolio</div>
+            </div>
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Domains Revenue</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1">₹<span id="stat-domain-rev">—</span></div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">annual domain value</div>
+            </div>
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Hosting Revenue</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1">₹<span id="stat-hosting-rev">—</span></div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">annual hosting value</div>
+            </div>
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">AMC Revenue</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:rgba(224,144,42,.13);color:var(--c-amber);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M16 12.5h3"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1">₹<span id="stat-amc">—</span></div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">annual AMC value</div>
+            </div>
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Backups Tracked</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--good-soft);color:var(--good);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1" id="stat-backups">—</div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">backup schedules</div>
+            </div>
+            <div class="rd-card" style="padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Alerts · 30 days</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--bad-soft);color:var(--bad);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1;color:var(--bad)" id="stat-pending">—</div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">needing attention</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Renewals -->
+        <div class="rd-card" style="margin-bottom:18px">
+            <div class="rd-card-header">
+                <span class="rd-card-title">Upcoming Renewals</span>
+                <a href="domains.html" style="font-size:13px;font-weight:600;color:var(--accent);text-decoration:none">View all</a>
+            </div>
+            <table style="width:100%;border-collapse:collapse">
+                <thead><tr>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Asset / Project</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Type</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Expiry</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days Left</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                </tr></thead>
+                <tbody id="renewTable">
+                    <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading renewals…</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Upcoming Backups -->
+        <div class="rd-card">
+            <div class="rd-card-header">
+                <span class="rd-card-title">Upcoming Backups</span>
+                <a href="backups.html" style="font-size:13px;font-weight:600;color:var(--accent);text-decoration:none">View all</a>
+            </div>
+            <table style="width:100%;border-collapse:collapse">
+                <thead><tr>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Due</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last Backup</th>
+                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days Left</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                </tr></thead>
+                <tbody id="backupTable">
+                    <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading backups…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div><!-- /.rd-main -->
+</div><!-- /.rd-layout -->
 
 <script src="assets/js/rd-api.js"></script>
 <script>
-async function checkAuth() {
-    const res = await fetch(rdApi('api/dashboard.php'), { credentials: 'same-origin' });
-    if (res.status === 401) window.location.href = 'login.html';
-    return await res.json();
+// Set date
+const d = new Date();
+document.getElementById('dashDate').textContent = d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' · all renewals across your stack';
+
+function formatD(d) {
+    if (!d) return '—';
+    let dt = new Date(d);
+    return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
 }
+
+function badgeStyle(days) {
+    if (days <= 7) return 'background:var(--bad-soft);color:var(--bad)';
+    if (days <= 15) return 'background:var(--warn-soft);color:var(--warn)';
+    return 'background:var(--good-soft);color:var(--good)';
+}
+
+function dotColor(days) {
+    if (days <= 7) return 'var(--bad)';
+    if (days <= 15) return 'var(--warn)';
+    return 'var(--good)';
+}
+
+function statusLabel(days) {
+    if (days <= 7) return 'Urgent';
+    if (days <= 15) return 'Soon';
+    return 'On track';
+}
+
+const fmt = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
 
 async function loadDashboard() {
     try {
-        const data = await checkAuth();
+        const res = await fetch(rdApi('api/dashboard.php'), { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const data = await res.json();
         if (data.status === 'success') {
             const d = data.data;
-            document.getElementById('stat-projects').innerText = d.total_projects;
-            document.getElementById('stat-backups').innerText = d.total_backups || 0;
-            
-            // Format currencies
-            const formatVal = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
-            document.getElementById('stat-amc').innerText = formatVal(d.amc_revenue);
-            document.getElementById('stat-hosting-rev').innerText = formatVal(d.hosting_revenue);
-            document.getElementById('stat-domain-rev').innerText = formatVal(d.domain_revenue);
+            document.getElementById('stat-projects').textContent = d.total_projects;
+            document.getElementById('stat-backups').textContent = d.total_backups || 0;
+            document.getElementById('stat-amc').textContent = fmt(d.amc_revenue);
+            document.getElementById('stat-hosting-rev').textContent = fmt(d.hosting_revenue);
+            document.getElementById('stat-domain-rev').textContent = fmt(d.domain_revenue);
+            document.getElementById('stat-pending').textContent = d.upcoming.length;
 
-            document.getElementById('stat-pending').innerText = d.upcoming.length;
-
-            const renewBody = document.getElementById('renewTable');
-            const backupBody = document.getElementById('backupTable');
-            renewBody.innerHTML = '';
-            backupBody.innerHTML = '';
-            
             const renewals = d.upcoming.filter(i => i.type !== 'Backup');
-            const backups = d.upcoming.filter(i => i.type === 'Backup');
+            const backups  = d.upcoming.filter(i => i.type === 'Backup');
+            const renewBody  = document.getElementById('renewTable');
+            const backupBody = document.getElementById('backupTable');
 
-            // Render Renewals
             if (renewals.length === 0) {
-                renewBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 dark:text-slate-400">No upcoming renewals in 30 days.</td></tr>';
+                renewBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No upcoming renewals in 30 days.</td></tr>';
             } else {
-                renewals.forEach(item => {
-                    let badgeClass = item.days_left <= 7 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                                     (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
-                                     'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
-                    
-                    let iconParts = item.type === 'Domain' ? ['language', 'text-primary', 'bg-primary/10'] : 
-                                    (item.type === 'Hosting' ? ['dns', 'text-purple-500', 'bg-purple-500/10'] : 
-                                    ['engineering', 'text-amber-500', 'bg-amber-500/10']);
-
-                    let dt = new Date(item.date);
-                    let fDate = `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-
-                    let statusBadge = item.days_left <= 7 ? `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" title="Urgent: ${item.days_left} Days"></span>` : 
-                                     (item.days_left <= 15 ? `<span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" title="Soon: ${item.days_left} Days"></span>` : 
-                                     `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="Safe: ${item.days_left} Days"></span>`);
-
-                    renewBody.innerHTML += `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                            <td class="py-5 px-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg ${iconParts[2]} flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-sm ${iconParts[1]}">${iconParts[0]}</span>
-                                    </div>
-                                    <span class="font-bold text-sm text-slate-900 dark:text-white">${item.name}</span>
-                                </div>
-                            </td>
-                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.project}</td>
-                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.type}</td>
-                            <td class="py-5 px-6 text-sm font-bold text-slate-900 dark:text-white">${fDate}</td>
-                            <td class="py-5 px-6">
-                                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">${item.days_left} Days Left</span>
-                            </td>
-                            <td class="py-5 px-6">
-                                <div class="flex items-center gap-1.5">
-                                    ${statusBadge}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
+                renewBody.innerHTML = renewals.map(item => `
+                    <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                            <div style="font-weight:600;font-size:14px">${item.name}</div>
+                            <div style="font-size:12.5px;color:var(--text-3)">${item.project}</div>
+                        </td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2)">${item.type}</td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace">${formatD(item.date)}</td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left}d</span></td>
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
+                    </tr>`).join('');
             }
 
-            // Render Backups
             if (backups.length === 0) {
-                backupBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 dark:text-slate-400">No upcoming backups in 30 days.</td></tr>';
+                backupBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No upcoming backups in 30 days.</td></tr>';
             } else {
-                backups.forEach(item => {
-                    let badgeClass = item.days_left <= 7 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                                     (item.days_left <= 15 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 
-                                     'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20');
-                    
-                    const formatD = (d) => {
-                        if(!d) return '-';
-                        let dt = new Date(d);
-                        return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-                    };
-
-                    let statusBadge = item.days_left <= 7 ? `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" title="Urgent: ${item.days_left} Days"></span>` : 
-                                     (item.days_left <= 15 ? `<span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" title="Soon: ${item.days_left} Days"></span>` : 
-                                     `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="On Track: ${item.days_left} Days"></span>`);
-
-                    backupBody.innerHTML += `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                            <td class="py-5 px-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-sm text-emerald-500">backup</span>
-                                    </div>
-                                    <span class="font-bold text-sm text-slate-900 dark:text-white">${item.name}</span>
-                                </div>
-                            </td>
-                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400">${item.project}</td>
-                            <td class="py-5 px-6 text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap">${formatD(item.date)}</td>
-                            <td class="py-5 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">${formatD(item.extra)}</td>
-                            <td class="py-5 px-6">
-                                <span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">${item.days_left} Days Left</span>
-                            </td>
-                            <td class="py-5 px-6">
-                                <div class="flex items-center gap-1.5">
-                                    ${statusBadge}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
+                backupBody.innerHTML = backups.map(item => `
+                    <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                            <div style="font-weight:600;font-size:14px">${item.project}</div>
+                            <div style="font-size:12.5px;color:var(--text-3)">Backup (${item.name || 'manual'})</div>
+                        </td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace">${formatD(item.date)}</td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-3);font-family:'IBM Plex Mono',monospace">${formatD(item.extra)}</td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left}d</span></td>
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
+                    </tr>`).join('');
             }
         }
-    } catch(e) {
-        console.error("Dashboard failed to load", e);
-    }
+    } catch(e) { console.error("Dashboard load failed", e); }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
     window.location.href = 'login.html';
 });
+
+function exportDashboard() { window.print(); }
 
 loadDashboard();
 </script>

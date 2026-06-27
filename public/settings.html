@@ -4,159 +4,108 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Settings - RenewDesk Executive Dashboard</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2b6cee",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#0a0e17",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-    <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-        }
-        .sidebar-item-active {
-            background: linear-gradient(90deg, rgba(43, 108, 238, 0.15) 0%, rgba(43, 108, 238, 0) 100%);
-            border-left: 3px solid #2b6cee;
-        }
-    </style>
+    <title>Settings - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/v2.css">
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen overflow-hidden flex flex-col">
+<body class="rd-body">
+<div class="rd-layout">
 
-<!-- Top Navigation -->
-<nav class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/80 backdrop-blur-xl flex-shrink-0 z-50 flex items-center justify-between px-6 sticky top-0 shadow-sm shadow-slate-200/20 dark:shadow-none transition-all">
-    <div class="flex items-center gap-8 h-full">
-        <!-- Logo -->
-        <div class="flex items-center gap-3 relative z-10 group cursor-pointer transition-transform hover:scale-[1.02]">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(43,108,238,0.3)]">
-                <span class="material-symbols-outlined text-[18px]">autorenew</span>
-            </div>
-            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 leading-none">RenewDesk</h1>
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar">
+        <div class="rd-sidebar-logo">
+            <div class="rd-logo-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+            <span class="rd-logo-text">RenewDesk</span>
         </div>
-
-        <!-- Links -->
-        <div class="hidden lg:flex items-center h-full gap-2">
-            <a href="dashboard.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dashboard</span> Dashboard</a>
-            <a href="projects.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">folder</span> Projects</a>
-            <a href="domains.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">language</span> Domains</a>
-            <a href="hosting.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">dns</span> Hosting</a>
-            <a href="maintenance.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">engineering</span> Maintenance</a>
-            <a href="backups.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">backup</span> Backups</a>
-            <a href="tasks.html" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white"><span class="material-symbols-outlined text-[18px]">task_alt</span> Tasks</a>
-        </div>
-    </div>
-
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-3">
-        <a href="settings.html" class="flex items-center justify-center w-8 h-8 rounded-lg transition-all bg-primary/10 text-primary border border-primary/20" title="Settings"><span class="material-symbols-outlined text-[20px]">settings</span></a>
-        
-        <div class="hidden sm:block w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-        
-        <div class="hidden sm:flex items-center gap-2 mr-2">
-            <div class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm">AD</div>
-            <div class="text-left">
-                <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Admin</p>
-                <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-semibold">IT Manager</p>
+        <div class="rd-nav-label">Workspace</div>
+        <nav class="rd-nav">
+            <a href="dashboard.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+            <a href="projects.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a>
+        </nav>
+        <div class="rd-nav-label">Assets</div>
+        <nav class="rd-nav">
+            <a href="domains.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>Domains</a>
+            <a href="hosting.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>Hosting</a>
+            <a href="maintenance.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>Maintenance</a>
+            <a href="backups.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>Backups</a>
+            <a href="tasks.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>Tasks</a>
+        </nav>
+        <div class="rd-nav-label">System</div>
+        <nav class="rd-nav">
+            <a href="settings.html" class="rd-nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+        </nav>
+        <div class="rd-sidebar-footer">
+            <div class="rd-user-row">
+                <div class="rd-user-avatar">AD</div>
+                <div class="rd-user-info"><div class="rd-user-name">Admin</div><div class="rd-user-role">IT Manager</div></div>
+                <button id="logoutBtn" class="rd-logout-btn" title="Sign out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
             </div>
         </div>
-        
-        <button id="logoutBtn" class="flex items-center justify-center w-8 h-8 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Logout"><span class="material-symbols-outlined text-[20px]">logout</span></button>
-    </div>
-</nav>
+    </aside>
 
-    
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header">
+            <div><h1 class="rd-page-title">Settings</h1><p class="rd-page-subtitle">Configure alerts and system preferences</p></div>
+        </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark relative">
-        <!-- Header -->
-        <header class="h-20 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
-            <div>
-                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Global Settings</h2>
-            </div>
-            <div class="flex items-center gap-4">
-                
-            </div>
-        </header>
+        <div style="max-width:680px">
+            <div id="alertBox" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:12px;font-size:13.5px;font-weight:600;display:none;align-items:center;gap:10px"></div>
 
-        <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar z-10 relative">
-            <div class="max-w-4xl mx-auto">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Configuration</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1">Configure reminder schedules. Alerts are sent directly to <strong class="text-slate-700 dark:text-slate-200">kuldipparmar18@gmail.com</strong>.</p>
+            <form id="settingsForm">
+                <div class="rd-card" style="padding:32px;margin-bottom:20px">
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+                        <div style="width:46px;height:46px;border-radius:12px;background:rgba(224,144,42,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;margin:0 0 3px">Alert Preferences</h3>
+                            <p style="font-size:13px;color:var(--text-3);margin:0">Reminders are sent to <strong style="color:var(--text-2)">kuldipparmar18@gmail.com</strong></p>
+                        </div>
+                    </div>
+                    <div style="background:var(--surface-2);border-radius:12px;padding:20px;border:1px solid var(--border)">
+                        <div class="rd-form-group">
+                            <label class="rd-label">Reminder Thresholds</label>
+                            <p style="font-size:12px;color:var(--text-3);margin:0 0 10px">Days before expiry to send alert (comma separated)</p>
+                            <input type="text" data-key="remind_days" class="rd-input key-input" placeholder="30,15,7,1">
+                        </div>
+                    </div>
                 </div>
 
-                <div id="alertBox" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all"></div>
-
-                <form id="settingsForm">
-                    <!-- Alert Preferences -->
-                    <div class="glass-card rounded-2xl p-8 mb-8">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                                <span class="material-symbols-outlined text-2xl">notifications_active</span>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Alert Preferences</h3>
-                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Reminders are sent to <span class="font-semibold text-slate-700 dark:text-slate-300">kuldipparmar18@gmail.com</span></p>
-                            </div>
-                        </div>
-                        
-                        <div class="p-6 bg-amber-500/5 rounded-2xl border border-amber-500/10">
-                            <div class="max-w-md">
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Reminder Thresholds</label>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">Days before expiry to send alert (comma separated).</p>
-                                <input type="text" data-key="remind_days" class="key-input w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 dark:text-white transition-colors outline-none shadow-sm" placeholder="30,15,7,1">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end gap-4">
-                        <button type="button" id="testEmailBtn" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-6 py-3 rounded-xl font-bold text-sm shadow-sm hover:bg-emerald-500/20 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">send</span> Send Test Email
-                        </button>
-                        <button type="submit" id="saveBtn" class="flex items-center gap-2 bg-primary px-8 py-3 rounded-xl text-white font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
-                            <span class="material-symbols-outlined text-[18px]">save</span> Save Configuration
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <!-- Footer area with decorative glow -->
-            <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-20 translate-x-1/2 translate-y-1/2"></div>
+                <div style="display:flex;justify-content:flex-end;gap:12px">
+                    <button type="button" id="testEmailBtn" class="rd-btn" style="gap:7px;display:flex;align-items:center;color:var(--good);border-color:var(--good)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+                        Send Test Email
+                    </button>
+                    <button type="submit" id="saveBtn" class="rd-btn rd-btn-primary" style="display:flex;align-items:center;gap:7px">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save Configuration
+                    </button>
+                </div>
+            </form>
         </div>
-    </main>
+    </div>
+</div>
 
 <script src="assets/js/rd-api.js"></script>
 <script>
+function showAlert(msg, ok) {
+    const alertBox = document.getElementById('alertBox');
+    alertBox.style.display = 'flex';
+    alertBox.style.background = ok ? 'var(--good-soft)' : 'var(--bad-soft)';
+    alertBox.style.color = ok ? 'var(--good)' : 'var(--bad)';
+    alertBox.style.border = `1px solid ${ok ? 'rgba(22,163,74,.25)' : 'rgba(223,67,63,.25)'}`;
+    alertBox.textContent = msg;
+    setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+}
+
 async function loadSettings() {
     try {
         const res = await fetch(rdApi('api/settings.php'), { credentials: 'same-origin' });
-        if (res.status === 401) window.location.href = 'login.html';
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
         const json = await res.json();
-        
         json.data.forEach(item => {
             const input = document.querySelector(`input[data-key="${item.key}"]`);
             if (input) input.value = item.value;
@@ -167,77 +116,33 @@ async function loadSettings() {
 document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('saveBtn');
-    const alertBox = document.getElementById('alertBox');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Saving...';
-
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Saving…';
     const inputs = document.querySelectorAll('.key-input');
     const payload = {};
     inputs.forEach(input => { payload[input.getAttribute('data-key')] = input.value; });
-
     try {
-        const res = await fetch(rdApi('api/settings.php'), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify(payload)
-        });
-        
+        const res = await fetch(rdApi('api/settings.php'), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(payload) });
         const json = await res.json();
-        
-        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all';
-        if(json.status === 'success') {
-            alertBox.classList.add('bg-emerald-500/10', 'text-emerald-600', 'border', 'border-emerald-500/20');
-            alertBox.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Settings saved securely!';
-        } else {
-            alertBox.classList.add('bg-red-500/10', 'text-red-600', 'border', 'border-red-500/20');
-            alertBox.innerHTML = `<span class="material-symbols-outlined">error</span> ${json.message || 'Error saving settings.'}`;
-        }
-    } catch (e) {
-        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all bg-red-500/10 text-red-600 border border-red-500/20';
-        alertBox.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Network request failed.';
-    }
-    
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-    
-    setTimeout(() => { alertBox.classList.add('hidden'); }, 5000);
+        showAlert(json.status === 'success' ? 'Settings saved successfully!' : (json.message || 'Error saving settings.'), json.status === 'success');
+    } catch(e) { showAlert('Network request failed.', false); }
+    btn.disabled = false; btn.innerHTML = orig;
 });
 
 document.getElementById('testEmailBtn').addEventListener('click', async () => {
     const btn = document.getElementById('testEmailBtn');
-    const alertBox = document.getElementById('alertBox');
-    const originalText = btn.innerHTML;
-    
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Sending...';
-    
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Sending…';
     try {
-        const res = await fetch(rdApi('api/test_email.php'), { method: 'POST', credentials: 'same-origin' });
+        const res = await fetch(rdApi('api/test_email.php'), { method:'POST', credentials:'same-origin' });
         const json = await res.json();
-        
-        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all';
-        if (json.status === 'success') {
-             alertBox.classList.add('bg-emerald-500/10', 'text-emerald-600', 'border', 'border-emerald-500/20');
-             alertBox.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ${json.message}`;
-        } else {
-             alertBox.classList.add('bg-red-500/10', 'text-red-600', 'border', 'border-red-500/20');
-             alertBox.innerHTML = `<span class="material-symbols-outlined">error</span> ${json.message || 'SMTP Test Failed.'}`;
-        }
-    } catch (e) {
-        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium flex items-center gap-2 transition-all bg-red-500/10 text-red-600 border border-red-500/20';
-        alertBox.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Server error during test email.';
-    }
-    
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-    
-    setTimeout(() => { alertBox.classList.add('hidden'); }, 5000);
+        showAlert(json.message || (json.status === 'success' ? 'Test email sent!' : 'SMTP test failed.'), json.status === 'success');
+    } catch(e) { showAlert('Server error during test email.', false); }
+    btn.disabled = false; btn.innerHTML = orig;
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
+    await fetch(rdApi('api/auth/logout.php'), { method:'POST', credentials:'same-origin' });
     window.location.href = 'login.html';
 });
 
