@@ -11,6 +11,7 @@ ini_set('log_errors', 1);
 ini_set('error_log', dirname(__DIR__, 2) . '/cron/cron_debug.log');
 
 header("Content-Type: application/json; charset=UTF-8");
+require_once dirname(__DIR__, 2) . '/api/config/env.php';
 
 // --- Log helper ---
 function cronLog($msg) {
@@ -24,7 +25,7 @@ cronLog("IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'CLI'));
 cronLog("User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'N/A'));
 
 // --- Secret key to prevent unauthorized access ---
-$secretKey = 'RD-CRON-2024-xK9mP3qW7vN1';
+$secretKey = renewdesk_env('CRON_KEY', 'RD-CRON-2024-xK9mP3qW7vN1');
 
 // Validate key
 if (!isset($_GET['key']) || $_GET['key'] !== $secretKey) {

@@ -9,43 +9,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
 </head>
 <body class="rd-body">
 <div class="rd-layout">
 
     <!-- SIDEBAR -->
-    <aside class="rd-sidebar">
-        <div class="rd-sidebar-logo">
-            <div class="rd-logo-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
-            <span class="rd-logo-text">RenewDesk</span>
-        </div>
-        <div class="rd-nav-label">Workspace</div>
-        <nav class="rd-nav">
-            <a href="dashboard.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
-            <a href="clients.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</a>
-            <a href="projects.html" class="rd-nav-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a>
-        </nav>
-        <div class="rd-nav-label">Assets</div>
-        <nav class="rd-nav">
-            <a href="domains.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>Domains</a>
-            <a href="hosting.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>Hosting</a>
-            <a href="maintenance.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>Maintenance</a>
-            <a href="backups.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>Backups</a>
-            <a href="tasks.html" class="rd-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>Tasks</a>
-        </nav>
-        <div class="rd-sidebar-footer">
-            <div class="rd-user-row">
-                <div class="rd-user-avatar">AD</div>
-                <div class="rd-user-info"><div class="rd-user-name">Admin</div><div class="rd-user-role">IT Manager</div></div>
-                <button id="logoutBtn" class="rd-logout-btn" title="Sign out"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
-            </div>
-        </div>
-    </aside>
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('projects');</script>
 
     <!-- MAIN -->
     <div class="rd-main">
         <div class="rd-page-header">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
             <div>
                 <h1 class="rd-page-title">Projects</h1>
                 <p class="rd-page-subtitle" id="projCount">Loading portfolio…</p>
@@ -166,12 +143,10 @@ async function loadProjects() {
         projectsData = data.data;
         document.getElementById('projCount').textContent = projectsData.length + ' projects in your portfolio';
         applyFilters();
-    } catch(e) { console.error("Failed to load projects", e); }
+    } catch(e) { rdError('Failed to load projects.') } catch(e) { console.error("Failed to load projects", e); }
 }
 
-function formatDate(str) {
-    const d = new Date(str);
-    return `${d.getDate().toString().padStart(2,'0')}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getFullYear()}`;
+const formatDate = rdFormatDate;-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getFullYear()}`;
 }
 
 function applyFilters() {
@@ -292,9 +267,7 @@ async function deleteProject(id, name) {
     loadProjects();
 }
 
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch(rdApi('api/auth/logout.php'), { method:'POST', credentials:'same-origin' });
-    window.location.href = 'login.html';
+window.location.href = 'login.html';
 });
 
 const preselectedClientId = new URLSearchParams(window.location.search).get('client_id');

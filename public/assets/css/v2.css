@@ -648,3 +648,41 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 /* Override Tailwind's bg-background-light with v2 bg */
 .bg-background-light { background: var(--bg) !important; }
 .dark\:bg-background-dark { background: var(--bg) !important; }
+
+/* ============================================================
+   MOBILE HAMBURGER BUTTON
+   ============================================================ */
+.rd-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  flex: none;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+@media (max-width: 800px) {
+  .rd-sidebar {
+    position: fixed;
+    left: calc(-1 * var(--sidebar-w) - 10px);
+    transition: left 0.25s ease;
+    z-index: 200;
+    box-shadow: none;
+  }
+  .rd-sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 32px rgba(20,22,18,.14);
+  }
+  .rd-menu-btn { display: flex; }
+  .rd-main { padding: 20px 18px 60px; }
+  .rd-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .rd-page-header > div:last-child { width: 100%; }
+}

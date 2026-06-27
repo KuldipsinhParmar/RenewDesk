@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `backups` (
   `last_backup`      DATE,
   `next_backup`      DATE,
   `storage_location` VARCHAR(255),
+  `client_paid`      TINYINT(1)    DEFAULT 0,
   `notes`            TEXT,
   `created_at`       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
   `updated_at`       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

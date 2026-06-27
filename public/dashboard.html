@@ -8,94 +8,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
-    <script id="tailwind-config">
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f9d76",
-                        "background-light": "#f5f3ee",
-                    },
-                    fontFamily: { "display": ["IBM Plex Sans", "sans-serif"] },
-                },
-            },
-        }
-    </script>
 </head>
 <body class="rd-body">
 <div class="rd-layout">
 
     <!-- SIDEBAR -->
-    <aside class="rd-sidebar">
-        <div class="rd-sidebar-logo">
-            <div class="rd-logo-icon">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
-            </div>
-            <span class="rd-logo-text">RenewDesk</span>
-        </div>
-
-        <div class="rd-nav-label">Workspace</div>
-        <nav class="rd-nav">
-            <a href="dashboard.html" class="rd-nav-item active">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-                Dashboard
-            </a>
-            <a href="clients.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Clients
-            </a>
-            <a href="projects.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                Projects
-            </a>
-        </nav>
-
-        <div class="rd-nav-label">Assets</div>
-        <nav class="rd-nav">
-            <a href="domains.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
-                Domains
-            </a>
-            <a href="hosting.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
-                Hosting
-            </a>
-            <a href="maintenance.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>
-                Maintenance
-            </a>
-            <a href="backups.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
-                Backups
-            </a>
-            <a href="tasks.html" class="rd-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
-                Tasks
-            </a>
-        </nav>
-
-        <div class="rd-sidebar-footer">
-            <div class="rd-user-row">
-                <div class="rd-user-avatar">AD</div>
-                <div class="rd-user-info">
-                    <div class="rd-user-name">Admin</div>
-                    <div class="rd-user-role">IT Manager</div>
-                </div>
-                <button id="logoutBtn" class="rd-logout-btn" title="Sign out">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-                </button>
-            </div>
-        </div>
-    </aside>
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('dashboard');</script>
 
     <!-- MAIN -->
     <div class="rd-main">
         <!-- Page header -->
         <div class="rd-page-header">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
             <div>
                 <h1 class="rd-page-title">Workspace Overview</h1>
                 <p class="rd-page-subtitle" id="dashDate">Loading…</p>
@@ -126,7 +54,7 @@
             </div>
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Domains Revenue</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Domains Contract</span>
                     <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
                     </span>
@@ -136,7 +64,7 @@
             </div>
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Hosting Revenue</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Hosting Contract</span>
                     <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/></svg>
                     </span>
@@ -146,7 +74,7 @@
             </div>
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">AMC Revenue</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">AMC Contract</span>
                     <span style="width:32px;height:32px;border-radius:9px;background:rgba(224,144,42,.13);color:var(--c-amber);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M16 12.5h3"/></svg>
                     </span>
@@ -224,11 +152,7 @@
 const d = new Date();
 document.getElementById('dashDate').textContent = d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + ' · all renewals across your stack';
 
-function formatD(d) {
-    if (!d) return '—';
-    let dt = new Date(d);
-    return `${dt.getDate().toString().padStart(2,'0')}-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-}
+const formatD = rdFormatDate;
 
 function badgeStyle(days) {
     if (days <= 7) return 'background:var(--bad-soft);color:var(--bad)';
@@ -259,10 +183,18 @@ async function loadDashboard() {
             const d = data.data;
             document.getElementById('stat-projects').textContent = d.total_projects;
             document.getElementById('stat-backups').textContent = d.total_backups || 0;
-            document.getElementById('stat-amc').textContent = fmt(d.amc_revenue);
-            document.getElementById('stat-hosting-rev').textContent = fmt(d.hosting_revenue);
-            document.getElementById('stat-domain-rev').textContent = fmt(d.domain_revenue);
-            document.getElementById('stat-pending').textContent = d.upcoming.length;
+            document.getElementById('stat-amc').textContent = fmt(d.amc_contract_value || d.amc_revenue || 0);
+            document.getElementById('stat-hosting-rev').textContent = fmt(d.hosting_contract_value || d.hosting_revenue || 0);
+            document.getElementById('stat-domain-rev').textContent = fmt(d.domain_contract_value || d.domain_revenue || 0);
+            const alertCount = d.upcoming.filter(i => i.type !== 'Backup').length;
+            document.getElementById('stat-pending').textContent = alertCount;
+
+            // Sidebar alert badges by type
+            const byType = {};
+            d.upcoming.forEach(i => { if (i.days_left <= 7) byType[i.type.toLowerCase()] = (byType[i.type.toLowerCase()]||0) + 1; });
+            ['domains','hosting','maintenance','backups'].forEach(t => rdSidebar.setBadge(t, byType[t]||0));
+
+            window._dashData = d;
 
             const renewals = d.upcoming.filter(i => i.type !== 'Backup');
             const backups  = d.upcoming.filter(i => i.type === 'Backup');
@@ -298,60 +230,73 @@ async function loadDashboard() {
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-3);font-family:'IBM Plex Mono',monospace">${formatD(item.extra)}</td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(Math.max(0,item.days_left))};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left <= 0 ? 'Overdue' : item.days_left+'d'}</span></td>
                         <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right">
-                            <button onclick="markBackupDone(${item.id},'${item.date}','${item.extra||''}','${item.frequency||'monthly'}',${item.project_id},'${item.storage_location||''}')" class="rd-icon-btn success" title="Mark Done" style="margin-left:auto">
+                            <button class="rd-icon-btn success mark-backup-btn" style="margin-left:auto" title="Mark Done"
+                            data-id="${item.id}" data-next="${item.date}" data-last="${item.extra||''}" data-freq="${item.frequency||'monthly'}" data-pid="${item.project_id}" data-loc="${(item.storage_location||'').replace(/"/g,'&quot;')}">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
                             </button>
                         </td>
                     </tr>`).join('');
             }
         }
-    } catch(e) { console.error("Dashboard load failed", e); }
+    } catch(e) { rdError('Dashboard failed to load. Check server.'); }
 }
 
-async function markBackupDone(id, nextDate, lastDate, frequency, projectId, storageLocation) {
-    let dn = new Date(nextDate);
+function nextBackupDate(nextDate, lastDate, frequency) {
+    let dn = new Date(nextDate + 'T00:00:00');
     if (lastDate) {
-        let diffTime = new Date(nextDate).getTime() - new Date(lastDate).getTime();
-        if (diffTime > 0) { dn = new Date(dn.getTime() + diffTime); }
-        else {
-            if(frequency==='daily') dn.setDate(dn.getDate()+1);
-            else if(frequency==='weekly') dn.setDate(dn.getDate()+7);
-            else if(frequency==='monthly') dn.setMonth(dn.getMonth()+1);
-        }
-    } else {
-        if(frequency==='daily') dn.setDate(dn.getDate()+1);
-        else if(frequency==='weekly') dn.setDate(dn.getDate()+7);
-        else if(frequency==='monthly') dn.setMonth(dn.getMonth()+1);
-    }
-    const newNext = dn.toISOString().split('T')[0];
+        const diff = new Date(nextDate + 'T00:00:00').getTime() - new Date(lastDate + 'T00:00:00').getTime();
+        if (diff > 0) { dn = new Date(dn.getTime() + diff); }
+        else { applyFreq(dn, frequency); }
+    } else { applyFreq(dn, frequency); }
+    return dn.toISOString().split('T')[0];
+}
+function applyFreq(dt, freq) {
+    if (freq === 'daily') dt.setDate(dt.getDate() + 1);
+    else if (freq === 'weekly') dt.setDate(dt.getDate() + 7);
+    else dt.setMonth(dt.getMonth() + 1);
+}
 
+document.getElementById('backupTable').addEventListener('click', async e => {
+    const btn = e.target.closest('.mark-backup-btn');
+    if (!btn) return;
+    const { id, next: nextDate, last: lastDate, freq: frequency, pid: projectId, loc: storageLocation } = btn.dataset;
+    const newNext = nextBackupDate(nextDate, lastDate, frequency);
     const result = await Swal.fire({
-        title:'Mark Backup Done?',
-        html:`Complete this cycle and schedule next:<br><br><b>New Last Backup:</b> ${formatD(nextDate)}<br><b>New Next Backup:</b> ${formatD(newNext)}`,
-        icon:'question', showCancelButton:true, confirmButtonColor:'#0f9d76', cancelButtonColor:'#df433f', confirmButtonText:'Yes, Done!'
+        title: 'Mark Backup Done?',
+        html: `Complete this cycle:<br><br><b>New Last Backup:</b> ${formatD(nextDate)}<br><b>New Next Backup:</b> ${formatD(newNext)}`,
+        icon: 'question', showCancelButton: true, confirmButtonColor: '#0f9d76', confirmButtonText: 'Yes, Done!'
     });
     if (!result.isConfirmed) return;
-
     try {
         await fetch(rdApi(`api/backups.php?id=${id}`), {
-            method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
-            body: JSON.stringify({ project_id: projectId, frequency, last_backup: lastDate||null, next_backup: nextDate, storage_location: storageLocation||null, client_paid: 1 })
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+            body: JSON.stringify({ project_id: +projectId, frequency, last_backup: nextDate, next_backup: newNext, storage_location: storageLocation || null, client_paid: 0 })
         });
-        await fetch(rdApi('api/backups.php'), {
-            method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
-            body: JSON.stringify({ project_id: projectId, frequency, last_backup: nextDate, next_backup: newNext, storage_location: storageLocation||null, client_paid: 0 })
-        });
-        Swal.fire({ title:'Done!', text:'Backup updated, next cycle scheduled.', icon:'success', timer:1800, showConfirmButton:false });
+        Swal.fire({ title: 'Done!', text: 'Backup cycle updated.', icon: 'success', timer: 1800, showConfirmButton: false });
         loadDashboard();
-    } catch(e) { Swal.fire('Error','Failed to update backup.','error'); }
-}
-
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch(rdApi('api/auth/logout.php'), { method: 'POST', credentials: 'same-origin' });
-    window.location.href = 'login.html';
+    } catch(e) { Swal.fire('Error', 'Failed to update backup.', 'error'); }
 });
 
-function exportDashboard() { window.print(); }
+window.location.href = 'login.html';
+});
+
+function exportDashboard() {
+    const d = window._dashData;
+    if (!d || !d.upcoming) { rdError('No data to export yet — wait for dashboard to load.'); return; }
+    const rows = [['Type','Asset/Project','Project','Expiry Date','Days Left']];
+    d.upcoming.forEach(i => rows.push([i.type, i.name||i.project, i.project, i.date, i.days_left]));
+    if (d.expired && d.expired.length) {
+        rows.push([]);
+        rows.push(['--- EXPIRED ---','','','','']);
+        d.expired.forEach(i => rows.push([i.type, i.name, i.project, i.date, 'Expired']));
+    }
+    const csv = rows.map(r => r.map(c => '"' + String(c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'renewdesk-' + new Date().toISOString().split('T')[0] + '.csv';
+    a.click();
+}
 
 loadDashboard();
 </script>

@@ -1,5 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT");
 
@@ -17,9 +16,11 @@ try {
     } 
     elseif ($method === 'PUT') {
         $input = json_decode(file_get_contents("php://input"), true);
+        $allowed = ['remind_days', 'email_from', 'email_cc', 'alert_enabled'];
         foreach ($input as $key => $value) {
+            if (!in_array($key, $allowed, true)) continue;
             $stmt = $db->prepare("UPDATE settings SET value=? WHERE `key`=?");
-            $stmt->execute([$value, $key]);
+            $stmt->execute([trim((string)$value), $key]);
         }
         echo json_encode(["status" => "success", "message" => "Settings updated."]);
     }

@@ -1,5 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
@@ -29,14 +28,18 @@ try {
     } elseif ($method === 'POST') {
         $in = json_decode(file_get_contents("php://input"), true);
         $stmt = $db->prepare("INSERT INTO clients (name, company, email, phone, notes) VALUES (?,?,?,?,?)");
-        $stmt->execute([$in['name'], $in['company']??null, $in['email']??null, $in['phone']??null, $in['notes']??null]);
+        $cname = trim($in['name'] ?? '');
+        if ($cname === '') throw new Exception('Client name is required.');
+        $stmt->execute([$cname, trim($in['company']??'')?: null, trim($in['email']??'')?: null, trim($in['phone']??'')?: null, trim($in['notes']??'')?: null]);
         echo json_encode(["status"=>"success","message"=>"Client created.","id"=>$db->lastInsertId()]);
     } elseif ($method === 'PUT') {
         if (!isset($_GET['id'])) throw new Exception("ID required");
         $id = (int)$_GET['id'];
         $in = json_decode(file_get_contents("php://input"), true);
         $stmt = $db->prepare("UPDATE clients SET name=?, company=?, email=?, phone=?, notes=? WHERE id=?");
-        $stmt->execute([$in['name'], $in['company']??null, $in['email']??null, $in['phone']??null, $in['notes']??null, $id]);
+        $cname = trim($in['name'] ?? '');
+        if ($cname === '') throw new Exception('Client name is required.');
+        $stmt->execute([$cname, trim($in['company']??'')?: null, trim($in['email']??'')?: null, trim($in['phone']??'')?: null, trim($in['notes']??'')?: null, $id]);
         echo json_encode(["status"=>"success","message"=>"Client updated."]);
     } elseif ($method === 'DELETE') {
         if (!isset($_GET['id'])) throw new Exception("ID required");

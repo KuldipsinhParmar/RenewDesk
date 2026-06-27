@@ -1,5 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once dirname(__DIR__, 2) . '/api/config/auth.php';
@@ -15,13 +14,19 @@ try {
     $data['total_projects'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
 
     $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE status='active'");
-    $data['amc_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $data['amc_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE status='active' AND client_paid=1");
+    $data['amc_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
     $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active'");
-    $data['hosting_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $data['hosting_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active' AND client_paid=1");
+    $data['hosting_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
     $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active'");
-    $data['domain_revenue'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $data['domain_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
+    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active' AND client_paid=1");
+    $data['domain_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
     $stmt = $db->query("SELECT COUNT(*) as c FROM backups");
     $data['total_backups'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
@@ -58,12 +63,19 @@ try {
 
     $data['upcoming'] = $upcoming;
 
-    // Recently expired
+    // Recently expired (domains + hosting + maintenance)
     $expired = [];
-    $stmt = $db->query("SELECT 'Domain' as type, d.domain_name as name, p.name as project, d.renewal_date as date FROM domains d JOIN projects p ON d.project_id = p.id WHERE d.status = 'active' AND d.renewal_date < CURDATE()");
+    $stmt = $db->query("SELECT 'Domain' as type, d.domain_name as name, p.name as project, d.renewal_date as date FROM domains d JOIN projects p ON d.project_id = p.id WHERE d.status = 'active' AND d.renewal_date < CURDATE() ORDER BY d.renewal_date DESC LIMIT 20");
     $expired = array_merge($expired, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
-    $data['expired'] = $expired;
+    $stmt = $db->query("SELECT 'Hosting' as type, h.plan_name as name, p.name as project, h.renewal_date as date FROM hosting h JOIN projects p ON h.project_id = p.id WHERE h.status = 'active' AND h.renewal_date < CURDATE() ORDER BY h.renewal_date DESC LIMIT 20");
+    $expired = array_merge($expired, $stmt->fetchAll(PDO::FETCH_ASSOC));
+
+    $stmt = $db->query("SELECT 'Maintenance' as type, 'AMC Contract' as name, p.name as project, m.end_date as date FROM maintenance m JOIN projects p ON m.project_id = p.id WHERE m.status = 'active' AND m.end_date < CURDATE() ORDER BY m.end_date DESC LIMIT 20");
+    $expired = array_merge($expired, $stmt->fetchAll(PDO::FETCH_ASSOC));
+
+    usort($expired, function($a, $b) { return strcmp($b['date'], $a['date']); });
+    $data['expired'] = array_slice($expired, 0, 30);
 
     echo json_encode(["status" => "success", "data" => $data]);
 

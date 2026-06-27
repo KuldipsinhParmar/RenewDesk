@@ -1,5 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
@@ -26,8 +25,8 @@ try {
         $input = json_decode(file_get_contents("php://input"), true);
         $stmt = $db->prepare("INSERT INTO tasks (project_id, task_date, task_title, hours, notes) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([
-            $input['project_id'], $input['task_date'], $input['task_title'],
-            $input['hours'] ?? 0, $input['notes'] ?? null
+            $input['project_id'], $input['task_date'], trim($input['task_title'] ?? ''),
+            max(0, (float)($input['hours'] ?? 0)), trim($input['notes'] ?? '') ?: null
         ]);
         echo json_encode(["status" => "success", "message" => "Task added.", "id" => $db->lastInsertId()]);
     }
@@ -38,8 +37,8 @@ try {
 
         $stmt = $db->prepare("UPDATE tasks SET project_id=?, task_date=?, task_title=?, hours=?, notes=? WHERE id=?");
         $stmt->execute([
-            $input['project_id'], $input['task_date'], $input['task_title'],
-            $input['hours'] ?? 0, $input['notes'] ?? null, $id
+            $input['project_id'], $input['task_date'], trim($input['task_title'] ?? ''),
+            max(0, (float)($input['hours'] ?? 0)), trim($input['notes'] ?? '') ?: null, $id
         ]);
         echo json_encode(["status" => "success", "message" => "Task updated."]);
     }
