@@ -12,34 +12,28 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     if ($method === 'GET') {
         if (isset($_GET['id'])) {
-            // Get single project + relationships
             $id = $_GET['id'];
-            $stmt = $db->prepare("SELECT * FROM projects WHERE id = ?");
+            $stmt = $db->prepare("SELECT p.*, c.name as client_name, c.company as client_company FROM projects p LEFT JOIN clients c ON c.id = p.client_id WHERE p.id = ?");
             $stmt->execute([$id]);
             $project = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if($project) {
-                // Fetch domains
+            if ($project) {
                 $stmt = $db->prepare("SELECT * FROM domains WHERE project_id = ?");
                 $stmt->execute([$id]);
                 $project['domains'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Fetch hosting
                 $stmt = $db->prepare("SELECT * FROM hosting WHERE project_id = ?");
                 $stmt->execute([$id]);
                 $project['hosting'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Fetch maintenance
                 $stmt = $db->prepare("SELECT * FROM maintenance WHERE project_id = ?");
                 $stmt->execute([$id]);
                 $project['maintenance'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Fetch backups
                 $stmt = $db->prepare("SELECT * FROM backups WHERE project_id = ?");
                 $stmt->execute([$id]);
                 $project['backups'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Fetch tasks
                 $stmt = $db->prepare("SELECT * FROM tasks WHERE project_id = ? ORDER BY task_date DESC, created_at DESC");
                 $stmt->execute([$id]);
                 $project['tasks'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -50,27 +44,36 @@ try {
                 echo json_encode(["status" => "error", "message" => "Project not found"]);
             }
         } else {
-            // Get all projects
-            $stmt = $db->query("SELECT * FROM projects ORDER BY created_at DESC");
-            $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode(["status" => "success", "data" => $projects]);
+            $client_filter = isset($_GET['client_id']) ? " WHERE p.client_id = " . (int)$_GET['client_id'] : "";
+            $stmt = $db->query("SELECT p.*, c.name as client_name, c.company as client_company FROM projects p LEFT JOIN clients c ON c.id = p.client_id{$client_filter} ORDER BY p.created_at DESC");
+            echo json_encode(["status" => "success", "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
         }
-    } 
-    elseif ($method === 'POST') {
+    } elseif ($method === 'POST') {
         $input = json_decode(file_get_contents("php://input"), true);
-        $stmt = $db->prepare("INSERT INTO projects (name, description, status, notes) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$input['name'], $input['description'] ?? null, $input['status'] ?? 'active', $input['notes'] ?? null]);
+        $stmt = $db->prepare("INSERT INTO projects (client_id, name, description, status, notes) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $input['client_id'] ?? null,
+            $input['name'],
+            $input['description'] ?? null,
+            $input['status'] ?? 'active',
+            $input['notes'] ?? null
+        ]);
         echo json_encode(["status" => "success", "message" => "Project created.", "id" => $db->lastInsertId()]);
-    }
-    elseif ($method === 'PUT') {
+    } elseif ($method === 'PUT') {
         if (!isset($_GET['id'])) throw new Exception("ID required");
         $id = $_GET['id'];
         $input = json_decode(file_get_contents("php://input"), true);
-        $stmt = $db->prepare("UPDATE projects SET name=?, description=?, status=?, notes=? WHERE id=?");
-        $stmt->execute([$input['name'], $input['description'] ?? null, $input['status'] ?? 'active', $input['notes'] ?? null, $id]);
+        $stmt = $db->prepare("UPDATE projects SET client_id=?, name=?, description=?, status=?, notes=? WHERE id=?");
+        $stmt->execute([
+            $input['client_id'] ?? null,
+            $input['name'],
+            $input['description'] ?? null,
+            $input['status'] ?? 'active',
+            $input['notes'] ?? null,
+            $id
+        ]);
         echo json_encode(["status" => "success", "message" => "Project updated."]);
-    }
-    elseif ($method === 'DELETE') {
+    } elseif ($method === 'DELETE') {
         if (!isset($_GET['id'])) throw new Exception("ID required");
         $id = $_GET['id'];
         $stmt = $db->prepare("DELETE FROM projects WHERE id=?");

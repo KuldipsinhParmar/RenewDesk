@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <script id="tailwind-config">
         tailwind.config = {
@@ -42,6 +43,10 @@
             <a href="dashboard.html" class="rd-nav-item active">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
                 Dashboard
+            </a>
+            <a href="clients.html" class="rd-nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Clients
             </a>
             <a href="projects.html" class="rd-nav-item">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
@@ -203,7 +208,7 @@
                     <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Due</th>
                     <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last Backup</th>
                     <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days Left</th>
-                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Action</th>
                 </tr></thead>
                 <tbody id="backupTable">
                     <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading backups…</td></tr>
@@ -287,16 +292,58 @@ async function loadDashboard() {
                     <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
                         <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
                             <div style="font-weight:600;font-size:14px">${item.project}</div>
-                            <div style="font-size:12.5px;color:var(--text-3)">Backup (${item.name || 'manual'})</div>
+                            <div style="font-size:12.5px;color:var(--text-3)">${item.frequency || 'manual'} backup</div>
                         </td>
-                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace">${formatD(item.date)}</td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:${item.days_left<=0?'var(--bad)':'inherit'}">${formatD(item.date)}</td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-3);font-family:'IBM Plex Mono',monospace">${formatD(item.extra)}</td>
-                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left}d</span></td>
-                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(Math.max(0,item.days_left))};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left <= 0 ? 'Overdue' : item.days_left+'d'}</span></td>
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right">
+                            <button onclick="markBackupDone(${item.id},'${item.date}','${item.extra||''}','${item.frequency||'monthly'}',${item.project_id},'${item.storage_location||''}')" class="rd-icon-btn success" title="Mark Done" style="margin-left:auto">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
+                            </button>
+                        </td>
                     </tr>`).join('');
             }
         }
     } catch(e) { console.error("Dashboard load failed", e); }
+}
+
+async function markBackupDone(id, nextDate, lastDate, frequency, projectId, storageLocation) {
+    let dn = new Date(nextDate);
+    if (lastDate) {
+        let diffTime = new Date(nextDate).getTime() - new Date(lastDate).getTime();
+        if (diffTime > 0) { dn = new Date(dn.getTime() + diffTime); }
+        else {
+            if(frequency==='daily') dn.setDate(dn.getDate()+1);
+            else if(frequency==='weekly') dn.setDate(dn.getDate()+7);
+            else if(frequency==='monthly') dn.setMonth(dn.getMonth()+1);
+        }
+    } else {
+        if(frequency==='daily') dn.setDate(dn.getDate()+1);
+        else if(frequency==='weekly') dn.setDate(dn.getDate()+7);
+        else if(frequency==='monthly') dn.setMonth(dn.getMonth()+1);
+    }
+    const newNext = dn.toISOString().split('T')[0];
+
+    const result = await Swal.fire({
+        title:'Mark Backup Done?',
+        html:`Complete this cycle and schedule next:<br><br><b>New Last Backup:</b> ${formatD(nextDate)}<br><b>New Next Backup:</b> ${formatD(newNext)}`,
+        icon:'question', showCancelButton:true, confirmButtonColor:'#0f9d76', cancelButtonColor:'#df433f', confirmButtonText:'Yes, Done!'
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+        await fetch(rdApi(`api/backups.php?id=${id}`), {
+            method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
+            body: JSON.stringify({ project_id: projectId, frequency, last_backup: lastDate||null, next_backup: nextDate, storage_location: storageLocation||null, client_paid: 1 })
+        });
+        await fetch(rdApi('api/backups.php'), {
+            method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
+            body: JSON.stringify({ project_id: projectId, frequency, last_backup: nextDate, next_backup: newNext, storage_location: storageLocation||null, client_paid: 0 })
+        });
+        Swal.fire({ title:'Done!', text:'Backup updated, next cycle scheduled.', icon:'success', timer:1800, showConfirmButton:false });
+        loadDashboard();
+    } catch(e) { Swal.fire('Error','Failed to update backup.','error'); }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {

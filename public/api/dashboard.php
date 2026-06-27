@@ -48,9 +48,9 @@ try {
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Backups
-    $stmt = $db->query("SELECT 'Backup' as type, b.id, CONCAT('Backup (', b.frequency, ')') as name, b.next_backup as date, b.last_backup as extra, p.name as project, DATEDIFF(b.next_backup, CURDATE()) as days_left 
-                        FROM backups b JOIN projects p ON b.project_id = p.id 
-                        WHERE b.next_backup BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY b.next_backup ASC");
+    $stmt = $db->query("SELECT 'Backup' as type, b.id, b.project_id, CONCAT('Backup (', b.frequency, ')') as name, b.frequency, b.next_backup as date, b.last_backup as extra, b.storage_location, b.client_paid, p.name as project, DATEDIFF(b.next_backup, CURDATE()) as days_left
+                        FROM backups b JOIN projects p ON b.project_id = p.id
+                        WHERE b.client_paid = 0 AND b.next_backup BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY b.next_backup ASC");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Sort by days left
