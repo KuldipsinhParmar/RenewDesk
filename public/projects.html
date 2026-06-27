@@ -143,11 +143,10 @@ async function loadProjects() {
         projectsData = data.data;
         document.getElementById('projCount').textContent = projectsData.length + ' projects in your portfolio';
         applyFilters();
-    } catch(e) { rdError('Failed to load projects.') } catch(e) { console.error("Failed to load projects", e); }
+    } catch(e) { rdError('Failed to load projects.'); }
 }
 
-const formatDate = rdFormatDate;-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getFullYear()}`;
-}
+const formatDate = rdFormatDate;
 
 function applyFilters() {
     const term = document.getElementById('searchProjects').value.toLowerCase();
@@ -266,9 +265,6 @@ async function deleteProject(id, name) {
     await fetch(rdApi(`api/projects.php?id=${id}`), { method:'DELETE', credentials:'same-origin' });
     loadProjects();
 }
-
-window.location.href = 'login.html';
-});
 
 const preselectedClientId = new URLSearchParams(window.location.search).get('client_id');
 

@@ -191,8 +191,7 @@ let currentProjectData = {};
 let currentModalType = '';
 let currentEditId = null;
 
-const formatD = rdFormatDate;-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-}
+const formatD = rdFormatDate;
 
 function paidDot(paid) {
     const c = paid == 1 ? 'var(--good)' : 'var(--bad)';
@@ -301,7 +300,7 @@ async function loadData() {
                 </tr>`).join('')
             : emptyRow(4, 'No tasks added.');
 
-    } catch(e) { rdError('Failed to load project details.') } catch(e) { console.error("Failed to load project details", e); }
+    } catch(e) { rdError('Failed to load project details.'); }
 }
 
 function showModal() { const m=document.getElementById('entityModal'); m.style.display='flex'; }
@@ -584,9 +583,6 @@ async function delEntity(type, id) {
         loadData();
     }
 }
-
-window.location.href = 'login.html';
-});
 
 loadData();
 </script>

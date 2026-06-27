@@ -139,7 +139,7 @@ async function loadTasks() {
         const data = await res.json();
         allTasks = data.data;
         applyFiltersAndRender();
-    } catch(e) { rdError('Failed to load tasks.') } catch(e) { console.error("Failed to load tasks", e); }
+    } catch(e) { rdError('Failed to load tasks.'); }
 }
 
 function applyFiltersAndRender() {
@@ -294,9 +294,6 @@ async function deleteTask(id) {
 document.getElementById('searchTasks').addEventListener('input', () => applyFiltersAndRender());
 document.getElementById('filterProject').addEventListener('change', () => applyFiltersAndRender());
 document.getElementById('filterDate').addEventListener('change', () => applyFiltersAndRender());
-
-window.location.href = 'login.html';
-});
 
 loadProjects().then(() => loadTasks());
 </script>

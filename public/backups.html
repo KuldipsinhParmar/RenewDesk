@@ -64,8 +64,7 @@ async function loadData() {
     } catch(e) { console.error("Failed to load backups", e); }
 }
 
-const formatD = rdFormatDate;-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-}
+const formatD = rdFormatDate;
 
 function paidPill(paid) {
     return paid == 1
@@ -146,9 +145,6 @@ async function markDone(id, nextDate) {
 document.getElementById('searchData').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     renderData(listData.filter(p => p.project_name && p.project_name.toLowerCase().includes(term)));
-});
-
-window.location.href = 'login.html';
 });
 
 loadData();

@@ -66,11 +66,10 @@ async function loadData() {
         const yearSelect = document.getElementById('yearFilter');
         if ([...yearSelect.options].some(opt => opt.value === currentYear)) yearSelect.value = currentYear;
         filterData();
-    } catch(e) { rdError('Failed to load maintenance.') } catch(e) { console.error("Failed to load maintenance", e); }
+    } catch(e) { rdError('Failed to load maintenance.'); }
 }
 
-const formatD = rdFormatDate;-${(dt.getMonth()+1).toString().padStart(2,'0')}-${dt.getFullYear()}`;
-}
+const formatD = rdFormatDate;
 
 function paidPill(paid) {
     return paid == 1
@@ -140,9 +139,6 @@ async function markRenewed(id, oldStart, oldEnd) {
         loadData();
     } catch(e) { Swal.fire('Error','Failed to renew.','error'); }
 }
-
-window.location.href = 'login.html';
-});
 
 loadData();
 </script>

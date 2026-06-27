@@ -277,9 +277,6 @@ document.getElementById('backupTable').addEventListener('click', async e => {
     } catch(e) { Swal.fire('Error', 'Failed to update backup.', 'error'); }
 });
 
-window.location.href = 'login.html';
-});
-
 function exportDashboard() {
     const d = window._dashData;
     if (!d || !d.upcoming) { rdError('No data to export yet — wait for dashboard to load.'); return; }
