@@ -39,6 +39,9 @@
             </div>
         </div>
 
+        <!-- STATS STRIP -->
+        <div id="statsStrip" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:6px"></div>
+
         <!-- 2-column grid -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
 
@@ -233,6 +236,45 @@ function price(v) {
 const tdRow = 'padding:11px 16px;border-bottom:1px solid var(--border)';
 const emptyRow = (cols, msg) => `<tr><td colspan="${cols}" style="${tdRow};text-align:center;color:var(--text-3);font-size:13px">${msg}</td></tr>`;
 
+function renderStats() {
+    const d = currentProjectData;
+    const priceItems = [...(d.domains||[]), ...(d.hosting||[]), ...(d.maintenance||[])];
+    const allServices = [...priceItems, ...(d.backups||[])];
+    const totalCost = priceItems.reduce((s, i) => s + parseFloat(i.price || 0), 0);
+    const unpaid = allServices.filter(i => i.client_paid != 1).length;
+    const totalHours = (d.tasks||[]).reduce((s, i) => s + parseFloat(i.hours || 0), 0);
+    const today = new Date();
+    const in30 = new Date(); in30.setDate(in30.getDate() + 30);
+    const expiring = [...(d.domains||[]), ...(d.hosting||[])].filter(i => {
+        const rd = new Date(i.renewal_date);
+        return i.client_paid != 1 && rd >= today && rd <= in30;
+    }).length;
+
+    const statCard = (iconSvg, color, softBg, label, val) => `
+        <div class="rd-card" style="padding:18px 20px;display:flex;align-items:center;gap:14px">
+            <div style="width:44px;height:44px;border-radius:12px;background:${softBg};display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconSvg}</div>
+            <div>
+                <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${color};line-height:1.1">${val}</div>
+                <div style="font-size:11px;font-weight:600;color:var(--text-3);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">${label}</div>
+            </div>
+        </div>`;
+
+    const svgDomain = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>`;
+    const svgHosting = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>`;
+    const svgCost = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+    const unpaidColor = unpaid > 0 ? 'var(--bad)' : 'var(--good)';
+    const unpaidBg = unpaid > 0 ? 'var(--bad-soft,rgba(223,67,63,.12))' : 'var(--good-soft)';
+    const svgUnpaid = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${unpaidColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>`;
+    const svgHours = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>`;
+
+    document.getElementById('statsStrip').innerHTML =
+        statCard(svgDomain, 'var(--accent)', 'var(--accent-soft)', 'Domains', d.domains.length) +
+        statCard(svgHosting, 'var(--c-blue)', 'rgba(91,105,230,.13)', 'Hosting', d.hosting.length) +
+        statCard(svgCost, 'var(--text-1)', 'var(--surface-2)', 'Total Cost', price(totalCost)) +
+        statCard(svgUnpaid, unpaidColor, unpaidBg, 'Unpaid', unpaid) +
+        statCard(svgHours, 'var(--c-amber)', 'rgba(224,144,42,.13)', 'Task Hours', totalHours % 1 === 0 ? totalHours + 'h' : totalHours.toFixed(1) + 'h');
+}
+
 async function loadData() {
     try {
         const res = await fetch(rdApi(`api/projects.php?id=${pId}`), { credentials: 'same-origin' });
@@ -311,6 +353,8 @@ async function loadData() {
                     <td style="${tdRow}">${actBtns('backup',i.id,i.client_paid==1?'':renewBtn('backup',i.id,i.next_backup))}</td>
                 </tr>`;}).join('')
             : emptyRow(5, 'No backup schedules.');
+
+        renderStats();
 
         // TASKS
         document.getElementById('tb-tasks').innerHTML = currentProjectData.tasks.length
