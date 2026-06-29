@@ -48,11 +48,12 @@
                     <th style="padding:13px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Client</th>
                     <th style="padding:13px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Email</th>
                     <th style="padding:13px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Phone</th>
+                    <th style="padding:13px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Country</th>
                     <th style="padding:13px 16px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Projects</th>
                     <th style="padding:13px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
                 </tr></thead>
                 <tbody id="clientTable">
-                    <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-3)">Loading clients…</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-3)">Loading clients…</td></tr>
                 </tbody>
             </table>
         </div>
@@ -68,7 +69,7 @@
         </div>
         <div class="rd-modal-body">
             <form id="clientForm" autocomplete="off">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="rd-grid-2">
                     <div class="rd-form-group">
                         <label class="rd-label">Name <span style="color:var(--bad)">*</span></label>
                         <input type="text" id="c_name" class="rd-input" placeholder="e.g. John Smith" required>
@@ -78,7 +79,7 @@
                         <input type="text" id="c_company" class="rd-input" placeholder="e.g. Acme Corp">
                     </div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+                <div class="rd-grid-2" style="margin-top:14px">
                     <div class="rd-form-group">
                         <label class="rd-label">Email</label>
                         <input type="email" id="c_email" class="rd-input" placeholder="john@example.com">
@@ -87,6 +88,12 @@
                         <label class="rd-label">Phone</label>
                         <input type="text" id="c_phone" class="rd-input" placeholder="+91 99999 99999">
                     </div>
+                </div>
+                <div class="rd-form-group" style="margin-top:14px">
+                    <label class="rd-label">Country</label>
+                    <select id="c_country_id" class="rd-input" style="cursor:pointer">
+                        <option value="">— Select country —</option>
+                    </select>
                 </div>
                 <div class="rd-form-group" style="margin-top:14px">
                     <label class="rd-label">Notes</label>
@@ -104,7 +111,23 @@
 <script src="assets/js/rd-api.js"></script>
 <script>
 let clientsData = [];
+let countriesData = [];
 let editId = null;
+
+async function loadCountries() {
+    try {
+        const res = await fetch(rdApi('api/countries.php'), { credentials: 'same-origin' });
+        const data = await res.json();
+        countriesData = data.data || [];
+        const sel = document.getElementById('c_country_id');
+        countriesData.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            sel.appendChild(opt);
+        });
+    } catch(e) { console.error('Failed to load countries', e); }
+}
 
 async function loadClients() {
     try {
@@ -117,6 +140,13 @@ async function loadClients() {
     } catch(e) { rdError('Failed to load clients.'); }
 }
 
+loadCountries();
+
+function countryFlag(code) {
+    if (!code) return '';
+    return code.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+
 function initials(name) {
     return name.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join('');
 }
@@ -124,7 +154,7 @@ function initials(name) {
 function renderClients(list) {
     const tbody = document.getElementById('clientTable');
     if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3)">No clients found. Add your first client!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">No clients found. Add your first client!</td></tr>';
         return;
     }
     tbody.innerHTML = list.map(c => `
@@ -140,6 +170,7 @@ function renderClients(list) {
             </td>
             <td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2)">${c.email || '—'}</td>
             <td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2);font-family:'IBM Plex Mono',monospace">${c.phone || '—'}</td>
+            <td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2)">${c.country_name ? `<span style="display:inline-flex;align-items:center;gap:5px"><span style="font-size:16px">${countryFlag(c.country_code)}</span>${c.country_name}</span>` : '—'}</td>
             <td style="padding:14px 16px;border-bottom:1px solid var(--border);text-align:center">
                 <a href="projects.html?client_id=${c.id}" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-size:12.5px;font-weight:700;text-decoration:none">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
@@ -192,6 +223,7 @@ function editClient(c) {
     document.getElementById('c_company').value = c.company || '';
     document.getElementById('c_email').value = c.email || '';
     document.getElementById('c_phone').value = c.phone || '';
+    document.getElementById('c_country_id').value = c.country_id || '';
     document.getElementById('c_notes').value = c.notes || '';
     document.getElementById('clientModal').style.display = 'flex';
 }
@@ -208,6 +240,7 @@ async function saveClient() {
         company: document.getElementById('c_company').value.trim(),
         email: document.getElementById('c_email').value.trim(),
         phone: document.getElementById('c_phone').value.trim(),
+        country_id: document.getElementById('c_country_id').value || null,
         notes: document.getElementById('c_notes').value.trim()
     };
     const btn = document.getElementById('saveClientBtn');

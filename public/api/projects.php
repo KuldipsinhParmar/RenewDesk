@@ -12,7 +12,7 @@ try {
     if ($method === 'GET') {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            $stmt = $db->prepare("SELECT p.*, c.name as client_name, c.company as client_company FROM projects p LEFT JOIN clients c ON c.id = p.client_id WHERE p.id = ?");
+            $stmt = $db->prepare("SELECT p.*, c.name as client_name, c.company as client_company, co.name as country_name, co.code as country_code FROM projects p LEFT JOIN clients c ON c.id = p.client_id LEFT JOIN countries co ON co.id = p.country_id WHERE p.id = ?");
             $stmt->execute([$id]);
             $project = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -44,10 +44,10 @@ try {
             }
         } else {
             if (isset($_GET['client_id'])) {
-                $stmt = $db->prepare("SELECT p.*, c.name as client_name, c.company as client_company FROM projects p LEFT JOIN clients c ON c.id = p.client_id WHERE p.client_id = ? ORDER BY p.created_at DESC");
+                $stmt = $db->prepare("SELECT p.*, c.name as client_name, c.company as client_company, co.name as country_name, co.code as country_code FROM projects p LEFT JOIN clients c ON c.id = p.client_id LEFT JOIN countries co ON co.id = p.country_id WHERE p.client_id = ? ORDER BY p.created_at DESC");
                 $stmt->execute([(int)$_GET['client_id']]);
             } else {
-                $stmt = $db->query("SELECT p.*, c.name as client_name, c.company as client_company FROM projects p LEFT JOIN clients c ON c.id = p.client_id ORDER BY p.created_at DESC");
+                $stmt = $db->query("SELECT p.*, c.name as client_name, c.company as client_company, co.name as country_name, co.code as country_code FROM projects p LEFT JOIN clients c ON c.id = p.client_id LEFT JOIN countries co ON co.id = p.country_id ORDER BY p.created_at DESC");
             }
             echo json_encode(["status" => "success", "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
         }
@@ -55,11 +55,13 @@ try {
         $input = json_decode(file_get_contents("php://input"), true);
         $name = trim($input['name'] ?? '');
         if ($name === '') throw new Exception("Project name is required.");
-        $stmt = $db->prepare("INSERT INTO projects (client_id, name, description, status, notes) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO projects (client_id, name, description, logo_url, country_id, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $input['client_id'] ? (int)$input['client_id'] : null,
             $name,
             trim($input['description'] ?? '') ?: null,
+            trim($input['logo_url'] ?? '') ?: null,
+            !empty($input['country_id']) ? (int)$input['country_id'] : null,
             $input['status'] ?? 'active',
             trim($input['notes'] ?? '') ?: null
         ]);
@@ -70,11 +72,13 @@ try {
         $input = json_decode(file_get_contents("php://input"), true);
         $name = trim($input['name'] ?? '');
         if ($name === '') throw new Exception("Project name is required.");
-        $stmt = $db->prepare("UPDATE projects SET client_id=?, name=?, description=?, status=?, notes=? WHERE id=?");
+        $stmt = $db->prepare("UPDATE projects SET client_id=?, name=?, description=?, logo_url=?, country_id=?, status=?, notes=? WHERE id=?");
         $stmt->execute([
             $input['client_id'] ? (int)$input['client_id'] : null,
             $name,
             trim($input['description'] ?? '') ?: null,
+            trim($input['logo_url'] ?? '') ?: null,
+            !empty($input['country_id']) ? (int)$input['country_id'] : null,
             $input['status'] ?? 'active',
             trim($input['notes'] ?? '') ?: null,
             (int)$id

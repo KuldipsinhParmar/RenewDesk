@@ -1,347 +1,498 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>RenewDesk Premium Landing Page</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f9d76",
-                        "primary-accent": "#0b7c5e",
-                        "background-light": "#fafafa",
-                        "background-dark": "#101622",
-                    },
-                    fontFamily: {
-                        "display": ["IBM Plex Sans", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "2xl": "2rem",
-                        "full": "9999px"
-                    },
-                },
+<title>RenewDesk — Never Miss a Renewal Again</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                accent: "#0f9d76",
+                "accent-2": "#0b7c5e",
+                "accent-soft": "rgba(15,157,118,0.12)",
             },
-        }
-    </script>
+            fontFamily: {
+                sans: ["IBM Plex Sans", "system-ui", "sans-serif"],
+                display: ["Space Grotesk", "system-ui", "sans-serif"],
+                mono: ["IBM Plex Mono", "monospace"],
+            },
+        },
+    },
+}
+</script>
 <style>
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-    </style>
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+.ping-dot::before {
+    content:''; position:absolute; inset:0; border-radius:50%;
+    background:currentColor; opacity:.6; animation: ping 1.4s cubic-bezier(0,0,0.2,1) infinite;
+}
+@keyframes ping { 75%,100% { transform:scale(2); opacity:0; } }
+.fade-up { opacity:0; transform:translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.fade-up.visible { opacity:1; transform:none; }
+/* card row hover */
+.dash-row:hover { background: #f8f7f5; }
+/* scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-thumb { background:#ddd; border-radius:6px; }
+</style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
-<div class="relative min-h-screen flex flex-col">
-<!-- Top Navigation -->
-<header class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-<nav class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between shadow-sm border border-slate-200/50">
-<div class="flex items-center gap-3">
-<div class="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-2xl">autorenew</span>
-</div>
-<span class="text-xl font-extrabold tracking-tight text-slate-900">RenewDesk</span>
-<div class="flex items-center gap-3">
-<a href="login.html" class="hidden sm:flex px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-all">
-                        Admin Login
-                    </a>
-<a href="login.html" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/25 transition-all">
-                        Get Started
-                    </a>
-</div>
-</nav>
+<body class="font-sans bg-[#f5f3ee] text-[#15181a] antialiased">
+
+<!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+<header class="fixed top-0 inset-x-0 z-50 px-4 pt-4">
+    <nav class="max-w-6xl mx-auto glass rounded-2xl px-5 py-3 flex items-center justify-between shadow-sm">
+        <a href="index.html" class="flex items-center gap-2.5 no-underline">
+            <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/20 flex-none">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/>
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>
+                </svg>
+            </div>
+            <span class="font-display text-[17px] font-bold text-[#15181a] tracking-tight">RenewDesk</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-2">
+            <a href="#features" class="px-4 py-2 text-sm font-semibold text-[#5e635f] hover:text-[#15181a] rounded-xl transition-colors">Features</a>
+            <a href="#how" class="px-4 py-2 text-sm font-semibold text-[#5e635f] hover:text-[#15181a] rounded-xl transition-colors">How it works</a>
+            <a href="login.html" class="ml-2 px-5 py-2.5 bg-accent hover:bg-accent-2 text-white text-sm font-bold rounded-xl shadow-lg shadow-accent/20 transition-all">
+                Open Dashboard →
+            </a>
+        </div>
+        <a href="login.html" class="sm:hidden px-4 py-2 bg-accent text-white text-sm font-bold rounded-xl">Login</a>
+    </nav>
 </header>
-<main class="flex-grow pt-32">
-<!-- Hero Section -->
-<section class="max-w-7xl mx-auto px-6 py-12 lg:py-24">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
-<div class="space-y-8">
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-</span>
-                            New: Multi-Cloud Support
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<main>
+<section class="max-w-6xl mx-auto px-4 pt-36 pb-16">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <!-- Left copy -->
+        <div class="space-y-7 fade-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase tracking-wider">
+                <span class="relative flex w-2 h-2">
+                    <span class="ping-dot absolute inset-0 rounded-full bg-accent opacity-60"></span>
+                    <span class="relative w-2 h-2 rounded-full bg-accent"></span>
+                </span>
+                IT Infrastructure Manager
+            </div>
+            <h1 class="font-display text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight text-[#15181a]">
+                Never Miss a<br>
+                <span class="text-accent">Renewal</span> Again
+            </h1>
+            <p class="text-lg text-[#5e635f] leading-relaxed max-w-lg">
+                RenewDesk keeps every domain, hosting plan, maintenance contract, and backup schedule in one executive dashboard — with automated email alerts before anything expires.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <a href="login.html" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-accent hover:bg-accent-2 text-white font-bold text-base rounded-xl shadow-xl shadow-accent/25 transition-all">
+                    Open Dashboard
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#features" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white border border-[#e6e1d4] hover:border-accent text-[#15181a] font-bold text-base rounded-xl transition-all">
+                    See Features
+                </a>
+            </div>
+            <!-- Mini trust row -->
+            <div class="flex items-center gap-5 pt-2 text-sm text-[#979b92] font-medium">
+                <span class="flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    No credit card
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Self-hosted & secure
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
+                    Always up-to-date
+                </span>
+            </div>
+        </div>
+
+        <!-- Right — dashboard mockup -->
+        <div class="relative fade-up" style="transition-delay:.15s">
+            <div class="absolute -inset-6 bg-gradient-to-tr from-accent/10 via-transparent to-accent/5 rounded-3xl blur-3xl"></div>
+            <div class="relative bg-white rounded-2xl shadow-2xl border border-[#e6e1d4] overflow-hidden">
+                <!-- Browser chrome -->
+                <div class="bg-[#f2efe7] h-9 flex items-center px-4 gap-1.5 border-b border-[#e6e1d4]">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                    <div class="ml-3 flex-1 max-w-[200px] h-5 bg-white rounded border border-[#e6e1d4] px-2 flex items-center">
+                        <span class="text-[10px] text-[#979b92] font-mono">renewdesk.app/dashboard</span>
+                    </div>
+                </div>
+                <!-- Dashboard layout -->
+                <div class="flex h-[340px]">
+                    <!-- Sidebar -->
+                    <div class="w-36 border-r border-[#e6e1d4] bg-white p-3 flex flex-col gap-1 flex-none">
+                        <div class="flex items-center gap-2 p-2 mb-2">
+                            <div class="w-6 h-6 rounded-lg bg-accent flex items-center justify-center flex-none">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                            </div>
+                            <span class="font-display font-bold text-[11px] text-[#15181a]">RenewDesk</span>
                         </div>
-<h1 class="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
-                            Never Miss a <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-accent">Renewal</span> Again
-                        </h1>
-<p class="text-xl text-slate-600 leading-relaxed max-w-xl">
-                            RenewDesk helps elite IT teams manage infrastructure lifecycles with ease. Track domains, hosting, and backups in one executive dashboard.
-                        </p>
-<div class="flex flex-col sm:flex-row gap-4 pt-4">
-<a href="login.html" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl shadow-primary/30 transition-all flex items-center justify-center gap-2">
-                                Start Free Trial <span class="material-symbols-outlined">arrow_forward</span>
-</a>
-<a href="login.html" class="bg-white border border-slate-200 hover:border-primary text-slate-700 px-8 py-4 rounded-xl text-lg font-bold transition-all flex items-center justify-center gap-2">
-                                View Demo
-                            </a>
-</div>
-</div>
-<div class="relative">
-<div class="absolute -inset-4 bg-gradient-to-tr from-primary/10 to-primary-accent/10 rounded-2xl blur-3xl"></div>
-<div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden aspect-video">
-<div class="bg-slate-900/5 h-8 w-full border-b border-slate-200 flex items-center px-4 gap-1.5">
-<div class="size-2.5 rounded-full bg-red-400"></div>
-<div class="size-2.5 rounded-full bg-amber-400"></div>
-<div class="size-2.5 rounded-full bg-green-400"></div>
-</div>
-<div class="p-6 bg-white h-full" data-alt="Premium dashboard showing IT infrastructure analytics and upcoming renewals">
-<div class="flex gap-4 h-full">
-<div class="w-1/4 space-y-3">
-<div class="h-4 w-20 bg-slate-100 rounded"></div>
-<div class="h-32 bg-slate-50 rounded-lg border border-slate-100"></div>
-<div class="h-4 w-24 bg-slate-100 rounded"></div>
-<div class="h-20 bg-slate-50 rounded-lg border border-slate-100"></div>
-</div>
-<div class="flex-1 space-y-4">
-<div class="flex justify-between items-center">
-<div class="h-6 w-32 bg-slate-200 rounded"></div>
-<div class="h-8 w-24 bg-primary/20 rounded-lg"></div>
-</div>
-<div class="grid grid-cols-3 gap-3">
-<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
-<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
-<div class="h-24 bg-primary/5 rounded-xl border border-primary/10"></div>
-</div>
-<div class="h-48 bg-slate-50 rounded-xl border border-slate-100"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Features Grid -->
-<section class="max-w-7xl mx-auto px-6 py-24">
-<div class="text-center mb-16 space-y-4">
-<h2 class="text-3xl lg:text-4xl font-black text-slate-900">Infrastructure Management</h2>
-<p class="text-slate-600 max-w-2xl mx-auto text-lg">Comprehensive tracking for all your critical IT assets. Minimal effort, maximum control.</p>
-</div>
-<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-<!-- Feature Card: Domains -->
-<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
-<div class="size-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-3xl">language</span>
-</div>
-<h3 class="text-xl font-bold text-slate-900 mb-3">Domains</h3>
-<p class="text-slate-600 text-sm leading-relaxed">
-                            Monitor expiry dates and auto-renewal status for all your global web properties in one view.
-                        </p>
-</div>
-<!-- Feature Card: Hosting -->
-<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
-<div class="size-12 rounded-xl bg-purple-50 flex items-center justify-center text-primary-accent mb-6">
-<span class="material-symbols-outlined text-3xl">cloud</span>
-</div>
-<h3 class="text-xl font-bold text-slate-900 mb-3">Hosting</h3>
-<p class="text-slate-600 text-sm leading-relaxed">
-                            Keep track of server instances, storage nodes, and cloud hosting costs across providers.
-                        </p>
-</div>
-<!-- Feature Card: Maintenance -->
-<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
-<div class="size-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 mb-6">
-<span class="material-symbols-outlined text-3xl">settings_suggest</span>
-</div>
-<h3 class="text-xl font-bold text-slate-900 mb-3">Maintenance</h3>
-<p class="text-slate-600 text-sm leading-relaxed">
-                            Manage annual maintenance contracts (AMC) and complex service level agreements with ease.
-                        </p>
-</div>
-<!-- Feature Card: Backups -->
-<div class="glass p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50">
-<div class="size-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 mb-6">
-<span class="material-symbols-outlined text-3xl">backup</span>
-</div>
-<h3 class="text-xl font-bold text-slate-900 mb-3">Backups</h3>
-<p class="text-slate-600 text-sm leading-relaxed">
-                            Ensure business continuity with scheduled health monitoring for all your data backup routines.
-                        </p>
-</div>
-</div>
+                        <div class="text-[9px] font-bold text-[#979b92] px-2 uppercase tracking-wider mb-1">Workspace</div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-accent/10 text-accent">
+                            <div class="w-3 h-3 rounded-sm bg-accent/30"></div>
+                            <span class="text-[10px] font-bold">Dashboard</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#5e635f]">
+                            <div class="w-3 h-3 rounded-sm bg-[#e6e1d4]"></div>
+                            <span class="text-[10px] font-semibold">Clients</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#5e635f]">
+                            <div class="w-3 h-3 rounded-sm bg-[#e6e1d4]"></div>
+                            <span class="text-[10px] font-semibold">Projects</span>
+                        </div>
+                        <div class="text-[9px] font-bold text-[#979b92] px-2 uppercase tracking-wider mt-2 mb-1">Assets</div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#5e635f]">
+                            <div class="w-3 h-3 rounded-sm bg-[#e6e1d4]"></div>
+                            <span class="text-[10px] font-semibold">Domains</span>
+                            <span class="ml-auto text-[8px] font-bold bg-red-100 text-red-500 rounded-full px-1">3</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#5e635f]">
+                            <div class="w-3 h-3 rounded-sm bg-[#e6e1d4]"></div>
+                            <span class="text-[10px] font-semibold">Hosting</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#5e635f]">
+                            <div class="w-3 h-3 rounded-sm bg-[#e6e1d4]"></div>
+                            <span class="text-[10px] font-semibold">Backups</span>
+                        </div>
+                    </div>
+                    <!-- Main content -->
+                    <div class="flex-1 bg-[#f5f3ee] p-4 overflow-hidden">
+                        <!-- KPI row -->
+                        <div class="grid grid-cols-3 gap-2 mb-3">
+                            <div class="bg-white rounded-xl p-3 border border-[#e6e1d4]">
+                                <div class="text-[9px] text-[#979b92] font-semibold uppercase tracking-wider mb-1">Projects</div>
+                                <div class="font-display font-black text-xl text-[#15181a]">24</div>
+                                <div class="text-[9px] text-green-600 font-semibold mt-0.5">↑ Active</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-3 border border-[#e6e1d4]">
+                                <div class="text-[9px] text-[#979b92] font-semibold uppercase tracking-wider mb-1">Domains</div>
+                                <div class="font-display font-black text-xl text-[#15181a]">47</div>
+                                <div class="text-[9px] text-red-500 font-semibold mt-0.5">3 expiring</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-3 border border-[#e6e1d4]">
+                                <div class="text-[9px] text-[#979b92] font-semibold uppercase tracking-wider mb-1">Contract</div>
+                                <div class="font-display font-black text-xl text-[#15181a]">₹2.4L</div>
+                                <div class="text-[9px] text-accent font-semibold mt-0.5">AMC total</div>
+                            </div>
+                        </div>
+                        <!-- Upcoming renewals table -->
+                        <div class="bg-white rounded-xl border border-[#e6e1d4] overflow-hidden">
+                            <div class="px-3 py-2 border-b border-[#e6e1d4] flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-[#15181a]">Upcoming Renewals</span>
+                                <span class="text-[9px] text-accent font-bold">30 days</span>
+                            </div>
+                            <div class="dash-row flex items-center gap-2 px-3 py-2 border-b border-[#e6e1d4] transition-colors">
+                                <div class="w-5 h-5 rounded-md bg-red-100 flex-none"></div>
+                                <div class="flex-1">
+                                    <div class="text-[10px] font-bold text-[#15181a]">acmecorp.com</div>
+                                    <div class="text-[9px] text-[#979b92]">Domain</div>
+                                </div>
+                                <span class="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full">3d</span>
+                            </div>
+                            <div class="dash-row flex items-center gap-2 px-3 py-2 border-b border-[#e6e1d4] transition-colors">
+                                <div class="w-5 h-5 rounded-md bg-amber-100 flex-none"></div>
+                                <div class="flex-1">
+                                    <div class="text-[10px] font-bold text-[#15181a]">Cloud VPS Pro</div>
+                                    <div class="text-[9px] text-[#979b92]">Hosting</div>
+                                </div>
+                                <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">12d</span>
+                            </div>
+                            <div class="dash-row flex items-center gap-2 px-3 py-2 transition-colors">
+                                <div class="w-5 h-5 rounded-md bg-green-100 flex-none"></div>
+                                <div class="flex-1">
+                                    <div class="text-[10px] font-bold text-[#15181a]">AMC — TechCo</div>
+                                    <div class="text-[9px] text-[#979b92]">Maintenance</div>
+                                </div>
+                                <span class="text-[9px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">28d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </section>
 
-<!-- Deep Dive Feature 1 -->
-<section class="max-w-7xl mx-auto px-6 py-16 lg:py-24 border-t border-slate-100">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
-    <div class="space-y-6 order-2 lg:order-1">
-        <div class="size-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 mb-6">
-            <span class="material-symbols-outlined text-3xl">mark_email_unread</span>
+<!-- ═══════════════════════════ STATS ═══════════════════════════ -->
+<section class="max-w-6xl mx-auto px-4 py-10">
+    <div class="bg-white rounded-2xl border border-[#e6e1d4] shadow-sm grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#e6e1d4]">
+        <div class="p-8 text-center fade-up">
+            <div class="font-display font-black text-4xl text-accent mb-1">100%</div>
+            <div class="text-sm text-[#5e635f] font-medium">Renewal visibility</div>
         </div>
-        <h2 class="text-3xl lg:text-4xl font-black text-slate-900 leading-tight">Automated Reporting & Alerts</h2>
-        <p class="text-lg text-slate-600 leading-relaxed">
-            Stop relying on manual calendar reminders. RenewDesk's built-in email engine sends automated, beautiful HTML summaries directly to your inbox 30, 15, and 7 days before any infrastructure asset expires.
-        </p>
-        <ul class="space-y-4 pt-4">
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Daily cron job scanning
-            </li>
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Project-specific filtering
-            </li>
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-emerald-500">check_circle</span> Beautiful HTML email templates
-            </li>
-        </ul>
-    </div>
-    <div class="relative order-1 lg:order-2">
-        <div class="absolute -inset-4 bg-gradient-to-tr from-orange-500/10 to-transparent rounded-3xl blur-2xl"></div>
-        <div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden bg-white">
-            <div class="bg-slate-100 h-10 w-full border-b border-slate-200 flex items-center px-4 gap-2">
-                <div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div>
-                <div class="ml-4 h-5 w-48 bg-white rounded-md border border-slate-200 shadow-sm flex items-center px-2">
-                    <span class="text-[10px] text-slate-400 font-medium">email.renewdesk.app</span>
-                </div>
-            </div>
-            <div class="p-8">
-                <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
-                    <div class="p-6 bg-slate-900 text-center">
-                        <div class="w-10 h-10 bg-primary rounded-lg mx-auto flex items-center justify-center text-white mb-2"><span class="material-symbols-outlined text-sm">autorenew</span></div>
-                        <h4 class="text-white font-bold text-lg">Upcoming Renewals</h4>
-                    </div>
-                    <div class="p-6 space-y-4">
-                        <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                            <div><div class="text-sm font-bold text-slate-800">example.com</div><div class="text-[11px] text-slate-400">Domain</div></div>
-                            <div class="text-right"><div class="text-xs font-bold text-red-500">Expires in 7 days</div><div class="text-[11px] font-bold text-slate-800">₹1,200.00</div></div>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                            <div><div class="text-sm font-bold text-slate-800">Cloud VPS Premium</div><div class="text-[11px] text-slate-400">Hosting</div></div>
-                            <div class="text-right"><div class="text-xs font-bold text-amber-500">Expires in 14 days</div><div class="text-[11px] font-bold text-slate-800">₹8,500.00</div></div>
-                        </div>
-                        <div class="pt-4 text-center">
-                            <div class="inline-block bg-primary text-white text-xs font-bold px-6 py-2.5 rounded-lg">Log in to Manage</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="p-8 text-center fade-up" style="transition-delay:.1s">
+            <div class="font-display font-black text-4xl text-[#15181a] mb-1">6+</div>
+            <div class="text-sm text-[#5e635f] font-medium">Asset types tracked</div>
+        </div>
+        <div class="p-8 text-center fade-up" style="transition-delay:.2s">
+            <div class="font-display font-black text-4xl text-[#15181a] mb-1">0</div>
+            <div class="text-sm text-[#5e635f] font-medium">Missed renewals</div>
+        </div>
+        <div class="p-8 text-center fade-up" style="transition-delay:.3s">
+            <div class="font-display font-black text-4xl text-[#15181a] mb-1">195</div>
+            <div class="text-sm text-[#5e635f] font-medium">Countries supported</div>
         </div>
     </div>
-</div>
 </section>
 
-<!-- Deep Dive Feature 2 -->
-<section class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
-    <div class="relative">
-        <div class="absolute -inset-4 bg-gradient-to-br from-primary/10 to-transparent rounded-3xl blur-2xl"></div>
-        <div class="relative glass rounded-2xl shadow-2xl border border-white/50 overflow-hidden bg-white">
-            <div class="bg-slate-100 h-10 w-full border-b border-slate-200 flex items-center px-4 gap-2">
-                <div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div><div class="size-3 rounded-full bg-slate-300"></div>
-                <div class="ml-4 h-5 w-48 bg-white rounded-md border border-slate-200 shadow-sm flex items-center px-2">
-                    <span class="text-[10px] text-slate-400 font-medium">app.renewdesk.app/dashboard</span>
-                </div>
-            </div>
-            <div class="flex h-[320px]">
-                <div class="w-16 bg-slate-50 border-r border-slate-100 p-3 flex flex-col gap-4 items-center">
-                    <div class="w-8 h-8 rounded bg-primary text-white flex justify-center items-center"><span class="material-symbols-outlined text-[16px]">autorenew</span></div>
-                    <div class="w-8 h-8 rounded bg-slate-200 mt-4"></div>
-                    <div class="w-8 h-8 rounded bg-slate-200"></div>
-                    <div class="w-8 h-8 rounded bg-slate-200"></div>
-                </div>
-                <div class="flex-1 p-6 bg-background-light">
-                    <div class="h-6 w-40 bg-slate-200 rounded mb-6"></div>
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                            <div class="h-3 w-20 bg-slate-200 rounded mb-3"></div>
-                            <div class="h-8 w-16 bg-emerald-500/20 rounded"></div>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                            <div class="h-3 w-20 bg-slate-200 rounded mb-3"></div>
-                            <div class="h-8 w-24 bg-primary/20 rounded"></div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4 flex-col">
-                        <div class="h-10 w-full bg-slate-50 rounded border border-slate-100 flex items-center px-3 gap-3">
-                            <div class="w-6 h-6 rounded-full bg-red-100"></div><div class="h-3 w-32 bg-slate-200 rounded"></div>
-                        </div>
-                        <div class="h-10 w-full bg-slate-50 rounded border border-slate-100 flex items-center px-3 gap-3">
-                            <div class="w-6 h-6 rounded-full bg-amber-100"></div><div class="h-3 w-24 bg-slate-200 rounded"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- ═══════════════════════════ FEATURES ═══════════════════════════ -->
+<section id="features" class="max-w-6xl mx-auto px-4 py-20">
+    <div class="text-center mb-14 fade-up">
+        <h2 class="font-display text-4xl font-black text-[#15181a] tracking-tight mb-4">Everything in one place</h2>
+        <p class="text-[#5e635f] text-lg max-w-2xl mx-auto">Track every asset your team manages — domains, hosting, maintenance, backups, tasks, and clients — from a single dashboard.</p>
     </div>
-    <div class="space-y-6">
-        <div class="size-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary mb-6">
-            <span class="material-symbols-outlined text-3xl">dashboard</span>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up">
+            <div class="w-11 h-11 rounded-xl bg-[#e8f5f0] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f9d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Domains</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Monitor expiry dates, registrars, and renewal costs. Get alerted 30, 15, and 7 days before any domain expires.</p>
         </div>
-        <h2 class="text-3xl lg:text-4xl font-black text-slate-900 leading-tight">Executive Dashboard</h2>
-        <p class="text-lg text-slate-600 leading-relaxed">
-            Get a birds-eye view of your entire IT infrastructure. Track total project ROI, outstanding renewal costs, and critical upcoming task lists in a unified, premium interface.
-        </p>
-        <ul class="space-y-4 pt-4">
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-primary">check_circle</span> Instant financial breakdown
-            </li>
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-primary">check_circle</span> One-click renewal processing
-            </li>
-            <li class="flex items-center gap-3 text-slate-700 font-medium">
-                <span class="material-symbols-outlined text-primary">check_circle</span> Advanced search and filtering
-            </li>
-        </ul>
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up" style="transition-delay:.07s">
+            <div class="w-11 h-11 rounded-xl bg-[#eef0fc] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5b69e6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Hosting</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Track server plans, providers, renewal schedules, and monthly costs across all your hosting accounts.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up" style="transition-delay:.14s">
+            <div class="w-11 h-11 rounded-xl bg-[#fef3e2] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e0902a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Maintenance (AMC)</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Manage annual maintenance contracts with start/end dates, yearly pricing, and client payment status.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up" style="transition-delay:.21s">
+            <div class="w-11 h-11 rounded-xl bg-[#e8f5f0] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f9d76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Backups</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Schedule and track backup cycles — daily, weekly, or monthly. Mark done to advance the cycle automatically.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up" style="transition-delay:.28s">
+            <div class="w-11 h-11 rounded-xl bg-[#fdedf0] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e05471" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Clients</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Manage your client portfolio with company info, country, and a direct link to all their projects and assets.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 border border-[#e6e1d4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-up" style="transition-delay:.35s">
+            <div class="w-11 h-11 rounded-xl bg-[#eef0fc] flex items-center justify-center mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5b69e6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Tasks & Hours</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Log work tasks, track hours, and filter by project or date. Keep a full activity record per client project.</p>
+        </div>
+
     </div>
-</div>
 </section>
-<!-- CTA Section -->
-<section class="max-w-7xl mx-auto px-6 pb-24">
-<div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-primary to-primary-accent p-12 lg:p-20 text-center shadow-2xl">
-<!-- Decorative patterns -->
-<div class="absolute top-0 right-0 p-20 opacity-10">
-<span class="material-symbols-outlined text-[200px] rotate-12">sync_alt</span>
-</div>
-<div class="absolute bottom-0 left-0 p-20 opacity-10">
-<span class="material-symbols-outlined text-[150px] -rotate-12">verified_user</span>
-</div>
-<div class="relative z-10 space-y-8 max-w-3xl mx-auto">
-<h2 class="text-4xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-                            Start tracking your infrastructure today.
-                        </h2>
-<p class="text-white/80 text-xl font-medium">
-                            Join the elite IT teams managing their stack with RenewDesk. No credit card required to start.
-                        </p>
-<div class="pt-6 flex flex-col sm:flex-row justify-center gap-4">
-<a href="login.html" class="bg-white text-primary hover:bg-slate-100 px-10 py-4 rounded-xl text-lg font-bold shadow-xl transition-all">
-                                Get Started Now
-                            </a>
-<a href="login.html" class="bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-10 py-4 rounded-xl text-lg font-bold border border-white/20 transition-all">
-                                Contact Sales
-                            </a>
-</div>
-</div>
-</div>
+
+<!-- ═══════════════════════════ EMAIL ALERTS ═══════════════════════════ -->
+<section class="max-w-6xl mx-auto px-4 py-16 border-t border-[#e6e1d4]">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <div class="space-y-6 fade-up">
+            <div class="w-11 h-11 rounded-xl bg-[#fef3e2] flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e0902a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h2 class="font-display text-4xl font-black text-[#15181a] leading-tight tracking-tight">Automated email alerts before anything expires</h2>
+            <p class="text-[#5e635f] text-lg leading-relaxed">RenewDesk's built-in email engine sends digest alerts 30, 15, and 7 days before any asset expires. Your team is always ahead — never scrambling at the last minute.</p>
+            <ul class="space-y-3 pt-2">
+                <li class="flex items-center gap-3 text-[#5e635f] font-medium text-sm">
+                    <span class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-none">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    Daily cron job scans all assets automatically
+                </li>
+                <li class="flex items-center gap-3 text-[#5e635f] font-medium text-sm">
+                    <span class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-none">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    Alert threshold configurable per team (7, 15, 30 days)
+                </li>
+                <li class="flex items-center gap-3 text-[#5e635f] font-medium text-sm">
+                    <span class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-none">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    CC multiple team members on any notification
+                </li>
+                <li class="flex items-center gap-3 text-[#5e635f] font-medium text-sm">
+                    <span class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-none">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    Test email from Settings in one click
+                </li>
+            </ul>
+        </div>
+        <!-- Email mockup -->
+        <div class="relative fade-up" style="transition-delay:.15s">
+            <div class="absolute -inset-4 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-3xl blur-2xl"></div>
+            <div class="relative bg-white rounded-2xl shadow-2xl border border-[#e6e1d4] overflow-hidden">
+                <div class="bg-[#f2efe7] h-9 flex items-center px-4 gap-1.5 border-b border-[#e6e1d4]">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                    <div class="ml-3 h-5 w-40 bg-white rounded border border-[#e6e1d4] px-2 flex items-center">
+                        <span class="text-[10px] text-[#979b92] font-mono">📧 Renewals Digest</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="max-w-sm mx-auto bg-white rounded-xl shadow-lg border border-[#e6e1d4] overflow-hidden">
+                        <div class="p-5 bg-[#15181a] text-center">
+                            <div class="w-9 h-9 rounded-lg bg-accent mx-auto flex items-center justify-center mb-2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                            </div>
+                            <div class="text-white font-display font-bold text-sm">RenewDesk Alert</div>
+                            <div class="text-white/60 text-xs mt-0.5">3 assets require attention</div>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center justify-between py-2.5 border-b border-[#e6e1d4]">
+                                <div>
+                                    <div class="text-sm font-bold text-[#15181a]">techsolutions.in</div>
+                                    <div class="text-xs text-[#979b92]">Domain · Namecheap</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-bold text-red-500">Expires in 5 days</div>
+                                    <div class="text-xs font-bold text-[#15181a] font-mono">₹1,400</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-2.5 border-b border-[#e6e1d4]">
+                                <div>
+                                    <div class="text-sm font-bold text-[#15181a]">Cloud VPS Pro</div>
+                                    <div class="text-xs text-[#979b92]">Hosting · DigitalOcean</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-bold text-amber-600">Expires in 12 days</div>
+                                    <div class="text-xs font-bold text-[#15181a] font-mono">₹9,200</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-2.5">
+                                <div>
+                                    <div class="text-sm font-bold text-[#15181a]">AMC — RetailCo</div>
+                                    <div class="text-xs text-[#979b92]">Maintenance Contract</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-bold text-green-600">Expires in 25 days</div>
+                                    <div class="text-xs font-bold text-[#15181a] font-mono">₹48,000</div>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <div class="text-center bg-accent text-white text-xs font-bold py-2.5 rounded-lg cursor-pointer hover:bg-accent-2 transition-colors">Open Dashboard →</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════ HOW IT WORKS ═══════════════════════════ -->
+<section id="how" class="max-w-6xl mx-auto px-4 py-20 border-t border-[#e6e1d4]">
+    <div class="text-center mb-14 fade-up">
+        <h2 class="font-display text-4xl font-black text-[#15181a] tracking-tight mb-4">Up and running in minutes</h2>
+        <p class="text-[#5e635f] text-lg">No complex setup. Add your data and you're tracking from day one.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="fade-up text-center p-8">
+            <div class="w-14 h-14 rounded-2xl bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-5">
+                <span class="font-display font-black text-xl text-accent">1</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Add your clients</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Create client profiles with contact info, company, and country. Each client holds their own projects.</p>
+        </div>
+        <div class="fade-up text-center p-8" style="transition-delay:.1s">
+            <div class="w-14 h-14 rounded-2xl bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-5">
+                <span class="font-display font-black text-xl text-accent">2</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Link your assets</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">Attach domains, hosting, maintenance contracts, backups, and tasks to each project with renewal dates and pricing.</p>
+        </div>
+        <div class="fade-up text-center p-8" style="transition-delay:.2s">
+            <div class="w-14 h-14 rounded-2xl bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-5">
+                <span class="font-display font-black text-xl text-accent">3</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#15181a] mb-2">Stay ahead of renewals</h3>
+            <p class="text-[#5e635f] text-sm leading-relaxed">The dashboard surfaces everything expiring soon. Email alerts go out automatically. Export to CSV any time.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════ CTA ═══════════════════════════ -->
+<section class="max-w-6xl mx-auto px-4 pb-24">
+    <div class="relative rounded-3xl overflow-hidden bg-[#15181a] p-12 lg:p-20 text-center shadow-2xl fade-up">
+        <!-- decorative glow -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-accent/30 rounded-full blur-3xl"></div>
+        <div class="relative z-10 max-w-2xl mx-auto space-y-7">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-bold uppercase tracking-wider">
+                Self-hosted · Private · Yours
+            </div>
+            <h2 class="font-display text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+                Start tracking your infrastructure today
+            </h2>
+            <p class="text-white/70 text-lg font-medium">No subscriptions. No SaaS lock-in. Your data stays on your server.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+                <a href="login.html" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent hover:bg-accent-2 text-white font-bold text-base rounded-xl shadow-xl shadow-accent/30 transition-all">
+                    Open Dashboard
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#features" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-base rounded-xl border border-white/20 backdrop-blur transition-all">
+                    Learn more
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 </main>
-<!-- Minimalist Footer -->
-<footer class="max-w-7xl mx-auto w-full px-6 py-12 border-t border-slate-200">
-<div class="flex flex-col md:flex-row justify-between items-center gap-8">
-<div class="flex items-center gap-3">
-<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-<span class="material-symbols-outlined text-lg">autorenew</span>
-</div>
-<span class="text-lg font-extrabold tracking-tight text-slate-900">RenewDesk</span>
-</div>
-<div class="flex gap-8 text-sm font-medium text-slate-500">
-<a class="hover:text-primary" href="login.html">Admin Login</a>
-</div>
-<div class="text-sm text-slate-400 font-medium">
-                    © 2024 RenewDesk SaaS. All rights reserved.
-                </div>
-</div>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="border-t border-[#e6e1d4] bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-accent flex items-center justify-center flex-none">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+            </div>
+            <span class="font-display font-bold text-[#15181a]">RenewDesk</span>
+        </div>
+        <div class="flex gap-6 text-sm font-medium text-[#979b92]">
+            <a href="login.html" class="hover:text-accent transition-colors">Admin Login</a>
+            <a href="#features" class="hover:text-accent transition-colors">Features</a>
+            <a href="#how" class="hover:text-accent transition-colors">How it works</a>
+        </div>
+        <div class="text-sm text-[#979b92]">
+            © <script>document.write(new Date().getFullYear())</script> RenewDesk. All rights reserved.
+        </div>
+    </div>
 </footer>
-</div>
-</body></html>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

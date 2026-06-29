@@ -82,6 +82,16 @@
                     </select>
                 </div>
                 <div class="rd-form-group" style="margin-top:14px">
+                    <label class="rd-label">Country</label>
+                    <select id="p_country_id" class="rd-input" style="cursor:pointer">
+                        <option value="">— Select country —</option>
+                    </select>
+                </div>
+                <div class="rd-form-group" style="margin-top:14px">
+                    <label class="rd-label">Logo URL</label>
+                    <input type="url" id="p_logo_url" class="rd-input" placeholder="https://example.com/logo.png">
+                </div>
+                <div class="rd-form-group" style="margin-top:14px">
                     <label class="rd-label">Description / Notes</label>
                     <textarea id="p_desc" class="rd-textarea" placeholder="Brief details about the project scope…" rows="3"></textarea>
                 </div>
@@ -98,7 +108,27 @@
 <script>
 let projectsData = [];
 let clientsData = [];
+let countriesData = [];
 let currentEditProjectId = null;
+
+function countryFlag(code) {
+    if (!code) return '';
+    return code.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+
+async function loadCountries() {
+    try {
+        const res = await fetch(rdApi('api/countries.php'), { credentials: 'same-origin' });
+        const data = await res.json();
+        countriesData = data.data || [];
+        const sel = document.getElementById('p_country_id');
+        countriesData.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id; opt.textContent = c.name;
+            sel.appendChild(opt);
+        });
+    } catch(e) { console.error('Failed to load countries', e); }
+}
 
 async function loadClients() {
     try {
@@ -166,6 +196,9 @@ function renderProjects(dataset) {
     tbody.innerHTML = dataset.map(p => {
         const initial = p.name.trim().charAt(0).toUpperCase();
         const date = formatDate(p.created_at);
+        const avatar = p.logo_url
+            ? `<img src="${p.logo_url}" style="width:38px;height:38px;border-radius:10px;object-fit:contain;flex:none;border:1px solid var(--border);background:var(--surface)" onerror="this.outerHTML='<span style=&quot;width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:14px;font-family:Space Grotesk,sans-serif;flex:none&quot;>${initial}</span>'">`
+            : `<span style="width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif;flex:none">${initial}</span>`;
         const clientHtml = p.client_name
             ? `<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;color:var(--text-2);font-weight:500">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -175,12 +208,12 @@ function renderProjects(dataset) {
         return `<tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
             <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
                 <div style="display:flex;align-items:center;gap:13px">
-                    <span style="width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif;flex:none">${initial}</span>
+                    ${avatar}
                     <a href="project-details.html?id=${p.id}" style="font-weight:600;font-size:14.5px;text-decoration:none;color:var(--text)">${p.name}</a>
                 </div>
             </td>
             <td style="padding:14px 16px;border-bottom:1px solid var(--border)">${clientHtml}</td>
-            <td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2);font-family:'IBM Plex Mono',monospace">${date}</td>
+            <td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text-2);font-family:'IBM Plex Mono',monospace">${date}${p.country_name ? ` <span style="margin-left:6px;font-family:inherit">${countryFlag(p.country_code)} ${p.country_name}</span>` : ''}</td>
             <td style="padding:14px 16px;border-bottom:1px solid var(--border)">
                 <span class="rd-status-active"><span style="width:6px;height:6px;border-radius:50%;background:var(--good)"></span>Active</span>
             </td>
@@ -222,6 +255,8 @@ function editProject(p) {
     document.getElementById('saveProjectBtn').textContent = 'Save Changes';
     currentEditProjectId = p.id;
     document.getElementById('p_name').value = p.name || '';
+    document.getElementById('p_country_id').value = p.country_id || '';
+    document.getElementById('p_logo_url').value = p.logo_url || '';
     document.getElementById('p_desc').value = p.description || '';
     populateClientDropdown(p.client_id);
     document.getElementById('addProjectModal').style.display = 'flex';
@@ -235,13 +270,15 @@ async function saveProject() {
     const name = document.getElementById('p_name').value.trim();
     if (!name) { Swal.fire({ icon:'warning', title:'Name required', text:'Please enter a project name.', confirmButtonColor:'var(--accent)' }); return; }
     const client_id = document.getElementById('p_client_id').value || null;
+    const country_id = document.getElementById('p_country_id').value || null;
+    const logo_url = document.getElementById('p_logo_url').value.trim() || null;
     const description = document.getElementById('p_desc').value.trim();
     const btn = document.getElementById('saveProjectBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
     let url = rdApi('api/projects.php'), method = 'POST';
     if (currentEditProjectId) { url += `?id=${currentEditProjectId}`; method = 'PUT'; }
     try {
-        await fetch(url, { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({ name, description, client_id }) });
+        await fetch(url, { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({ name, description, logo_url, country_id, client_id }) });
         hideAddModal();
         loadProjects();
     } catch(e) {
@@ -269,7 +306,7 @@ async function deleteProject(id, name) {
 const preselectedClientId = new URLSearchParams(window.location.search).get('client_id');
 
 async function init() {
-    await loadClients();
+    await Promise.all([loadClients(), loadCountries()]);
     if (preselectedClientId) {
         document.getElementById('clientFilter').value = preselectedClientId;
     }

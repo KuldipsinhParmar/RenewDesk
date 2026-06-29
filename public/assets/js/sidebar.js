@@ -24,10 +24,18 @@
         return '<a href="' + href + '" class="' + cls + '">' + svg(18, 18, ICONS[id]) + label + badge + '</a>';
     }
 
+    var REFRESH_ICON = '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>';
+
     function buildHTML(active) {
+        var fallbackIcon = '<div class="rd-logo-icon" id="rd-logo-fallback">' + svg(21, 21, REFRESH_ICON) + '</div>';
+        var customImg = '<img src="assets/images/logo.png" class="rd-logo-img" alt="Logo"'
+            + ' onerror="this.style.display=\'none\';document.getElementById(\'rd-logo-fallback\').style.display=\'grid\'"'
+            + ' onload="document.getElementById(\'rd-logo-fallback\').style.display=\'none\'">';
+
         return [
             '<div class="rd-sidebar-logo">',
-              '<div class="rd-logo-icon">' + svg(21, 21, '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>') + '</div>',
+              customImg,
+              fallbackIcon,
               '<span class="rd-logo-text">RenewDesk</span>',
             '</div>',
             '<div class="rd-nav-label">Workspace</div>',
