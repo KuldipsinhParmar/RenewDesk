@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Countries - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        .rd-th { padding:11px 16px;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border);white-space:nowrap }
+        .rd-th:first-child { padding-left:22px }
+        .rd-th:last-child  { padding-right:22px;text-align:right }
+        .rd-td { padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13.5px }
+        .rd-td:first-child { padding-left:22px }
+        .rd-td:last-child  { padding-right:22px }
+        .rd-tr { transition:background .1s }
+        .rd-tr:hover { background:var(--surface-2) }
+        .rd-tr:hover .row-acts { opacity:1 }
+        .rd-tr:last-child .rd-td { border-bottom:none }
+        .row-acts { opacity:0;transition:opacity .15s;display:flex;gap:5px;justify-content:flex-end }
+        .code-badge { font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;padding:3px 10px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);letter-spacing:.06em }
+    </style>
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('countries');</script>
+
+    <div class="rd-main">
+        <div class="rd-page-header">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div>
+                <h1 class="rd-page-title">Countries</h1>
+                <p class="rd-page-subtitle" id="countryCount">Master list of countries</p>
+            </div>
+            <button onclick="showAddModal()" class="rd-btn rd-btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Country
+            </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="rd-toolbar" style="margin-bottom:16px">
+            <div class="rd-search-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                <input id="searchInput" class="rd-search-input" placeholder="Search by name or code…" type="text" oninput="applyFilter()"/>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="rd-card" style="overflow:hidden">
+            <table style="width:100%;border-collapse:collapse">
+                <thead>
+                    <tr>
+                        <th class="rd-th">Flag</th>
+                        <th class="rd-th">Code</th>
+                        <th class="rd-th">Country Name</th>
+                        <th class="rd-th" style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="countryTableBody">
+                    <tr><td colspan="4" class="rd-td" style="text-align:center;padding:40px;color:var(--text-3)">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add / Edit Modal -->
+<div id="countryModal" class="rd-modal-overlay" style="display:none">
+    <div class="rd-modal" style="width:100%;max-width:420px">
+        <div class="rd-modal-header">
+            <h3 class="rd-modal-title" id="modalTitle">Add Country</h3>
+            <button onclick="hideModal()" class="rd-icon-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="rd-modal-body">
+            <form id="countryForm" autocomplete="off" onsubmit="return false">
+                <div class="rd-grid-2">
+                    <div class="rd-form-group">
+                        <label class="rd-label">ISO Code <span style="color:var(--bad)">*</span></label>
+                        <p style="font-size:11.5px;color:var(--text-3);margin:0 0 6px">2-letter ISO 3166-1 alpha-2</p>
+                        <input type="text" id="c_code" class="rd-input" placeholder="e.g. IN" maxlength="2"
+                               style="text-transform:uppercase;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.1em" required>
+                    </div>
+                    <div class="rd-form-group">
+                        <label class="rd-label">Preview</label>
+                        <p style="font-size:11.5px;color:var(--text-3);margin:0 0 6px">Flag from code</p>
+                        <div id="flagPreview" style="height:42px;display:flex;align-items:center;font-size:28px;padding-left:2px">—</div>
+                    </div>
+                </div>
+                <div class="rd-form-group" style="margin-top:14px">
+                    <label class="rd-label">Country Name <span style="color:var(--bad)">*</span></label>
+                    <input type="text" id="c_name" class="rd-input" placeholder="e.g. India" required>
+                </div>
+            </form>
+        </div>
+        <div class="rd-modal-footer">
+            <button onclick="hideModal()" class="rd-btn">Cancel</button>
+            <button onclick="saveCountry()" id="saveBtn" class="rd-btn rd-btn-primary">Add Country</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script>
+let allCountries = [];
+let editId = null;
+
+function countryFlag(code) {
+    if (!code || code.length !== 2) return '—';
+    return code.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+// Live flag preview as user types the code
+document.getElementById('c_code').addEventListener('input', function () {
+    const val = this.value.trim().toUpperCase();
+    this.value = val;
+    document.getElementById('flagPreview').textContent = val.length === 2 ? countryFlag(val) : '—';
+});
+
+async function loadCountries() {
+    try {
+        const res  = await fetch(rdApi('api/countries.php'), { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const data = await res.json();
+        allCountries = data.data || [];
+        document.getElementById('countryCount').textContent = allCountries.length + ' countries in master list';
+        applyFilter();
+    } catch(e) { rdError('Failed to load countries.'); }
+}
+
+function applyFilter() {
+    const term = document.getElementById('searchInput').value.toLowerCase();
+    const rows = term
+        ? allCountries.filter(c => c.name.toLowerCase().includes(term) || c.code.toLowerCase().includes(term))
+        : allCountries;
+    renderTable(rows);
+}
+
+function renderTable(rows) {
+    const tbody = document.getElementById('countryTableBody');
+    if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="rd-td" style="text-align:center;padding:48px;color:var(--text-3)">No countries found.</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = rows.map(c => `
+        <tr class="rd-tr">
+            <td class="rd-td" style="font-size:26px;line-height:1;width:52px">${countryFlag(c.code)}</td>
+            <td class="rd-td"><span class="code-badge">${esc(c.code)}</span></td>
+            <td class="rd-td" style="font-weight:600;color:var(--text)">${esc(c.name)}</td>
+            <td class="rd-td">
+                <div class="row-acts">
+                    <button onclick='editCountry(${JSON.stringify(c).replace(/'/g,"&#39;")})' class="rd-icon-btn" title="Edit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+                    </button>
+                    <button onclick="deleteCountry(${c.id}, '${esc(c.name)}')" class="rd-icon-btn danger" title="Delete">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    </button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
+function showAddModal() {
+    editId = null;
+    document.getElementById('countryForm').reset();
+    document.getElementById('flagPreview').textContent = '—';
+    document.getElementById('modalTitle').textContent = 'Add Country';
+    document.getElementById('saveBtn').textContent = 'Add Country';
+    document.getElementById('countryModal').style.display = 'flex';
+    setTimeout(() => document.getElementById('c_code').focus(), 80);
+}
+
+function editCountry(c) {
+    editId = c.id;
+    document.getElementById('c_code').value = c.code;
+    document.getElementById('c_name').value = c.name;
+    document.getElementById('flagPreview').textContent = countryFlag(c.code);
+    document.getElementById('modalTitle').textContent = 'Edit Country';
+    document.getElementById('saveBtn').textContent = 'Save Changes';
+    document.getElementById('countryModal').style.display = 'flex';
+}
+
+function hideModal() { document.getElementById('countryModal').style.display = 'none'; }
+
+async function saveCountry() {
+    const code = document.getElementById('c_code').value.trim().toUpperCase();
+    const name = document.getElementById('c_name').value.trim();
+    if (code.length !== 2) { rdError('Code must be exactly 2 letters (ISO 3166-1 alpha-2).'); return; }
+    if (!name) { rdError('Country name is required.'); return; }
+
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    let url    = rdApi('api/countries.php');
+    let method = 'POST';
+    if (editId) { url += '?id=' + editId; method = 'PUT'; }
+
+    try {
+        const res  = await fetch(url, { method, headers: {'Content-Type':'application/json'}, credentials: 'same-origin', body: JSON.stringify({ code, name }) });
+        const json = await res.json();
+        if (json.status !== 'success') throw new Error(json.message);
+        hideModal();
+        await loadCountries();
+        Swal.fire({ title: editId ? 'Updated!' : 'Added!', text: `${countryFlag(code)} ${name} ${editId ? 'updated' : 'added'}.`, icon: 'success', timer: 1600, showConfirmButton: false });
+    } catch(e) { rdError(e.message || 'Failed to save country.'); }
+    finally { btn.disabled = false; btn.textContent = editId ? 'Save Changes' : 'Add Country'; }
+}
+
+async function deleteCountry(id, name) {
+    const result = await Swal.fire({
+        title: 'Delete country?',
+        html: `<strong>${name}</strong> will be removed from the master list.<br><small style="color:#979b92">Clients and projects using this country will have their country cleared.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#df433f',
+        cancelButtonColor: '#979b92',
+        confirmButtonText: 'Yes, delete'
+    });
+    if (!result.isConfirmed) return;
+    try {
+        const res  = await fetch(rdApi('api/countries.php?id=' + id), { method: 'DELETE', credentials: 'same-origin' });
+        const json = await res.json();
+        if (json.status !== 'success') throw new Error(json.message);
+        Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1200, showConfirmButton: false });
+        loadCountries();
+    } catch(e) { rdError(e.message || 'Failed to delete country.'); }
+}
+
+// Close modal on backdrop click
+document.getElementById('countryModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('countryModal')) hideModal();
+});
+
+// Enter key submits form
+document.getElementById('countryForm').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveCountry();
+});
+
+loadCountries();
+</script>
+</body>
+</html>

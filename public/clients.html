@@ -9,8 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        .ts-wrapper.single .ts-control { background:var(--surface-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);box-shadow:none;cursor:pointer;min-height:0 }
+        .ts-wrapper.single.input-active .ts-control { border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,157,118,.15) }
+        .ts-dropdown { border:1px solid var(--border-2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.12);background:var(--surface);font-family:inherit;font-size:14px;margin-top:4px }
+        .ts-dropdown .option { padding:10px 14px;color:var(--text) }
+        .ts-dropdown .option:hover,.ts-dropdown .option.active { background:var(--accent-soft);color:var(--accent) }
+        .ts-dropdown .option.selected { background:var(--accent-soft);color:var(--accent);font-weight:600 }
+        .ts-dropdown-content { max-height:240px }
+    </style>
 </head>
 <body class="rd-body">
 <div class="rd-layout">
@@ -113,19 +124,25 @@
 let clientsData = [];
 let countriesData = [];
 let editId = null;
+let tsCountryModal = null;
 
 async function loadCountries() {
     try {
         const res = await fetch(rdApi('api/countries.php'), { credentials: 'same-origin' });
         const data = await res.json();
         countriesData = data.data || [];
-        const sel = document.getElementById('c_country_id');
+        if (!tsCountryModal) {
+            tsCountryModal = new TomSelect('#c_country_id', {
+                placeholder: '— Select country —',
+                allowEmptyOption: true,
+                maxOptions: 300,
+                searchField: ['text']
+            });
+        }
         countriesData.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id;
-            opt.textContent = c.name;
-            sel.appendChild(opt);
+            tsCountryModal.addOption({ value: c.id, text: c.name });
         });
+        tsCountryModal.refreshOptions(false);
     } catch(e) { console.error('Failed to load countries', e); }
 }
 
@@ -208,6 +225,7 @@ document.getElementById('searchClients').addEventListener('input', e => {
 
 function showModal() {
     document.getElementById('clientForm').reset();
+    if (tsCountryModal) tsCountryModal.setValue('');
     document.getElementById('modalTitle').textContent = 'Add Client';
     document.getElementById('saveClientBtn').textContent = 'Add Client';
     editId = null;
@@ -223,7 +241,8 @@ function editClient(c) {
     document.getElementById('c_company').value = c.company || '';
     document.getElementById('c_email').value = c.email || '';
     document.getElementById('c_phone').value = c.phone || '';
-    document.getElementById('c_country_id').value = c.country_id || '';
+    if (tsCountryModal) tsCountryModal.setValue(c.country_id ? String(c.country_id) : '');
+    else document.getElementById('c_country_id').value = c.country_id || '';
     document.getElementById('c_notes').value = c.notes || '';
     document.getElementById('clientModal').style.display = 'flex';
 }

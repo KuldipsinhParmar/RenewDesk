@@ -101,6 +101,12 @@ storage/app/public/
 # ─── DevTracker (local tool) ─────────────────────────────────
 .devCodeTracker/
 
+# ─── Graphify (knowledge graph output) ───────────────────────
+graphify-out/
+
+# ─── User-uploaded logos ─────────────────────────────────────
+public/assets/uploads/
+
 # ─── Misc ────────────────────────────────────────────────────
 *.zip
 *.tar.gz

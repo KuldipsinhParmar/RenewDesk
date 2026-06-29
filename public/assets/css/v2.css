@@ -498,15 +498,17 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 /* ============================================================
    MODAL
    ============================================================ */
+.rd-modal-overlay,
 .rd-modal-backdrop {
   position: fixed;
   inset: 0;
+  z-index: 200;
   background: rgba(21,24,26,0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
-  backdrop-filter: blur(4px);
 }
 
 .rd-modal {

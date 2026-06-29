@@ -10,6 +10,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        /* Toggle switch */
+        .rd-toggle-wrap { display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:border-color .15s }
+        .rd-toggle-wrap:hover { border-color:var(--accent) }
+        .rd-toggle { position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0 }
+        .rd-toggle input { opacity:0;width:0;height:0 }
+        .rd-toggle-track { position:absolute;inset:0;background:#c8cbc3;border-radius:99px;transition:.25s;cursor:pointer }
+        .rd-toggle-track:before { content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2) }
+        .rd-toggle input:checked + .rd-toggle-track { background:var(--accent) }
+        .rd-toggle input:checked + .rd-toggle-track:before { transform:translateX(20px) }
+        /* Day chips */
+        .day-chips { display:flex;gap:10px;flex-wrap:wrap }
+        .day-chip { display:flex;align-items:center;gap:0 }
+        .day-chip input[type=checkbox] { position:absolute;opacity:0;width:0;height:0 }
+        .day-chip label { display:flex;align-items:center;justify-content:center;min-width:64px;padding:9px 16px;border-radius:10px;border:2px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;transition:.15s;background:var(--surface-2);color:var(--text-3);user-select:none;font-family:'IBM Plex Mono',monospace }
+        .day-chip input:checked + label { border-color:var(--accent);background:var(--accent-soft);color:var(--accent) }
+        .day-chip label:hover { border-color:var(--accent);color:var(--accent) }
+        /* Section card */
+        .settings-card { background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:20px }
+        .settings-card-header { display:flex;align-items:center;gap:14px;padding:22px 26px;border-bottom:1px solid var(--border) }
+        .settings-card-body { padding:26px }
+        .settings-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0 }
+        /* Toast */
+        #toastMsg { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);opacity:0;transition:.3s;padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;z-index:999;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,.15) }
+        #toastMsg.show { transform:translateX(-50%) translateY(0);opacity:1 }
+    </style>
 </head>
 <body class="rd-body">
 <div class="rd-layout">
@@ -21,97 +47,216 @@
     <!-- MAIN -->
     <div class="rd-main">
         <div class="rd-page-header">
-            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-            <div><h1 class="rd-page-title">Settings</h1><p class="rd-page-subtitle">Configure alerts and system preferences</p></div>
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div>
+                <h1 class="rd-page-title">Settings</h1>
+                <p class="rd-page-subtitle">Configure alerts and email preferences</p>
+            </div>
         </div>
 
-        <div style="max-width:680px">
-            <div id="alertBox" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:12px;font-size:13.5px;font-weight:600;display:none;align-items:center;gap:10px"></div>
+        <div style="max-width:720px">
 
-            <form id="settingsForm">
-                <div class="rd-card" style="padding:32px;margin-bottom:20px">
-                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
-                        <div style="width:46px;height:46px;border-radius:12px;background:rgba(224,144,42,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                        </div>
+            <!-- ── Alert Status Toggle ── -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-icon" style="background:rgba(91,105,230,.12)">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--c-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:2px">Email Alert Status</div>
+                        <div style="font-size:12.5px;color:var(--text-3)">Enable or disable all automated renewal reminder emails</div>
+                    </div>
+                </div>
+                <div class="settings-card-body">
+                    <div class="rd-toggle-wrap" onclick="toggleAlerts()">
                         <div>
-                            <h3 style="font-size:17px;font-weight:700;margin:0 0 3px">Alert Preferences</h3>
-                            <p style="font-size:13px;color:var(--text-3);margin:0">Reminders are sent to <strong style="color:var(--text-2)">kuldipparmar18@gmail.com</strong></p>
+                            <div style="font-size:14px;font-weight:600;color:var(--text)">Automated Email Alerts</div>
+                            <div style="font-size:12px;color:var(--text-3);margin-top:2px" id="alertStatusLabel">Alert emails are enabled</div>
                         </div>
-                    </div>
-                    <div style="background:var(--surface-2);border-radius:12px;padding:20px;border:1px solid var(--border)">
-                        <div class="rd-form-group">
-                            <label class="rd-label">Reminder Thresholds</label>
-                            <p style="font-size:12px;color:var(--text-3);margin:0 0 10px">Days before expiry to send alert (comma separated)</p>
-                            <input type="text" data-key="remind_days" class="rd-input key-input" placeholder="30,15,7,1">
-                        </div>
+                        <label class="rd-toggle" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="alertEnabled" onchange="syncAlertLabel()">
+                            <span class="rd-toggle-track"></span>
+                        </label>
                     </div>
                 </div>
+            </div>
 
-                <div style="display:flex;justify-content:flex-end;gap:12px">
-                    <button type="button" id="testEmailBtn" class="rd-btn" style="gap:7px;display:flex;align-items:center;color:var(--good);border-color:var(--good)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
-                        Send Test Email
+            <!-- ── Email Setup ── -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-icon" style="background:rgba(224,144,42,.12)">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:2px">Email Setup</div>
+                        <div style="font-size:12.5px;color:var(--text-3)">Addresses used for outgoing alert emails</div>
+                    </div>
+                </div>
+                <div class="settings-card-body" style="display:flex;flex-direction:column;gap:18px">
+                    <div class="rd-form-group">
+                        <label class="rd-label">From Address</label>
+                        <p style="font-size:12px;color:var(--text-3);margin:0 0 8px">Sender email shown in outgoing alerts (e.g. alerts@yourdomain.com)</p>
+                        <input type="email" id="emailFrom" class="rd-input" data-key="email_from" placeholder="alerts@yourdomain.com">
+                    </div>
+                    <div class="rd-form-group">
+                        <label class="rd-label">CC / Notify Addresses</label>
+                        <p style="font-size:12px;color:var(--text-3);margin:0 0 8px">Additional recipients for every alert email (comma separated)</p>
+                        <input type="text" id="emailCc" class="rd-input" data-key="email_cc" placeholder="manager@company.com, team@company.com">
+                    </div>
+                    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--c-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                        <p style="margin:0;font-size:12.5px;color:var(--text-3);line-height:1.6">Alert emails are sent via the server's PHP <code style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px">mail()</code> function. Make sure your server has mail configured and the From address matches an authorized sender on your domain.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Reminder Schedule ── -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-icon" style="background:var(--accent-soft)">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:2px">Reminder Schedule</div>
+                        <div style="font-size:12.5px;color:var(--text-3)">When to send alerts before an asset expires</div>
+                    </div>
+                </div>
+                <div class="settings-card-body">
+                    <p style="font-size:13px;color:var(--text-3);margin:0 0 18px">Select the days before expiry when the system should send an email reminder. You can pick multiple thresholds.</p>
+                    <div class="day-chips" id="dayChips">
+                        <div class="day-chip"><input type="checkbox" id="d1" value="1"><label for="d1">1 day</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d3" value="3"><label for="d3">3 days</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d7" value="7"><label for="d7">7 days</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d14" value="14"><label for="d14">14 days</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d15" value="15"><label for="d15">15 days</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d30" value="30"><label for="d30">30 days</label></div>
+                        <div class="day-chip"><input type="checkbox" id="d60" value="60"><label for="d60">60 days</label></div>
+                    </div>
+                    <p style="font-size:12px;color:var(--text-3);margin:14px 0 0">Selected: <span id="remindPreview" style="font-family:'IBM Plex Mono',monospace;color:var(--accent);font-weight:600">—</span></p>
+                </div>
+            </div>
+
+            <!-- ── Actions ── -->
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 32px">
+                <button id="testEmailBtn" class="rd-btn" style="display:flex;align-items:center;gap:8px;color:var(--good);border-color:var(--good)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+                    Send Test Email
+                </button>
+                <div style="display:flex;gap:10px">
+                    <button type="button" onclick="loadSettings()" class="rd-btn" style="display:flex;align-items:center;gap:7px">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                        Reset
                     </button>
-                    <button type="submit" id="saveBtn" class="rd-btn rd-btn-primary" style="display:flex;align-items:center;gap:7px">
+                    <button id="saveBtn" onclick="saveSettings()" class="rd-btn rd-btn-primary" style="display:flex;align-items:center;gap:7px">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Save Configuration
+                        Save Settings
                     </button>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 </div>
 
+<div id="toastMsg"></div>
+
 <script src="assets/js/rd-api.js"></script>
 <script>
-function showAlert(msg, ok) {
-    const alertBox = document.getElementById('alertBox');
-    alertBox.style.display = 'flex';
-    alertBox.style.background = ok ? 'var(--good-soft)' : 'var(--bad-soft)';
-    alertBox.style.color = ok ? 'var(--good)' : 'var(--bad)';
-    alertBox.style.border = `1px solid ${ok ? 'rgba(22,163,74,.25)' : 'rgba(223,67,63,.25)'}`;
-    alertBox.textContent = msg;
-    setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+function toast(msg, ok) {
+    const el = document.getElementById('toastMsg');
+    el.style.background = ok ? 'var(--good)' : 'var(--bad)';
+    el.style.color = '#fff';
+    el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ok ? '<polyline points="20 6 9 17 4 12"/>' : '<path d="M18 6 6 18M6 6l12 12"/>'}</svg>${msg}`;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 4000);
 }
+
+function getRemindDays() {
+    return Array.from(document.querySelectorAll('#dayChips input[type=checkbox]:checked')).map(c => c.value).sort((a,b) => b - a).join(',');
+}
+
+function setRemindDays(val) {
+    const selected = (val || '').split(',').map(s => s.trim()).filter(Boolean);
+    document.querySelectorAll('#dayChips input[type=checkbox]').forEach(cb => {
+        cb.checked = selected.includes(cb.value);
+    });
+    updateRemindPreview();
+}
+
+function updateRemindPreview() {
+    const days = getRemindDays();
+    document.getElementById('remindPreview').textContent = days
+        ? days.split(',').map(d => d.trim() + ' days').join(', ')
+        : 'None selected';
+}
+
+function syncAlertLabel() {
+    const on = document.getElementById('alertEnabled').checked;
+    document.getElementById('alertStatusLabel').textContent = on ? 'Alert emails are enabled' : 'Alert emails are disabled';
+}
+
+function toggleAlerts() {
+    const cb = document.getElementById('alertEnabled');
+    cb.checked = !cb.checked;
+    syncAlertLabel();
+}
+
+document.querySelectorAll('#dayChips input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', updateRemindPreview);
+});
 
 async function loadSettings() {
     try {
         const res = await fetch(rdApi('api/settings.php'), { credentials: 'same-origin' });
         if (res.status === 401) { window.location.href = 'login.html'; return; }
         const json = await res.json();
-        json.data.forEach(item => {
-            const input = document.querySelector(`input[data-key="${item.key}"]`);
-            if (input) input.value = item.value;
-        });
-    } catch(e) { console.error("Could not load settings."); }
+        const map = {};
+        json.data.forEach(item => { map[item.key] = item.value; });
+
+        document.getElementById('emailFrom').value = map.email_from || '';
+        document.getElementById('emailCc').value = map.email_cc || '';
+        document.getElementById('alertEnabled').checked = map.alert_enabled !== '0';
+        syncAlertLabel();
+        setRemindDays(map.remind_days || '30,15,7,1');
+    } catch(e) { console.error("Could not load settings.", e); }
 }
 
-document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+async function saveSettings() {
     const btn = document.getElementById('saveBtn');
     const orig = btn.innerHTML;
     btn.disabled = true; btn.textContent = 'Saving…';
-    const inputs = document.querySelectorAll('.key-input');
-    const payload = {};
-    inputs.forEach(input => { payload[input.getAttribute('data-key')] = input.value; });
+
+    const payload = {
+        email_from: document.getElementById('emailFrom').value.trim(),
+        email_cc: document.getElementById('emailCc').value.trim(),
+        alert_enabled: document.getElementById('alertEnabled').checked ? '1' : '0',
+        remind_days: getRemindDays() || '30,15,7,1'
+    };
+
     try {
-        const res = await fetch(rdApi('api/settings.php'), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(payload) });
+        const res = await fetch(rdApi('api/settings.php'), {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+        });
         const json = await res.json();
-        showAlert(json.status === 'success' ? 'Settings saved successfully!' : (json.message || 'Error saving settings.'), json.status === 'success');
-    } catch(e) { showAlert('Network request failed.', false); }
+        toast(json.status === 'success' ? 'Settings saved successfully!' : (json.message || 'Error saving settings.'), json.status === 'success');
+    } catch(e) { toast('Network request failed.', false); }
     btn.disabled = false; btn.innerHTML = orig;
-});
+}
 
 document.getElementById('testEmailBtn').addEventListener('click', async () => {
     const btn = document.getElementById('testEmailBtn');
     const orig = btn.innerHTML;
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
-        const res = await fetch(rdApi('api/test_email.php'), { method:'POST', credentials:'same-origin' });
+        const res = await fetch(rdApi('api/test_email.php'), { method: 'POST', credentials: 'same-origin' });
         const json = await res.json();
-        showAlert(json.message || (json.status === 'success' ? 'Test email sent!' : 'SMTP test failed.'), json.status === 'success');
-    } catch(e) { showAlert('Server error during test email.', false); }
+        toast(json.message || (json.status === 'success' ? 'Test email sent!' : 'Email test failed.'), json.status === 'success');
+    } catch(e) { toast('Server error during test email.', false); }
     btn.disabled = false; btn.innerHTML = orig;
 });
 

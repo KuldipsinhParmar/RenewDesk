@@ -9,8 +9,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        .ts-wrapper.single .ts-control { background:var(--surface-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);box-shadow:none;cursor:pointer;min-height:0 }
+        .ts-wrapper.single.input-active .ts-control { border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,157,118,.15) }
+        .ts-dropdown { border:1px solid var(--border-2);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.12);background:var(--surface);font-family:inherit;font-size:14px;margin-top:4px }
+        .ts-dropdown .option { padding:10px 14px;color:var(--text) }
+        .ts-dropdown .option:hover,.ts-dropdown .option.active { background:var(--accent-soft);color:var(--accent) }
+        .ts-dropdown .option.selected { background:var(--accent-soft);color:var(--accent);font-weight:600 }
+        .ts-dropdown-content { max-height:240px }
+        /* filter toolbar select — smaller */
+        #clientFilter + .ts-wrapper .ts-control { padding:8px 12px;font-size:13.5px }
+    </style>
 </head>
 <body class="rd-body">
 <div class="rd-layout">
@@ -88,8 +101,24 @@
                     </select>
                 </div>
                 <div class="rd-form-group" style="margin-top:14px">
-                    <label class="rd-label">Logo URL</label>
-                    <input type="url" id="p_logo_url" class="rd-input" placeholder="https://example.com/logo.png">
+                    <label class="rd-label">Project Logo</label>
+                    <div id="logoUploadZone" style="border:2px dashed var(--border-2);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--surface-2)" onclick="document.getElementById('logoFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border-2)'" ondrop="handleLogoDrop(event)">
+                        <div id="logoPreview" style="display:none;margin-bottom:10px">
+                            <img id="logoPreviewImg" style="max-width:72px;max-height:72px;border-radius:10px;object-fit:contain;border:1px solid var(--border);background:#fff">
+                        </div>
+                        <div id="logoPlaceholder">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto;display:block"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <div style="font-size:13px;color:var(--text-3);margin-top:8px;font-weight:500">Drop image or <span style="color:var(--accent);font-weight:600">click to upload</span></div>
+                            <div style="font-size:11px;color:var(--text-3);margin-top:3px">JPG, PNG, WebP, SVG · max 2 MB</div>
+                        </div>
+                        <div id="logoUploading" style="display:none;color:var(--text-3);font-size:13px">Uploading…</div>
+                    </div>
+                    <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="uploadLogoFile(this)">
+                    <input type="hidden" id="p_logo_url">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px" id="logoMeta" style="display:none">
+                        <span id="logoUrlDisplay" style="font-size:11.5px;color:var(--text-3);word-break:break-all;flex:1;font-family:'IBM Plex Mono',monospace"></span>
+                        <button type="button" onclick="clearLogo()" id="clearLogoBtn" style="display:none;flex-shrink:0;margin-left:10px;padding:4px 10px;font-size:11.5px;font-weight:600;border:1px solid var(--border-2);background:var(--surface);color:var(--text-3);border-radius:7px;cursor:pointer">Remove</button>
+                    </div>
                 </div>
                 <div class="rd-form-group" style="margin-top:14px">
                     <label class="rd-label">Description / Notes</label>
@@ -110,6 +139,9 @@ let projectsData = [];
 let clientsData = [];
 let countriesData = [];
 let currentEditProjectId = null;
+let tsClient = null;
+let tsCountryModal = null;
+let tsClientFilter = null;
 
 function countryFlag(code) {
     if (!code) return '';
@@ -121,12 +153,13 @@ async function loadCountries() {
         const res = await fetch(rdApi('api/countries.php'), { credentials: 'same-origin' });
         const data = await res.json();
         countriesData = data.data || [];
-        const sel = document.getElementById('p_country_id');
-        countriesData.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id; opt.textContent = c.name;
-            sel.appendChild(opt);
-        });
+        if (!tsCountryModal) {
+            tsCountryModal = new TomSelect('#p_country_id', {
+                placeholder: '— Select country —', allowEmptyOption: true, maxOptions: 300, searchField: ['text']
+            });
+        }
+        countriesData.forEach(c => tsCountryModal.addOption({ value: c.id, text: c.name }));
+        tsCountryModal.refreshOptions(false);
     } catch(e) { console.error('Failed to load countries', e); }
 }
 
@@ -141,28 +174,30 @@ async function loadClients() {
 }
 
 function populateClientFilter() {
-    const sel = document.getElementById('clientFilter');
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">All Clients</option>';
-    clientsData.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.name + (c.company ? ` (${c.company})` : '');
-        sel.appendChild(opt);
-    });
-    sel.value = cur;
+    if (!tsClientFilter) {
+        tsClientFilter = new TomSelect('#clientFilter', {
+            placeholder: 'All Clients', allowEmptyOption: true, onChange: applyFilters
+        });
+    }
+    const prev = tsClientFilter.getValue();
+    tsClientFilter.clearOptions();
+    tsClientFilter.addOption({ value: '', text: 'All Clients' });
+    clientsData.forEach(c => tsClientFilter.addOption({ value: c.id, text: c.name + (c.company ? ` (${c.company})` : '') }));
+    tsClientFilter.refreshOptions(false);
+    tsClientFilter.setValue(prev, true);
 }
 
 function populateClientDropdown(selectedId) {
-    const sel = document.getElementById('p_client_id');
-    sel.innerHTML = '<option value="">— No client —</option>';
-    clientsData.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.name + (c.company ? ` — ${c.company}` : '');
-        if (selectedId && c.id == selectedId) opt.selected = true;
-        sel.appendChild(opt);
-    });
+    if (!tsClient) {
+        tsClient = new TomSelect('#p_client_id', {
+            placeholder: '— No client —', allowEmptyOption: true, maxOptions: 300, searchField: ['text']
+        });
+    }
+    tsClient.clearOptions();
+    tsClient.addOption({ value: '', text: '— No client —' });
+    clientsData.forEach(c => tsClient.addOption({ value: c.id, text: c.name + (c.company ? ` — ${c.company}` : '') }));
+    tsClient.refreshOptions(false);
+    tsClient.setValue(selectedId ? String(selectedId) : '', true);
 }
 
 async function loadProjects() {
@@ -180,10 +215,10 @@ const formatDate = rdFormatDate;
 
 function applyFilters() {
     const term = document.getElementById('searchProjects').value.toLowerCase();
-    const clientId = document.getElementById('clientFilter').value;
+    const clientId = tsClientFilter ? tsClientFilter.getValue() : document.getElementById('clientFilter').value;
     let list = projectsData;
     if (term) list = list.filter(p => p.name.toLowerCase().includes(term) || (p.client_name||'').toLowerCase().includes(term));
-    if (clientId) list = list.filter(p => String(p.client_id) === clientId);
+    if (clientId) list = list.filter(p => String(p.client_id) === String(clientId));
     renderProjects(list);
 }
 
@@ -235,10 +270,11 @@ function renderProjects(dataset) {
 }
 
 document.getElementById('searchProjects').addEventListener('input', applyFilters);
-document.getElementById('clientFilter').addEventListener('change', applyFilters);
 
 function showAddModal() {
     document.getElementById('projectForm').reset();
+    clearLogo();
+    if (tsCountryModal) tsCountryModal.setValue('', true);
     document.getElementById('modalTitle').textContent = 'Create New Project';
     document.getElementById('saveProjectBtn').textContent = 'Create Project';
     currentEditProjectId = null;
@@ -256,22 +292,84 @@ function editProject(p) {
     currentEditProjectId = p.id;
     document.getElementById('p_name').value = p.name || '';
     document.getElementById('p_country_id').value = p.country_id || '';
-    document.getElementById('p_logo_url').value = p.logo_url || '';
+    const logoUrl = p.logo_url || '';
+    document.getElementById('p_logo_url').value = logoUrl;
+    setLogoPreview(logoUrl);
     document.getElementById('p_desc').value = p.description || '';
     populateClientDropdown(p.client_id);
+    if (tsCountryModal) tsCountryModal.setValue(p.country_id ? String(p.country_id) : '', true);
     document.getElementById('addProjectModal').style.display = 'flex';
 }
 
 function hideAddModal() {
     document.getElementById('addProjectModal').style.display = 'none';
+    clearLogo();
+}
+
+function setLogoPreview(url) {
+    if (url) {
+        document.getElementById('logoPreviewImg').src = url;
+        document.getElementById('logoPreview').style.display = '';
+        document.getElementById('logoPlaceholder').style.display = 'none';
+        document.getElementById('logoUrlDisplay').textContent = url;
+        document.getElementById('clearLogoBtn').style.display = '';
+        document.getElementById('logoUploadZone').style.borderColor = 'var(--accent)';
+    } else {
+        clearLogo();
+    }
+}
+
+function clearLogo() {
+    document.getElementById('p_logo_url').value = '';
+    document.getElementById('logoPreview').style.display = 'none';
+    document.getElementById('logoPlaceholder').style.display = '';
+    document.getElementById('logoUrlDisplay').textContent = '';
+    document.getElementById('clearLogoBtn').style.display = 'none';
+    document.getElementById('logoUploadZone').style.borderColor = '';
+    document.getElementById('logoFileInput').value = '';
+    document.getElementById('logoUploading').style.display = 'none';
+}
+
+function handleLogoDrop(event) {
+    event.preventDefault();
+    document.getElementById('logoUploadZone').style.borderColor = '';
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+    const fakeInput = { files: [file] };
+    uploadLogoFile(fakeInput);
+}
+
+async function uploadLogoFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('logoPlaceholder').style.display = 'none';
+    document.getElementById('logoPreview').style.display = 'none';
+    document.getElementById('logoUploading').style.display = '';
+    const formData = new FormData();
+    formData.append('logo', file);
+    try {
+        const res = await fetch(rdApi('api/upload.php'), { method: 'POST', credentials: 'same-origin', body: formData });
+        const json = await res.json();
+        if (json.status === 'success') {
+            setLogoPreview(json.url);
+            document.getElementById('p_logo_url').value = json.url;
+        } else {
+            rdError(json.message || 'Upload failed');
+            document.getElementById('logoPlaceholder').style.display = '';
+        }
+    } catch(e) {
+        rdError('Upload failed — server error.');
+        document.getElementById('logoPlaceholder').style.display = '';
+    }
+    document.getElementById('logoUploading').style.display = 'none';
 }
 
 async function saveProject() {
     const name = document.getElementById('p_name').value.trim();
     if (!name) { Swal.fire({ icon:'warning', title:'Name required', text:'Please enter a project name.', confirmButtonColor:'var(--accent)' }); return; }
-    const client_id = document.getElementById('p_client_id').value || null;
-    const country_id = document.getElementById('p_country_id').value || null;
-    const logo_url = document.getElementById('p_logo_url').value.trim() || null;
+    const client_id  = (tsClient ? tsClient.getValue() : document.getElementById('p_client_id').value) || null;
+    const country_id = (tsCountryModal ? tsCountryModal.getValue() : document.getElementById('p_country_id').value) || null;
+    const logo_url   = document.getElementById('p_logo_url').value.trim() || null;
     const description = document.getElementById('p_desc').value.trim();
     const btn = document.getElementById('saveProjectBtn');
     btn.disabled = true; btn.textContent = 'Saving…';

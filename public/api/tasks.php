@@ -11,12 +11,10 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     if ($method === 'GET') {
         if (isset($_GET['project_id'])) {
-            // Tasks for a specific project
-            $stmt = $db->prepare("SELECT t.*, p.name as project_name FROM tasks t JOIN projects p ON t.project_id = p.id WHERE t.project_id = ? ORDER BY t.task_date DESC, t.created_at DESC");
+            $stmt = $db->prepare("SELECT t.*, p.name as project_name, co.name as country_name, co.code as country_code FROM tasks t JOIN projects p ON t.project_id = p.id LEFT JOIN countries co ON co.id = p.country_id WHERE t.project_id = ? ORDER BY t.task_date DESC, t.created_at DESC");
             $stmt->execute([$_GET['project_id']]);
         } else {
-            // All tasks across projects
-            $stmt = $db->query("SELECT t.*, p.name as project_name FROM tasks t JOIN projects p ON t.project_id = p.id ORDER BY t.task_date DESC, t.created_at DESC");
+            $stmt = $db->query("SELECT t.*, p.name as project_name, co.name as country_name, co.code as country_code FROM tasks t JOIN projects p ON t.project_id = p.id LEFT JOIN countries co ON co.id = p.country_id ORDER BY t.task_date DESC, t.created_at DESC");
         }
         $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["status" => "success", "data" => $tasks]);
