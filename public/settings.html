@@ -138,6 +138,37 @@
                 </div>
             </div>
 
+            <!-- ── Cron Job ── -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-icon" style="background:rgba(15,157,118,.1)">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:2px">Cron Job Setup</div>
+                        <div style="font-size:12.5px;color:var(--text-3)">Schedule this URL on your server to send automated reminders daily</div>
+                    </div>
+                </div>
+                <div class="settings-card-body" style="display:flex;flex-direction:column;gap:16px">
+                    <div class="rd-form-group">
+                        <label class="rd-label">Cron Trigger URL</label>
+                        <p style="font-size:12px;color:var(--text-3);margin:0 0 8px">Hit this URL once daily (e.g. 8:00 AM) to trigger reminder emails automatically.</p>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input type="text" id="cronUrlField" class="rd-input" readonly style="font-family:'IBM Plex Mono',monospace;font-size:12px;flex:1;cursor:text" value="Loading…">
+                            <button onclick="copyCronUrl()" class="rd-btn" id="cronCopyBtn" style="flex-shrink:0;display:flex;align-items:center;gap:6px;white-space:nowrap">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px 18px">
+                        <p style="margin:0 0 8px;font-size:12.5px;font-weight:600;color:var(--text)">cPanel Cron Command</p>
+                        <code id="cronCpanelCmd" style="display:block;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--accent);word-break:break-all;line-height:1.7">Loading…</code>
+                        <p style="margin:8px 0 0;font-size:12px;color:var(--text-3)">Set frequency to <strong>Once Daily</strong> at your preferred time in cPanel &gt; Cron Jobs.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- ── Actions ── -->
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 32px">
                 <button id="testEmailBtn" class="rd-btn" style="display:flex;align-items:center;gap:8px;color:var(--good);border-color:var(--good)">
@@ -220,6 +251,10 @@ async function loadSettings() {
         document.getElementById('alertEnabled').checked = map.alert_enabled !== '0';
         syncAlertLabel();
         setRemindDays(map.remind_days || '30,15,7,1');
+        if (json.cron_url) {
+            document.getElementById('cronUrlField').value = json.cron_url;
+            document.getElementById('cronCpanelCmd').textContent = 'curl -s "' + json.cron_url + '"';
+        }
     } catch(e) { console.error("Could not load settings.", e); }
 }
 
@@ -259,6 +294,17 @@ document.getElementById('testEmailBtn').addEventListener('click', async () => {
     } catch(e) { toast('Server error during test email.', false); }
     btn.disabled = false; btn.innerHTML = orig;
 });
+
+function copyCronUrl() {
+    const val = document.getElementById('cronUrlField').value;
+    if (!val || val === 'Loading…') return;
+    navigator.clipboard.writeText(val).then(() => {
+        const btn = document.getElementById('cronCopyBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    });
+}
 
 loadSettings();
 </script>
