@@ -85,7 +85,7 @@ function renderData(dataset) {
         return;
     }
     tbody.innerHTML = dataset.map(item => {
-        const nextColor = item.client_paid == 1 ? 'var(--good)' : (new Date(item.next_backup) < new Date() ? 'var(--bad)' : 'var(--good)');
+        const nextColor = item.is_done == 1 ? 'var(--good)' : (new Date(item.next_backup) < new Date() ? 'var(--bad)' : 'var(--good)');
         return `<tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
             <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
                 <a href="project-details.html?id=${item.project_id}" style="font-weight:600;font-size:14px;color:var(--text);text-decoration:none" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'">${item.project_name}</a>
@@ -96,10 +96,10 @@ function renderData(dataset) {
                 <div style="font-size:13.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${nextColor}">Next: ${formatD(item.next_backup)}</div>
                 <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px">Last: ${formatD(item.last_backup)}</div>
             </td>
-            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${paidPill(item.client_paid)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${paidPill(item.is_done)}</td>
             <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
                 <div style="display:flex;gap:7px;justify-content:flex-end">
-                    ${item.client_paid == 1 ? '' : `<button onclick="markDone(${item.id},'${item.next_backup}')" class="rd-icon-btn success" title="Mark Done"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg></button>`}
+                    ${item.is_done == 1 ? '' : `<button onclick="markDone(${item.id},'${item.next_backup}')" class="rd-icon-btn success" title="Mark Done"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg></button>`}
                     <a href="project-details.html?id=${item.project_id}" class="rd-icon-btn" title="Open Project"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
                 </div>
             </td>
@@ -136,7 +136,7 @@ async function markDone(id, nextDate) {
     if (!result.isConfirmed) return;
     try {
         await fetch(rdApi(`api/backups.php?id=${id}`), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
-            body:JSON.stringify({project_id:item.project_id,frequency:item.frequency,last_backup:nextDate,next_backup:newNext,storage_location:item.storage_location,client_paid:0,notes:item.notes}) });
+            body:JSON.stringify({project_id:item.project_id,frequency:item.frequency,last_backup:nextDate,next_backup:newNext,storage_location:item.storage_location,is_done:0,notes:item.notes}) });
         Swal.fire({ title:'Done!', text:'Backup cycle updated.', icon:'success', timer:1800, showConfirmButton:false });
         loadData();
     } catch(e) { Swal.fire('Error','Failed to update.','error'); }

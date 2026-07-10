@@ -569,13 +569,15 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
    ============================================================ */
 .rd-form-group { margin-bottom: 0; }
 .rd-form-group + .rd-form-group { margin-top: 16px; }
+.rd-form-group + .rd-grid-2,
+.rd-grid-2 + .rd-form-group { margin-top: 16px; }
 
 .rd-label {
   display: block;
   font-size: 12.5px;
   font-weight: 600;
   color: var(--text-2);
-  margin-bottom: 7px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }

@@ -40,7 +40,7 @@
         </div>
 
         <!-- STATS STRIP -->
-        <div id="statsStrip" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:6px"></div>
+        <div id="statsStrip" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:22px"></div>
 
         <!-- 2-column grid -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
@@ -136,7 +136,7 @@
                             <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Freq</th>
                             <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last Backup</th>
                             <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Backup</th>
-                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Paid</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Done</th>
                             <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
                         </tr></thead>
                         <tbody id="tb-backups"></tbody>
@@ -211,9 +211,10 @@ async function loadCountries() {
     } catch(e) {}
 }
 
-function paidDot(paid) {
+function paidDot(paid, label) {
     const c = paid == 1 ? 'var(--good)' : 'var(--bad)';
-    return `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c}" title="${paid==1?'Paid':'Pending'}"></span>`;
+    const doneLabel = label === 'done' ? 'Done' : 'Paid';
+    return `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c}" title="${paid==1?doneLabel:'Pending'}"></span>`;
 }
 
 function actBtns(type, id, extraBtns) {
@@ -241,7 +242,7 @@ function renderStats() {
     const priceItems = [...(d.domains||[]), ...(d.hosting||[]), ...(d.maintenance||[])];
     const allServices = [...priceItems, ...(d.backups||[])];
     const totalCost = priceItems.reduce((s, i) => s + parseFloat(i.price || 0), 0);
-    const unpaid = allServices.filter(i => i.client_paid != 1).length;
+    const unpaid = allServices.filter(i => (i.is_done ?? i.client_paid) != 1).length;
     const totalHours = (d.tasks||[]).reduce((s, i) => s + parseFloat(i.hours || 0), 0);
     const today = new Date();
     const in30 = new Date(); in30.setDate(in30.getDate() + 30);
@@ -344,13 +345,13 @@ async function loadData() {
         // BACKUPS
         document.getElementById('tb-backups').innerHTML = currentProjectData.backups.length
             ? currentProjectData.backups.map(i => {
-                const nextC = i.client_paid==1?'var(--good)':(new Date(i.next_backup)<new Date()?'var(--bad)':'var(--good)');
+                const nextC = i.is_done==1?'var(--good)':(new Date(i.next_backup)<new Date()?'var(--bad)':'var(--good)');
                 return `<tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
                     <td style="${tdRow}"><span style="display:inline-block;padding:2px 9px;border-radius:999px;background:var(--surface-3);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-2)">${i.frequency}</span></td>
                     <td style="${tdRow};font-size:12.5px;font-family:'IBM Plex Mono',monospace;color:var(--text-2)">${formatD(i.last_backup)}</td>
                     <td style="${tdRow};font-size:12.5px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:${nextC}">${formatD(i.next_backup)}</td>
-                    <td style="${tdRow};text-align:center">${paidDot(i.client_paid)}</td>
-                    <td style="${tdRow}">${actBtns('backup',i.id,i.client_paid==1?'':renewBtn('backup',i.id,i.next_backup))}</td>
+                    <td style="${tdRow};text-align:center">${paidDot(i.is_done,'done')}</td>
+                    <td style="${tdRow}">${actBtns('backup',i.id,i.is_done==1?'':renewBtn('backup',i.id,i.next_backup))}</td>
                 </tr>`;}).join('')
             : emptyRow(5, 'No backup schedules.');
 
@@ -404,7 +405,7 @@ function openModal(type, id = null) {
                 <div class="rd-form-group"><label class="${lc}">Renewal Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_renewal_date" class="${ic}" required value="${item?.renewal_date||''}"></div>
                 <div class="rd-form-group"><label class="${lc}">Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
                 <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
                 <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
             </div>`;
@@ -416,7 +417,7 @@ function openModal(type, id = null) {
                 <div class="rd-form-group"><label class="${lc}">Renewal Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_renewal_date" class="${ic}" required value="${item?.renewal_date||''}"></div>
                 <div class="rd-form-group"><label class="${lc}">Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
                 <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
                 <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
             </div>`;
@@ -427,7 +428,7 @@ function openModal(type, id = null) {
                 <div class="rd-form-group"><label class="${lc}">End Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_end_date" class="${ic}" required value="${item?.end_date||''}"></div>
             </div>
             <div class="rd-form-group"><label class="${lc}">Yearly Price</label><input type="number" step="0.01" id="f_price" class="${ic}" value="${item?.price||'0'}"></div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
                 <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
                 <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
             </div>`;
@@ -447,9 +448,9 @@ function openModal(type, id = null) {
                 <div class="rd-form-group"><label class="${lc}">Next Backup <span style="color:var(--bad)">*</span></label><input type="date" id="f_next_backup" class="${ic}" required value="${item?.next_backup||''}"></div>
             </div>
             <div class="rd-form-group"><label class="${lc}">Storage Location</label><input type="text" id="f_storage_location" class="${ic}" value="${item?.storage_location||''}" placeholder="e.g. AWS S3"></div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
-                <input type="checkbox" id="f_client_paid" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.client_paid==1?'checked':''}>
-                <label for="f_client_paid" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark Client as Paid</label>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border)">
+                <input type="checkbox" id="f_is_done" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)" ${item?.is_done==1?'checked':''}>
+                <label for="f_is_done" style="font-size:13.5px;font-weight:600;cursor:pointer">Mark as Done</label>
             </div>`;
     } else if (type === 'task') {
         formHtml += `
@@ -505,7 +506,7 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.last_backup = document.getElementById('f_last_backup').value || null;
         payload.next_backup = document.getElementById('f_next_backup').value;
         payload.storage_location = document.getElementById('f_storage_location').value;
-        payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
+        payload.is_done = document.getElementById('f_is_done').checked ? 1 : 0;
     } else if (currentModalType === 'task') {
         payload.task_date = document.getElementById('f_task_date').value;
         payload.task_title = document.getElementById('f_task_title').value;
@@ -531,13 +532,15 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
 
     await fetch(url, { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(payload) });
 
+    const isBackupType = currentModalType === 'backup';
+    const prevEntity = currentEditId && (currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentModalType==='maintenance'?currentProjectData.maintenance:currentProjectData.backups).find(x=>x.id==currentEditId);
     const wasPaidAlready = currentEditId && (currentModalType === 'hosting'||currentModalType === 'domain'||currentModalType === 'maintenance'||currentModalType === 'backup') &&
-        ((currentModalType==='hosting'?currentProjectData.hosting:currentModalType==='domain'?currentProjectData.domains:currentModalType==='maintenance'?currentProjectData.maintenance:currentProjectData.backups).find(x=>x.id==currentEditId)?.client_paid == 1);
+        (isBackupType ? prevEntity?.is_done : prevEntity?.client_paid) == 1;
 
-    if (!wasPaidAlready && (currentModalType==='hosting'||currentModalType==='domain'||currentModalType==='maintenance'||currentModalType==='backup') && payload.client_paid == 1) {
+    if (!wasPaidAlready && (currentModalType==='hosting'||currentModalType==='domain'||currentModalType==='maintenance'||currentModalType==='backup') && (isBackupType ? payload.is_done : payload.client_paid) == 1) {
         const isMaint = currentModalType === 'maintenance';
         const isBackup = currentModalType === 'backup';
-        let nextPayload = { ...payload, client_paid:0, status:'active' };
+        let nextPayload = isBackup ? { ...payload, is_done:0, status:'active' } : { ...payload, client_paid:0, status:'active' };
         if (isBackup) {
             let dn = new Date(payload.next_backup);
             nextPayload.last_backup = payload.next_backup;
@@ -616,8 +619,8 @@ async function markRenewed(type, id, oldS, oldE) {
     if (!result.isConfirmed) return;
 
     try {
-        await fetch(rdApi(`api/${type==='backup'?'backups':type==='domain'?'domains':type}.php?id=${id}`), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify({...item,client_paid:1,status:'renewed'}) });
-        let nextPayload = { ...item, client_paid:0, status:'active' };
+        await fetch(rdApi(`api/${type==='backup'?'backups':type==='domain'?'domains':type}.php?id=${id}`), { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'same-origin', body:JSON.stringify(isBackup ? {...item,is_done:1} : {...item,client_paid:1,status:'renewed'}) });
+        let nextPayload = isBackup ? { ...item, is_done:0 } : { ...item, client_paid:0, status:'active' };
         if (isBackup) {
             let dn = new Date(oldS);
             nextPayload.last_backup = oldS;

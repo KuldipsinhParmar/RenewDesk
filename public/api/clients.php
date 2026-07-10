@@ -22,7 +22,7 @@ try {
             $client['projects'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode(["status"=>"success","data"=>$client]);
         } else {
-            $stmt = $db->query("SELECT c.*, co.name as country_name, co.code as country_code, COUNT(p.id) as project_count FROM clients c LEFT JOIN countries co ON co.id = c.country_id LEFT JOIN projects p ON p.client_id = c.id GROUP BY c.id ORDER BY c.name ASC");
+            $stmt = $db->query("SELECT c.*, co.name as country_name, co.code as country_code, COUNT(p.id) as project_count FROM clients c LEFT JOIN countries co ON co.id = c.country_id LEFT JOIN projects p ON p.client_id = c.id GROUP BY c.id ORDER BY c.created_at DESC");
             echo json_encode(["status"=>"success","data"=>$stmt->fetchAll(PDO::FETCH_ASSOC)]);
         }
     } elseif ($method === 'POST') {

@@ -270,7 +270,7 @@ document.getElementById('backupTable').addEventListener('click', async e => {
     try {
         await fetch(rdApi(`api/backups.php?id=${id}`), {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
-            body: JSON.stringify({ project_id: +projectId, frequency, last_backup: nextDate, next_backup: newNext, storage_location: storageLocation || null, client_paid: 0 })
+            body: JSON.stringify({ project_id: +projectId, frequency, last_backup: nextDate, next_backup: newNext, storage_location: storageLocation || null, is_done: 0 })
         });
         Swal.fire({ title: 'Done!', text: 'Backup cycle updated.', icon: 'success', timer: 1800, showConfirmButton: false });
         loadDashboard();
