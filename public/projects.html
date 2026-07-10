@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <style>
@@ -23,7 +26,8 @@
         .ts-dropdown-content { max-height:240px }
         /* filter toolbar select — match search bar height/style */
         #clientFilter + .ts-wrapper { min-width:320px }
-        #clientFilter + .ts-wrapper .ts-control { padding:13px 14px;font-size:14px;background:var(--surface);border-radius:12px;box-shadow:var(--shadow) }
+        #clientFilter + .ts-wrapper .ts-control { padding:2px 4px;font-size:14px;background:transparent;border:1px solid transparent;border-radius:0;box-shadow:none;box-sizing:border-box }
+        #clientFilter + .ts-wrapper.single.focus .ts-control { box-shadow:none }
         #clientFilter + .ts-wrapper.single .ts-control::after { display:none }
     </style>
 </head>
@@ -61,7 +65,7 @@
 
         <!-- Table -->
         <div class="rd-card">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="projectsDataTable" style="width:100%;border-collapse:collapse">
                 <thead><tr>
                     <th style="padding:13px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project Name</th>
                     <th style="padding:13px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Client</th>
@@ -225,8 +229,11 @@ function applyFilters() {
     renderProjects(list);
 }
 
+let projectsTable = null;
+
 function renderProjects(dataset) {
     const tbody = document.getElementById('projectTable');
+    if (projectsTable) { projectsTable.destroy(); projectsTable = null; }
     if (!dataset.length) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-3)">No projects found.</td></tr>';
         return;
@@ -271,6 +278,17 @@ function renderProjects(dataset) {
             </td>
         </tr>`;
     }).join('');
+
+    projectsTable = new DataTable('#projectsDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [1, 3] }],
+        infoCallback: rdDtInfo('projects'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 document.getElementById('searchProjects').addEventListener('input', applyFilters);

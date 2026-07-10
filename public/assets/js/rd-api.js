@@ -50,4 +50,27 @@
         if (parts.length !== 3) return d;
         return parts[2] + '-' + parts[1] + '-' + parts[0];
     };
+
+    /* DataTables v2's CDN stylesheet forces `color:inherit!important` on the
+       current-page button, which beats our CSS regardless of specificity.
+       Paint it directly after every draw instead of fighting the cascade.
+       Deferred a tick — drawCallback fires before DataTables finishes
+       attaching the .current class to the new page button. */
+    window.rdPaintDtPaging = function () {
+        setTimeout(function () {
+            document.querySelectorAll('.dt-paging-button.current').forEach(function (b) {
+                b.style.setProperty('color', '#fff', 'important');
+            });
+        }, 0);
+    };
+
+    /* Shared "Showing X–Y of Z" renderer for DataTables — bold, monospace
+       numbers to match the app's numeric-data convention (dates/prices). */
+    window.rdDtInfo = function (label) {
+        return function (settings, start, end, max, total) {
+            if (total === 0) return '';
+            return 'Showing <span class="dt-info-num">' + start + '–' + end +
+                '</span> of <span class="dt-info-num">' + total + '</span> ' + label;
+        };
+    };
 })();

@@ -11,6 +11,9 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <script id="tailwind-config">
@@ -42,7 +45,7 @@
         </div>
 
         <div class="rd-card">
-            <table class="w-full border-collapse">
+            <table id="domainsDataTable" class="w-full border-collapse">
                 <thead><tr>
                     <th class="text-left py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Domain & Registrar</th>
                     <th class="text-left py-3 px-5 text-xs font-bold uppercase tracking-wider" style="color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
@@ -90,8 +93,11 @@ function dateColor(paid, dateStr) {
     return new Date(dateStr) < new Date() ? 'var(--bad)' : 'var(--good)';
 }
 
+let domainsTable = null;
+
 function renderData(dataset) {
     const tbody = document.getElementById('dataTable');
+    if (domainsTable) { domainsTable.destroy(); domainsTable = null; }
     if (dataset.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">No domains found.</td></tr>';
         return;
@@ -115,6 +121,17 @@ function renderData(dataset) {
                 </div>
             </td>
         </tr>`).join('');
+
+    domainsTable = new DataTable('#domainsDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [4, 5] }],
+        infoCallback: rdDtInfo('domains'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 function populateYearFilter() {

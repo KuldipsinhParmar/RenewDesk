@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <style>
@@ -57,7 +60,7 @@
 
         <!-- Table -->
         <div class="rd-card" style="overflow:hidden">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="countriesDataTable" style="width:100%;border-collapse:collapse">
                 <thead>
                     <tr>
                         <th class="rd-th">Flag</th>
@@ -149,8 +152,11 @@ function applyFilter() {
     renderTable(rows);
 }
 
+let countriesTable = null;
+
 function renderTable(rows) {
     const tbody = document.getElementById('countryTableBody');
+    if (countriesTable) { countriesTable.destroy(); countriesTable = null; }
     if (!rows.length) {
         tbody.innerHTML = `<tr><td colspan="4" class="rd-td" style="text-align:center;padding:48px;color:var(--text-3)">No countries found.</td></tr>`;
         return;
@@ -171,6 +177,17 @@ function renderTable(rows) {
                 </div>
             </td>
         </tr>`).join('');
+
+    countriesTable = new DataTable('#countriesDataTable', {
+        dom: 'tip',
+        pageLength: 20,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [0, 3] }],
+        infoCallback: rdDtInfo('countries'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 function showAddModal() {

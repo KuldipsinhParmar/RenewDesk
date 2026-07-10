@@ -12,6 +12,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <style>
@@ -118,7 +121,7 @@
 
         <!-- Table -->
         <div class="rd-card" style="overflow:hidden">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="tasksDataTable" style="width:100%;border-collapse:collapse">
                 <thead>
                     <tr>
                         <th class="rd-th">Date</th>
@@ -291,8 +294,11 @@ function countryFlag(code) {
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
+let tasksTable = null;
+
 function renderTable(rows) {
     const tbody = document.getElementById('taskTableBody');
+    if (tasksTable) { tasksTable.destroy(); tasksTable = null; }
     if (!rows.length) {
         tbody.innerHTML = `<tr><td colspan="7" class="rd-td" style="text-align:center;padding:52px;color:var(--text-3)">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block;opacity:.3"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
@@ -342,6 +348,17 @@ function renderTable(rows) {
             </td>
         </tr>`;
     }).join('');
+
+    tasksTable = new DataTable('#tasksDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [5, 6] }],
+        infoCallback: rdDtInfo('tasks'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 // ── Modal ────────────────────────────────────────────────────

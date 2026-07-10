@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
 </head>
@@ -34,7 +37,7 @@
         </div>
 
         <div class="rd-card">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="backupsDataTable" style="width:100%;border-collapse:collapse">
                 <thead><tr>
                     <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
                     <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Frequency</th>
@@ -78,8 +81,11 @@ function freqBadge(f) {
     return `<span style="display:inline-block;padding:3px 10px;border-radius:999px;background:${c}18;color:${c};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${f}</span>`;
 }
 
+let backupsTable = null;
+
 function renderData(dataset) {
     const tbody = document.getElementById('dataTable');
+    if (backupsTable) { backupsTable.destroy(); backupsTable = null; }
     if (dataset.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3)">No backups found.</td></tr>';
         return;
@@ -105,6 +111,17 @@ function renderData(dataset) {
             </td>
         </tr>`;
     }).join('');
+
+    backupsTable = new DataTable('#backupsDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [3, 4] }],
+        infoCallback: rdDtInfo('backups'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 async function markDone(id, nextDate) {

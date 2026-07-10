@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
 </head>
@@ -29,10 +30,6 @@
                 <p class="rd-page-subtitle" id="dashDate">Loading…</p>
             </div>
             <div style="display:flex;gap:10px">
-                <button style="border:1px solid var(--border-2);border-radius:999px;padding:11px 18px;background:var(--surface);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:8px" onclick="exportDashboard()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-                    Export
-                </button>
                 <a href="projects.html" style="border:none;border-radius:999px;padding:11px 19px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;gap:8px;text-decoration:none">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                     New Project
@@ -101,6 +98,21 @@
                 </div>
                 <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1;color:var(--bad)" id="stat-pending">—</div>
                 <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">needing attention</div>
+            </div>
+        </div>
+
+        <!-- Revenue Breakdown -->
+        <div class="rd-card" style="margin-bottom:18px;padding:20px">
+            <div class="rd-card-header" style="margin-bottom:8px">
+                <span class="rd-card-title">Revenue Breakdown · <span id="revYear"></span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+                <div style="position:relative;width:180px;height:180px;flex:none">
+                    <canvas id="revenueChart" width="180" height="180"></canvas>
+                </div>
+                <div id="revenueLegend" style="display:flex;flex-direction:column;gap:14px;flex:1;min-width:200px">
+                    <div style="color:var(--text-3);font-size:13px">Loading…</div>
+                </div>
             </div>
         </div>
 
@@ -174,6 +186,60 @@ function statusLabel(days) {
 
 const fmt = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
 
+let revenueChart = null;
+
+function renderRevenueChart(d) {
+    document.getElementById('revYear').textContent = new Date().getFullYear();
+
+    const domain = parseFloat(d.domain_contract_value || 0);
+    const hosting = parseFloat(d.hosting_contract_value || 0);
+    const amc = parseFloat(d.amc_contract_value || 0);
+    const total = domain + hosting + amc;
+
+    const segments = [
+        { label: 'Domains', value: domain, color: '#0f9d76' },
+        { label: 'Hosting', value: hosting, color: '#5b69e6' },
+        { label: 'AMC', value: amc, color: '#e0902a' }
+    ];
+
+    const legend = document.getElementById('revenueLegend');
+    if (total === 0) {
+        legend.innerHTML = '<div style="color:var(--text-3);font-size:13px">No active contract value for this year yet.</div>';
+    } else {
+        legend.innerHTML = segments.map(s => `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:9px">
+                    <span style="width:10px;height:10px;border-radius:3px;background:${s.color};flex:none"></span>
+                    <span style="font-size:13.5px;font-weight:600;color:var(--text-2)">${s.label}</span>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:14px;font-weight:700;font-family:'IBM Plex Mono',monospace">₹${fmt(s.value)}</div>
+                    <div style="font-size:11px;color:var(--text-3)">${total ? Math.round(s.value/total*100) : 0}%</div>
+                </div>
+            </div>`).join('');
+    }
+
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    if (revenueChart) revenueChart.destroy();
+    revenueChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: segments.map(s => s.label),
+            datasets: [{
+                data: total === 0 ? [1] : segments.map(s => s.value),
+                backgroundColor: total === 0 ? ['#e6e1d4'] : segments.map(s => s.color),
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            cutout: '68%',
+            plugins: { legend: { display: false }, tooltip: { enabled: total > 0 } },
+            animation: { duration: 400 }
+        }
+    });
+}
+
 async function loadDashboard() {
     try {
         const res = await fetch(rdApi('api/dashboard.php'), { credentials: 'same-origin' });
@@ -194,7 +260,7 @@ async function loadDashboard() {
             d.upcoming.forEach(i => { if (i.days_left <= 7) byType[i.type.toLowerCase()] = (byType[i.type.toLowerCase()]||0) + 1; });
             ['domains','hosting','maintenance','backups'].forEach(t => rdSidebar.setBadge(t, byType[t]||0));
 
-            window._dashData = d;
+            renderRevenueChart(d);
 
             const renewals = d.upcoming.filter(i => i.type !== 'Backup');
             const backups  = d.upcoming.filter(i => i.type === 'Backup');
@@ -276,24 +342,6 @@ document.getElementById('backupTable').addEventListener('click', async e => {
         loadDashboard();
     } catch(e) { Swal.fire('Error', 'Failed to update backup.', 'error'); }
 });
-
-function exportDashboard() {
-    const d = window._dashData;
-    if (!d || !d.upcoming) { rdError('No data to export yet — wait for dashboard to load.'); return; }
-    const rows = [['Type','Asset/Project','Project','Expiry Date','Days Left']];
-    d.upcoming.forEach(i => rows.push([i.type, i.name||i.project, i.project, i.date, i.days_left]));
-    if (d.expired && d.expired.length) {
-        rows.push([]);
-        rows.push(['--- EXPIRED ---','','','','']);
-        d.expired.forEach(i => rows.push([i.type, i.name, i.project, i.date, 'Expired']));
-    }
-    const csv = rows.map(r => r.map(c => '"' + String(c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'renewdesk-' + new Date().toISOString().split('T')[0] + '.csv';
-    a.click();
-}
 
 loadDashboard();
 </script>

@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
     <style>
@@ -54,7 +57,7 @@
 
         <!-- Table -->
         <div class="rd-card">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="clientsDataTable" style="width:100%;border-collapse:collapse">
                 <thead><tr>
                     <th style="padding:13px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Client</th>
                     <th style="padding:13px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Email</th>
@@ -168,8 +171,11 @@ function initials(name) {
     return name.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join('');
 }
 
+let clientsTable = null;
+
 function renderClients(list) {
     const tbody = document.getElementById('clientTable');
+    if (clientsTable) { clientsTable.destroy(); clientsTable = null; }
     if (!list.length) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">No clients found. Add your first client!</td></tr>';
         return;
@@ -205,6 +211,17 @@ function renderClients(list) {
                 </div>
             </td>
         </tr>`).join('');
+
+    clientsTable = new DataTable('#clientsDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [4, 5] }],
+        infoCallback: rdDtInfo('clients'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 document.getElementById('clientTable').addEventListener('click', e => {

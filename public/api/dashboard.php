@@ -13,19 +13,22 @@ try {
     $stmt = $db->query("SELECT COUNT(*) as c FROM projects WHERE status='active'");
     $data['total_projects'] = $stmt->fetch(PDO::FETCH_ASSOC)['c'];
 
-    $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE status='active'");
+    // AMC contracts don't reliably use status='active' for "current" — a contract
+    // already marked renewed (paid ahead) still covers today until its end_date.
+    // So "current" means the contract period actually contains today, regardless of status.
+    $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE CURDATE() BETWEEN start_date AND end_date");
     $data['amc_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
-    $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE status='active' AND client_paid=1");
+    $stmt = $db->query("SELECT SUM(price) as rev FROM maintenance WHERE CURDATE() BETWEEN start_date AND end_date AND client_paid=1");
     $data['amc_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
-    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active'");
+    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active' AND YEAR(renewal_date) = YEAR(CURDATE())");
     $data['hosting_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
-    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active' AND client_paid=1");
+    $stmt = $db->query("SELECT SUM(price) as rev FROM hosting WHERE status='active' AND client_paid=1 AND YEAR(renewal_date) = YEAR(CURDATE())");
     $data['hosting_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
-    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active'");
+    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active' AND YEAR(renewal_date) = YEAR(CURDATE())");
     $data['domain_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
-    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active' AND client_paid=1");
+    $stmt = $db->query("SELECT SUM(price) as rev FROM domains WHERE status='active' AND client_paid=1 AND YEAR(renewal_date) = YEAR(CURDATE())");
     $data['domain_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
     $stmt = $db->query("SELECT COUNT(*) as c FROM backups");

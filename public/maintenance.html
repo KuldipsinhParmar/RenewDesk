@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
 </head>
@@ -35,7 +38,7 @@
         </div>
 
         <div class="rd-card">
-            <table style="width:100%;border-collapse:collapse">
+            <table id="maintenanceDataTable" style="width:100%;border-collapse:collapse">
                 <thead><tr>
                     <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
                     <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Maintenance Period</th>
@@ -77,8 +80,11 @@ function paidPill(paid) {
         : `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--bad-soft);color:var(--bad);font-size:11.5px;font-weight:700"><span style="width:6px;height:6px;border-radius:50%;background:var(--bad)"></span>Due</span>`;
 }
 
+let maintenanceTable = null;
+
 function renderData(dataset) {
     const tbody = document.getElementById('dataTable');
+    if (maintenanceTable) { maintenanceTable.destroy(); maintenanceTable = null; }
     if (dataset.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3)">No maintenance contracts found.</td></tr>';
         return;
@@ -103,6 +109,17 @@ function renderData(dataset) {
             </td>
         </tr>`;
     }).join('');
+
+    maintenanceTable = new DataTable('#maintenanceDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [3, 4] }],
+        infoCallback: rdDtInfo('contracts'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
 }
 
 function populateYearFilter() {

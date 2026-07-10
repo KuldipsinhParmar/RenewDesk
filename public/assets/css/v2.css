@@ -699,3 +699,70 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
   .rd-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .rd-page-header > div:last-child { width: 100%; }
 }
+
+/* ============================================================
+   DATATABLES — shared styling for all list tables (DataTables v2)
+   Scoped via .rd-card ancestor so it out-specifies the CDN stylesheet
+   without needing per-page ID overrides.
+   ============================================================ */
+.rd-card div.dt-container { width: 100%; display: block; }
+.rd-card .dt-info {
+  float: left;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-3);
+  font-family: inherit;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.rd-card .dt-info .dt-info-num {
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--text-2);
+}
+.rd-card .dt-paging {
+  float: right;
+  padding: 11px 20px;
+  border-top: 1px solid var(--border);
+  box-sizing: border-box;
+}
+.rd-card .dt-paging nav { display: flex !important; gap: 6px !important; }
+.rd-card .dt-paging .dt-paging-button {
+  padding: 7px 13px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-2) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  font-size: 12.5px !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  min-width: 36px !important;
+  line-height: 1.4 !important;
+  font-weight: 500 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+.rd-card .dt-paging .dt-paging-button:hover:not(.disabled):not(.current) {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+.rd-card .dt-paging .dt-paging-button.current,
+.rd-card .dt-paging .dt-paging-button.current:hover {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  border-color: var(--accent) !important;
+  font-weight: 700 !important;
+}
+.rd-card .dt-paging .dt-paging-button.disabled,
+.rd-card .dt-paging .dt-paging-button.disabled:hover {
+  opacity: .4 !important;
+  cursor: not-allowed !important;
+  background: var(--surface) !important;
+  border-color: var(--border-2) !important;
+  color: var(--text) !important;
+}
+.rd-card .dt-autosize { clear: both; }
+.rd-card table.dataTable thead th { cursor: pointer; position: relative; }
+.rd-card table.dataTable thead th.dt-orderable-asc:hover,
+.rd-card table.dataTable thead th.dt-orderable-desc:hover { color: var(--text-2); }
