@@ -37,12 +37,13 @@
             </div>
         </div>
 
-        <!-- KPI cards -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:18px">
+        <!-- KPI cards + Revenue Breakdown, side by side -->
+        <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:18px;flex-wrap:wrap">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;flex:2;min-width:340px">
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
                     <span style="font-size:13px;font-weight:600;color:var(--text-2)">Active Projects</span>
-                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                    <span style="width:32px;height:32px;border-radius:9px;background:rgba(91,105,230,.13);color:var(--c-blue);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                     </span>
                 </div>
@@ -72,27 +73,27 @@
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
                     <span style="font-size:13px;font-weight:600;color:var(--text-2)">AMC Contract</span>
-                    <span style="width:32px;height:32px;border-radius:9px;background:rgba(224,144,42,.13);color:var(--c-amber);display:grid;place-items:center">
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M16 12.5h3"/></svg>
                     </span>
                 </div>
-                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1">₹<span id="stat-amc">—</span></div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1;color:var(--accent)">₹<span id="stat-amc">—</span></div>
                 <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">annual AMC value</div>
             </div>
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Backups Tracked</span>
-                    <span style="width:32px;height:32px;border-radius:9px;background:var(--good-soft);color:var(--good);display:grid;place-items:center">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/></svg>
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Total Clients</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:rgba(91,105,230,.13);color:var(--c-blue);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </span>
                 </div>
-                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1" id="stat-backups">—</div>
-                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">backup schedules</div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1" id="stat-clients">—</div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">in your portfolio</div>
             </div>
             <div class="rd-card" style="padding:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
                     <span style="font-size:13px;font-weight:600;color:var(--text-2)">Alerts · 30 days</span>
-                    <span style="width:32px;height:32px;border-radius:9px;background:var(--bad-soft);color:var(--bad);display:grid;place-items:center">
+                    <span style="width:32px;height:32px;border-radius:9px;background:rgba(91,105,230,.13);color:var(--c-blue);display:grid;place-items:center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
                     </span>
                 </div>
@@ -101,59 +102,99 @@
             </div>
         </div>
 
-        <!-- Revenue Breakdown -->
-        <div class="rd-card" style="margin-bottom:18px;padding:20px">
+        <!-- Revenue Breakdown + My Own Cost / Outstanding, stacked -->
+        <div style="display:flex;flex-direction:column;gap:16px;flex:1;min-width:280px">
+        <div class="rd-card" style="padding:20px">
             <div class="rd-card-header" style="margin-bottom:8px">
                 <span class="rd-card-title">Revenue Breakdown · <span id="revYear"></span></span>
             </div>
-            <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap">
-                <div style="position:relative;width:180px;height:180px;flex:none">
-                    <canvas id="revenueChart" width="180" height="180"></canvas>
+            <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+                <div style="position:relative;width:130px;height:130px;flex:none">
+                    <canvas id="revenueChart" width="130" height="130"></canvas>
                 </div>
-                <div id="revenueLegend" style="display:flex;flex-direction:column;gap:14px;flex:1;min-width:200px">
+                <div id="revenueLegend" style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:160px">
                     <div style="color:var(--text-3);font-size:13px">Loading…</div>
                 </div>
             </div>
         </div>
 
-        <!-- Upcoming Renewals -->
-        <div class="rd-card" style="margin-bottom:18px">
+        <div style="display:flex;gap:16px">
+            <div class="rd-card" style="padding:20px;flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">My Own Cost</span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1">₹<span id="stat-myown">—</span></div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">domains + hosting, this year</div>
+                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text-3)">Domains</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">₹<span id="myown-domains">—</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text-3)">Hosting</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">₹<span id="myown-hosting">—</span></span></div>
+                </div>
+            </div>
+            <div class="rd-card" style="padding:20px;flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <span style="font-size:13px;font-weight:600;color:var(--text-2)">Outstanding · <span id="outYear"></span></span>
+                    <span style="width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+                    </span>
+                </div>
+                <div style="font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:-.02em;line-height:1;color:var(--bad)">₹<span id="stat-outstanding">—</span></div>
+                <div style="margin-top:12px;font-size:12.5px;color:var(--text-3)">unpaid this year</div>
+                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text-3)">Domains</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">₹<span id="out-domains">—</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text-3)">Hosting</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">₹<span id="out-hosting">—</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text-3)">AMC</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:600">₹<span id="out-amc">—</span></span></div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <!-- Upcoming Renewals + Upcoming Backups, side by side -->
+        <div style="display:flex;gap:16px;align-items:stretch;flex-wrap:wrap">
+        <div class="rd-card" style="flex:1;min-width:340px">
             <div class="rd-card-header">
                 <span class="rd-card-title">Upcoming Renewals</span>
                 <a href="domains.html" style="font-size:13px;font-weight:600;color:var(--accent);text-decoration:none">View all</a>
             </div>
+            <div style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse">
                 <thead><tr>
-                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Asset / Project</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Type</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Expiry</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days Left</th>
-                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Asset / Project</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Type</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Expiry</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days</th>
+                    <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
                 </tr></thead>
                 <tbody id="renewTable">
                     <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading renewals…</td></tr>
                 </tbody>
             </table>
+            </div>
         </div>
 
-        <!-- Upcoming Backups -->
-        <div class="rd-card">
+        <div class="rd-card" style="flex:1;min-width:340px">
             <div class="rd-card-header">
                 <span class="rd-card-title">Upcoming Backups</span>
                 <a href="backups.html" style="font-size:13px;font-weight:600;color:var(--accent);text-decoration:none">View all</a>
             </div>
+            <div style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse">
                 <thead><tr>
-                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Due</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last Backup</th>
-                    <th style="padding:12px 12px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days Left</th>
-                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Action</th>
+                    <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Next Due</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Last</th>
+                    <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days</th>
+                    <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Action</th>
                 </tr></thead>
                 <tbody id="backupTable">
                     <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading backups…</td></tr>
                 </tbody>
             </table>
+            </div>
+        </div>
         </div>
     </div><!-- /.rd-main -->
 </div><!-- /.rd-layout -->
@@ -248,10 +289,21 @@ async function loadDashboard() {
         if (data.status === 'success') {
             const d = data.data;
             document.getElementById('stat-projects').textContent = d.total_projects;
-            document.getElementById('stat-backups').textContent = d.total_backups || 0;
+            document.getElementById('stat-clients').textContent = d.total_clients || 0;
+            document.getElementById('stat-myown').textContent = fmt(d.my_own_cost || 0);
+            document.getElementById('myown-domains').textContent = fmt(d.my_own_domains || 0);
+            document.getElementById('myown-hosting').textContent = fmt(d.my_own_hosting || 0);
             document.getElementById('stat-amc').textContent = fmt(d.amc_contract_value || d.amc_revenue || 0);
             document.getElementById('stat-hosting-rev').textContent = fmt(d.hosting_contract_value || d.hosting_revenue || 0);
             document.getElementById('stat-domain-rev').textContent = fmt(d.domain_contract_value || d.domain_revenue || 0);
+            document.getElementById('outYear').textContent = new Date().getFullYear();
+            const outDomains = Math.max(0, parseFloat(d.domain_contract_value||0) - parseFloat(d.domain_paid||0));
+            const outHosting = Math.max(0, parseFloat(d.hosting_contract_value||0) - parseFloat(d.hosting_paid||0));
+            const outAmc = Math.max(0, parseFloat(d.amc_contract_value||0) - parseFloat(d.amc_paid||0));
+            document.getElementById('stat-outstanding').textContent = fmt(outDomains + outHosting + outAmc);
+            document.getElementById('out-domains').textContent = fmt(outDomains);
+            document.getElementById('out-hosting').textContent = fmt(outHosting);
+            document.getElementById('out-amc').textContent = fmt(outAmc);
             const alertCount = d.upcoming.filter(i => i.type !== 'Backup').length;
             document.getElementById('stat-pending').textContent = alertCount;
 
@@ -268,7 +320,7 @@ async function loadDashboard() {
             const backupBody = document.getElementById('backupTable');
 
             if (renewals.length === 0) {
-                renewBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No upcoming renewals in 30 days.</td></tr>';
+                renewBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No renewals due in the next 30 days.</td></tr>';
             } else {
                 renewBody.innerHTML = renewals.map(item => `
                     <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
@@ -278,13 +330,13 @@ async function loadDashboard() {
                         </td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2)">${item.type}</td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace">${formatD(item.date)}</td>
-                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left}d</span></td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left <= 0 ? 'Overdue' : item.days_left+'d'}</span></td>
                         <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
                     </tr>`).join('');
             }
 
             if (backups.length === 0) {
-                backupBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No upcoming backups in 30 days.</td></tr>';
+                backupBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No backups due in the next 30 days.</td></tr>';
             } else {
                 backupBody.innerHTML = backups.map(item => `
                     <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">

@@ -124,7 +124,7 @@ function renderData(dataset) {
 
 function populateYearFilter() {
     const yearSelect = document.getElementById('yearFilter');
-    const years = [...new Set(listData.map(i => new Date(i.end_date).getFullYear()))].filter(y => y && !isNaN(y) && y > 2000).sort((a,b)=>b-a);
+    const years = [...new Set(listData.map(i => new Date(i.start_date).getFullYear()))].filter(y => y && !isNaN(y) && y > 2000).sort((a,b)=>b-a);
     yearSelect.innerHTML = '<option value="">All Years</option>' + years.map(y=>`<option value="${y}">${y}</option>`).join('');
 }
 
@@ -133,7 +133,7 @@ function filterData() {
     const year = document.getElementById('yearFilter').value;
     renderData(listData.filter(p => {
         const matchesTerm = p.project_name && p.project_name.toLowerCase().includes(term);
-        const matchesYear = year === '' || new Date(p.end_date).getFullYear().toString() === year;
+        const matchesYear = year === '' || new Date(p.start_date).getFullYear().toString() === year;
         return matchesTerm && matchesYear;
     }));
 }

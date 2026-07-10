@@ -34,6 +34,12 @@
         .rd-modal-body .ts-wrapper { width:100%; }
         .rd-modal-body .ts-wrapper.single .ts-control { padding:10px 14px; }
 
+        /* Toolbar filters — match the boxed white/shadow style used on other pages (.rd-filter-select) */
+        #filterProject + .ts-wrapper { min-width:190px; }
+        #filterProject + .ts-wrapper .ts-control {
+            background:var(--surface); border-radius:12px; padding:13px 16px; font-size:14px; box-shadow:var(--shadow);
+        }
+
         /* ── Table ── */
         .rd-th { padding:11px 16px; text-align:left; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text-3); border-bottom:1px solid var(--border); white-space:nowrap; }
         .rd-th:first-child { padding-left:22px; }
@@ -111,8 +117,7 @@
             </div>
             <!-- Tom Select filters rendered after JS loads -->
             <select id="filterProject"><option value="">All Projects</option></select>
-            <select id="filterCountry"><option value="">All Countries</option></select>
-            <input type="date" id="filterDate" class="rd-filter-select" title="Filter by date" style="cursor:pointer;min-width:140px">
+            <input type="date" id="filterDate" class="rd-filter-select" title="Filter by date" style="cursor:pointer;min-width:230px">
             <button id="btnClear" onclick="clearFilters()" class="rd-btn" style="display:none">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 Clear
@@ -126,7 +131,6 @@
                     <tr>
                         <th class="rd-th">Date</th>
                         <th class="rd-th">Project</th>
-                        <th class="rd-th">Country</th>
                         <th class="rd-th">Task</th>
                         <th class="rd-th" style="text-align:center">Hours</th>
                         <th class="rd-th">Notes</th>
@@ -134,7 +138,7 @@
                     </tr>
                 </thead>
                 <tbody id="taskTableBody">
-                    <tr><td colspan="7" class="rd-td" style="text-align:center;color:var(--text-3);padding:40px">Loading…</td></tr>
+                    <tr><td colspan="6" class="rd-td" style="text-align:center;color:var(--text-3);padding:40px">Loading…</td></tr>
                 </tbody>
             </table>
         </div>
@@ -189,16 +193,18 @@ let allTasks    = [];
 let allProjects = [];
 let editId      = null;
 let tsProject   = null; // Tom Select instances (toolbar)
-let tsCountry   = null;
 let tsModalProj = null;
 
 const TODAY = new Date().toISOString().split('T')[0];
 
 // ── Init Tom Select ──────────────────────────────────────────
 function initTomSelects() {
-    const base = { placeholder: '—', allowEmptyOption: true, onChange: applyFilters };
+    const base = { placeholder: '—', allowEmptyOption: true, onChange: applyFilters,
+        sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }] };
     tsProject = new TomSelect('#filterProject', { ...base });
-    tsCountry = new TomSelect('#filterCountry', { ...base });
+    // addOption() no-ops on a value that already exists (the static "All ..."
+    // placeholder parsed from the DOM at init) — patch its sort_order directly.
+    tsProject.options[''].sort_order = 0;
     tsModalProj = new TomSelect('#t_project_id', {
         placeholder: 'Select project…',
         allowEmptyOption: true,
@@ -215,21 +221,10 @@ async function loadProjects() {
     allProjects = data.data || [];
 
     allProjects.forEach(p => {
-        tsProject.addOption({ value: p.id, text: p.name });
+        tsProject.addOption({ value: p.id, text: p.name, sort_order: 1 });
         tsModalProj.addOption({ value: p.id, text: p.name });
     });
-
-    // Unique countries from projects
-    const seen = new Set();
-    allProjects.forEach(p => {
-        if (p.country_name && !seen.has(p.country_code)) {
-            seen.add(p.country_code);
-            const flag = countryFlag(p.country_code);
-            tsCountry.addOption({ value: p.country_code, text: flag + ' ' + p.country_name });
-        }
-    });
     tsProject.refreshOptions(false);
-    tsCountry.refreshOptions(false);
     tsModalProj.refreshOptions(false);
 }
 
@@ -245,18 +240,16 @@ async function loadTasks() {
 function applyFilters() {
     const search  = document.getElementById('searchTasks').value.toLowerCase();
     const projId  = tsProject  ? tsProject.getValue()  : '';
-    const country = tsCountry  ? tsCountry.getValue()  : '';
     const date    = document.getElementById('filterDate').value;
 
     let rows = allTasks.filter(t => {
         if (search  && !t.task_title.toLowerCase().includes(search) && !(t.project_name||'').toLowerCase().includes(search) && !(t.notes||'').toLowerCase().includes(search)) return false;
         if (projId  && String(t.project_id) !== String(projId)) return false;
-        if (country && t.country_code !== country) return false;
         if (date    && t.task_date !== date) return false;
         return true;
     });
 
-    const hasFilter = search || projId || country || date;
+    const hasFilter = search || projId || date;
     document.getElementById('btnClear').style.display = hasFilter ? '' : 'none';
 
     updateStats(rows);
@@ -267,7 +260,6 @@ function clearFilters() {
     document.getElementById('searchTasks').value = '';
     document.getElementById('filterDate').value  = '';
     if (tsProject)  tsProject.setValue('');
-    if (tsCountry)  tsCountry.setValue('');
     applyFilters();
 }
 
@@ -287,11 +279,6 @@ function fmtDate(d) {
     return `${dt.getDate()} ${m} ${dt.getFullYear()}`;
 }
 
-function countryFlag(code) {
-    if (!code) return '';
-    return code.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
-}
-
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
 let tasksTable = null;
@@ -300,7 +287,7 @@ function renderTable(rows) {
     const tbody = document.getElementById('taskTableBody');
     if (tasksTable) { tasksTable.destroy(); tasksTable = null; }
     if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="rd-td" style="text-align:center;padding:52px;color:var(--text-3)">
+        tbody.innerHTML = `<tr><td colspan="6" class="rd-td" style="text-align:center;padding:52px;color:var(--text-3)">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block;opacity:.3"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>
             No tasks found. Click <strong>Add Task</strong> to log your first entry.
         </td></tr>`;
@@ -313,11 +300,6 @@ function renderTable(rows) {
             ? `<span class="mono" style="font-size:13px;color:var(--text)">${fmtDate(t.task_date)}</span> <span style="font-size:10px;font-weight:700;color:var(--good);background:var(--good-soft);padding:2px 7px;border-radius:99px;margin-left:4px">TODAY</span>`
             : `<span class="mono" style="font-size:13px;color:var(--text)">${fmtDate(t.task_date)}</span>`;
 
-        const flag    = countryFlag(t.country_code);
-        const country = t.country_name
-            ? `<span title="${esc(t.country_name)}" style="font-size:13px">${flag} <span style="color:var(--text-2)">${esc(t.country_name)}</span></span>`
-            : `<span style="color:var(--text-3)">—</span>`;
-
         const hoursColor = parseFloat(t.hours) >= 6 ? 'var(--good)' : parseFloat(t.hours) >= 3 ? 'var(--c-amber)' : 'var(--text)';
 
         return `<tr class="task-tr">
@@ -325,7 +307,6 @@ function renderTable(rows) {
             <td class="rd-td">
                 <div style="font-weight:600;font-size:13.5px;color:var(--accent)">${esc(t.project_name)}</div>
             </td>
-            <td class="rd-td">${country}</td>
             <td class="rd-td">
                 <div style="font-weight:600;font-size:13.5px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(t.task_title)}">${esc(t.task_title)}</div>
             </td>
@@ -354,7 +335,7 @@ function renderTable(rows) {
         pageLength: 10,
         order: [],
         pagingType: 'simple_numbers',
-        columnDefs: [{ orderable: false, targets: [5, 6] }],
+        columnDefs: [{ orderable: false, targets: [4, 5] }],
         infoCallback: rdDtInfo('tasks'),
         language: { paginate: { previous: '‹', next: '›' } },
         drawCallback: rdPaintDtPaging

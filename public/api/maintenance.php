@@ -10,7 +10,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 try {
     if ($method === 'GET') {
-        $stmt = $db->query("SELECT m.*, p.name as project_name FROM maintenance m JOIN projects p ON m.project_id = p.id ORDER BY m.end_date ASC");
+        $stmt = $db->query("SELECT m.*, p.name as project_name FROM maintenance m JOIN projects p ON m.project_id = p.id ORDER BY m.start_date ASC");
         $maintenance = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["status" => "success", "data" => $maintenance]);
     }
