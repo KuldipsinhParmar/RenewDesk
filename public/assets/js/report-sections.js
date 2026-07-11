@@ -27,6 +27,7 @@ window.RD_REPORT_SECTIONS = [
     ]},
     { key: 'cms_version', title: 'WordPress Version Used', fields: [
         { name: 'current_version', label: 'Current Version', type: 'text', placeholder: 'e.g. WP 6.8.1' },
+        { name: 'theme_name', label: 'Theme Name', type: 'text' },
         { name: 'theme_version', label: 'Theme Version', type: 'text' },
         { name: 'php_mysql_compat_checked', label: 'PHP / MySQL Compatibility Checked', type: 'select', options: ['Yes', 'No'], band: 'yesno' }
     ]},
@@ -44,7 +45,7 @@ window.RD_REPORT_SECTIONS = [
         { name: 'admin_username_non_default', label: 'Admin username is non-default', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
         { name: 'firewall_active', label: 'Firewall / security plugin active', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
         { name: 'file_permissions_reviewed', label: 'File permissions reviewed', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
-        { name: 'evidence_screenshot', label: 'Visual Evidence (security scan screenshot)', type: 'image', wide: true }
+        { name: 'evidence_screenshots', label: 'Visual Evidence (security scan screenshots)', type: 'images', wide: true }
     ]},
     { key: 'basic_seo', title: 'Basic SEO Setup', fields: [
         { name: 'status', label: 'Status', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
@@ -57,9 +58,10 @@ window.RD_REPORT_SECTIONS = [
     { key: 'broken_links', title: 'Broken Links / 404 Check', fields: [], repeatable: { name: 'rows', label: 'Broken Links', columns: [
         { name: 'url', label: 'URL / Page' }, { name: 'issue_found', label: 'Issue Found' }, { name: 'resolution', label: 'Resolution' }
     ]}},
-    { key: 'sitemap_robots', title: 'Sitemap / Robots.txt', fields: [
+    { key: 'sitemap_robots', title: 'Sitemap / Robots.txt / LLMs.txt', fields: [
         { name: 'sitemap_url', label: 'Sitemap URL', type: 'text' },
-        { name: 'robots_url', label: 'Robots.txt URL', type: 'text' }
+        { name: 'robots_url', label: 'Robots.txt URL', type: 'text' },
+        { name: 'llms_txt_url', label: 'LLMs.txt URL', type: 'text' }
     ]},
     { key: 'hardcoded_design', title: 'Hardcoded Design or Structure', fields: [
         { name: 'status', label: 'Status', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
