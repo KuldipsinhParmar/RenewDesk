@@ -26,15 +26,17 @@
         .rd-doc-meta-table td.label { font-weight: 700; color: #1f3864; width: 30%; background: #f6f7f9; }
         .rd-doc-meta-table td.value { color: #333; }
         .rd-doc-footnote { font-style: italic; color: #6b6b6b; font-size: 11px; margin: 10px 0 30px; }
-        .rd-doc-section { margin-bottom: 24px; page-break-inside: avoid; }
-        .rd-doc-section-title { font-size: 14px; font-weight: 700; color: #1f3864; margin: 0 0 9px; padding-bottom: 5px; border-bottom: 1px solid #d8dde3; }
+        .rd-doc-section { margin-bottom: 24px; }
+        .rd-doc-section-title { font-size: 14px; font-weight: 700; color: #1f3864; margin: 0 0 9px; padding-bottom: 5px; border-bottom: 1px solid #d8dde3; page-break-after: avoid; break-after: avoid; }
         .rd-doc-section-title .num { color: #0f6e6e; margin-right: 3px; }
         .rd-doc-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
+        .rd-doc-table thead { display: table-header-group; }
         .rd-doc-table th {
             background: #1f3864; color: #fff; text-align: left; font-size: 10.5px; font-weight: 700;
             text-transform: uppercase; letter-spacing: .03em; padding: 6px 10px; border: 1px solid #1f3864;
         }
         .rd-doc-table td { border: 1px solid #bfbfbf; padding: 6px 10px; font-size: 12.5px; color: #333; }
+        .rd-doc-table tr { page-break-inside: avoid; break-inside: avoid; }
         .rd-doc-table td.k { color: #6b6b6b; }
         .rd-doc-field-row { font-size: 12.5px; margin: 0 0 5px; }
         .rd-doc-field-row b { color: #222; }
@@ -42,6 +44,7 @@
         .rd-doc-subhead { font-weight: 700; font-size: 12.5px; margin: 12px 0 6px; color: #222; }
         .rd-doc-evidence {
             border: 1px solid #bfbfbf; border-radius: 4px; padding: 26px; text-align: center; background: #fafafa; margin: 6px 0 10px;
+            page-break-inside: avoid; break-inside: avoid;
         }
         .rd-doc-evidence img { width: 100%; height: auto; display: block; border-radius: 3px; }
         .rd-doc-evidence .placeholder-icon { font-size: 22px; color: #bfbfbf; margin-bottom: 4px; }
