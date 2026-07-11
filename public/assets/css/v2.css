@@ -605,12 +605,33 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
   cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;
+  appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23979b92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
 }
+
+.rd-radio-group { display: flex; gap: 8px; height: 42px; }
+.rd-radio-option {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 10px 13px; border: 1px solid var(--border-2); background: var(--surface-2);
+  border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-2);
+  line-height: 1; box-sizing: border-box;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.rd-radio-option input[type="radio"] { accent-color: var(--accent); margin: 0; cursor: pointer; flex: none; }
+.rd-radio-option[data-value="Yes"]:has(input:checked) { border-color: var(--good); background: var(--good-soft); color: var(--good); }
+.rd-radio-option[data-value="No"]:has(input:checked) { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
 
 .rd-textarea { resize: vertical; min-height: 90px; }
 
 .rd-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
 .rd-grid-2 > .rd-form-group + .rd-form-group { margin-top: 0; }
+
+.rd-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; align-items: start; }
+.rd-grid-3 > .rd-form-group + .rd-form-group { margin-top: 0; }
 
 .rd-checkbox-row {
   display: flex;
@@ -766,3 +787,97 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 .rd-card table.dataTable thead th { cursor: pointer; position: relative; }
 .rd-card table.dataTable thead th.dt-orderable-asc:hover,
 .rd-card table.dataTable thead th.dt-orderable-desc:hover { color: var(--text-2); }
+
+/* ============================================================
+   REPORT BUILDER — drag-and-drop section list
+   ============================================================ */
+.rd-report-palette {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rd-report-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border-2);
+  font-size: 12.5px; font-weight: 600; color: var(--text-2);
+  cursor: pointer; transition: border-color .12s, color .12s;
+}
+.rd-report-chip:hover { border-color: var(--accent); color: var(--accent); }
+.rd-report-chip.disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+.rd-report-list { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.rd-report-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 13.5px; }
+
+.rd-report-section {
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+  overflow: hidden;
+}
+.rd-report-section.disabled { opacity: .55; }
+.rd-report-section.sortable-ghost { opacity: .35; }
+.rd-report-section.sortable-chosen { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+.rd-report-section-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--surface-2); cursor: pointer;
+}
+.rd-report-drag-handle {
+  cursor: grab; color: var(--text-3); flex: none; display: flex; align-items: center;
+  touch-action: none;
+}
+.rd-report-drag-handle:active { cursor: grabbing; }
+.rd-report-section-title { flex: 1; font-size: 14px; font-weight: 700; }
+.rd-report-section-actions { display: flex; gap: 4px; flex: none; }
+.rd-report-section-body { padding: 14px 16px; border-top: 1px solid var(--border); }
+.rd-report-section-body.collapsed { display: none; }
+
+.rd-report-fields-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px 14px;
+}
+.rd-report-fields-grid .rd-form-group { margin-bottom: 0; }
+.rd-report-fields-grid + .rd-report-repeat-table,
+.rd-report-fields-grid + div > .rd-report-repeat-table { margin-top: 4px; }
+
+/* Compact field sizing inside report section cards — applies in both the
+   New (add) and Edit report flows, since they share this same markup. */
+.rd-report-section-body .rd-label { margin-bottom: 7px; font-size: 12px; }
+/* Some labels carry a "(target: ...)" hint and wrap to 2 lines while their
+   row neighbors don't — pin a consistent label height so every input/select/
+   radio-toggle in the same grid row starts at the same y position. */
+.rd-report-fields-grid .rd-label { min-height: 32px; line-height: 1.35; display: block; }
+.rd-report-section-body .rd-input,
+.rd-report-section-body .rd-select,
+.rd-report-section-body .rd-textarea { padding: 10px 13px; border-radius: 10px; font-size: 13.5px; }
+.rd-report-section-body .rd-select { padding-right: 36px; }
+
+.rd-report-repeat-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.rd-report-repeat-table th {
+  text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-3); padding: 6px 8px; border-bottom: 1px solid var(--border);
+}
+.rd-report-repeat-table td { padding: 5px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.rd-report-repeat-table input { width: 100%; }
+
+.rd-report-image-preview {
+  width: 100%; max-width: 260px; border-radius: 8px; border: 1px solid var(--border);
+  display: block; margin-top: 8px; object-fit: contain; background: var(--surface-2);
+}
+
+/* ---- Printable report view ---- */
+.rd-report-print-section { margin-bottom: 26px; page-break-inside: avoid; }
+.rd-report-print-title {
+  font-size: 15px; font-weight: 700; margin: 0 0 10px;
+  padding-bottom: 6px; border-bottom: 2px solid var(--border-2);
+}
+.rd-report-print-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.rd-report-print-table th, .rd-report-print-table td {
+  text-align: left; padding: 7px 10px; border: 1px solid var(--border); font-size: 13px;
+}
+.rd-report-print-table th { background: var(--surface-2); font-weight: 700; }
+
+@media print {
+  .rd-sidebar, .rd-page-header .rd-menu-btn, .rd-no-print { display: none !important; }
+  .rd-main { margin: 0 !important; padding: 0 !important; }
+  body.rd-body { background: #fff !important; }
+  .rd-card { box-shadow: none !important; border: none !important; }
+}

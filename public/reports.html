@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Maintenance Reports - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('reports');</script>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <div><h1 class="rd-page-title">Maintenance Reports</h1><p class="rd-page-subtitle">Periodic website health reports per project</p></div>
+        </div>
+
+        <div class="rd-toolbar">
+            <div class="rd-search-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                <input id="searchData" class="rd-search-input" placeholder="Search by project name…" type="text"/>
+            </div>
+        </div>
+
+        <div class="rd-card">
+            <table id="reportsDataTable" style="width:100%;border-collapse:collapse">
+                <thead><tr>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Project</th>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Report Date</th>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Period</th>
+                    <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Health</th>
+                    <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Sections</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                </tr></thead>
+                <tbody id="dataTable">
+                    <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Loading reports…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script>
+let listData = [];
+const formatD = rdFormatDate;
+
+async function loadData() {
+    try {
+        const res = await fetch(rdApi('api/maintenance_reports.php'), { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const data = await res.json();
+        listData = data.data || [];
+        renderData(listData);
+    } catch(e) { console.error("Failed to load reports", e); }
+}
+
+function healthBadge(h) {
+    const map = { good: ['rd-badge-good', 'Good'], fair: ['rd-badge-warn', 'Fair'], needs_attention: ['rd-badge-bad', 'Needs Attention'] };
+    const [cls, label] = map[h] || ['rd-badge-neutral', h || '—'];
+    return `<span class="rd-badge ${cls}">${label}</span>`;
+}
+
+function statusBadge(s) {
+    const cls = s === 'final' ? 'rd-badge-accent' : 'rd-badge-neutral';
+    return `<span class="rd-badge ${cls}">${s === 'final' ? 'Final' : 'Draft'}</span>`;
+}
+
+let reportsTable = null;
+
+function renderData(dataset) {
+    const tbody = document.getElementById('dataTable');
+    if (reportsTable) { reportsTable.destroy(); reportsTable = null; }
+    if (dataset.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3)">No reports found.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = dataset.map(item => {
+        const period = (item.period_start || item.period_end)
+            ? `${formatD(item.period_start)} → ${formatD(item.period_end)}` : '—';
+        return `<tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <a href="project-details.html?id=${item.project_id}" style="font-weight:600;font-size:14px;color:var(--text);text-decoration:none" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'">${item.project_name}</a>
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">${formatD(item.report_date)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text-2)">${period}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${healthBadge(item.overall_health)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${statusBadge(item.status)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center;font-family:'IBM Plex Mono',monospace">${item.sections_count}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;gap:7px;justify-content:flex-end">
+                    <a href="report-view.html?id=${item.id}" class="rd-icon-btn" title="View"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    <a href="report-edit.html?id=${item.id}" class="rd-icon-btn" title="Edit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a>
+                    <button onclick="delReport(${item.id})" class="rd-icon-btn danger" title="Delete"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    reportsTable = new DataTable('#reportsDataTable', {
+        dom: 'tip',
+        pageLength: 10,
+        order: [],
+        pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [3, 4, 5, 6] }],
+        infoCallback: rdDtInfo('reports'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
+}
+
+async function delReport(id) {
+    const result = await Swal.fire({ title:'Are you sure?', text:"You won't be able to revert this!", icon:'warning', showCancelButton:true, confirmButtonColor:'#df433f', cancelButtonColor:'#979b92', confirmButtonText:'Yes, delete it!' });
+    if (!result.isConfirmed) return;
+    await fetch(rdApi(`api/maintenance_reports.php?id=${id}`), { method:'DELETE', credentials:'same-origin' });
+    Swal.fire({ title:'Deleted!', text:'Report has been removed.', icon:'success', timer:1500, showConfirmButton:false });
+    loadData();
+}
+
+document.getElementById('searchData').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    renderData(listData.filter(p => p.project_name && p.project_name.toLowerCase().includes(term)));
+});
+
+loadData();
+</script>
+</body>
+</html>

@@ -144,6 +144,31 @@
                 </div>
             </div>
 
+            <!-- MAINTENANCE REPORTS (full width) -->
+            <div class="rd-card" style="overflow:hidden;padding:0;grid-column:1/-1">
+                <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6M9 9h1"/></svg>
+                        </div>
+                        <h3 style="font-size:15px;font-weight:700;margin:0">Recent Reports</h3>
+                    </div>
+                    <a href="#" id="newReportLink" class="rd-btn rd-btn-primary" style="padding:6px 14px;font-size:12.5px;gap:5px;text-decoration:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>New Report</a>
+                </div>
+                <div style="overflow-x:auto">
+                    <table style="width:100%;border-collapse:collapse">
+                        <thead><tr>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Report Date</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Period</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Health</th>
+                            <th style="padding:10px 16px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                            <th style="padding:10px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                        </tr></thead>
+                        <tbody id="tb-reports"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- TASKS (full width) -->
             <div class="rd-card" style="overflow:hidden;padding:0;grid-column:1/-1">
                 <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
@@ -191,6 +216,7 @@
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const pId = urlParams.get('id');
+document.getElementById('newReportLink').href = `report-edit.html?project_id=${pId}`;
 
 let currentProjectData = {};
 let currentModalType = '';
@@ -663,7 +689,45 @@ async function delEntity(type, id) {
     }
 }
 
+async function loadReports() {
+    try {
+        const res = await fetch(rdApi(`api/maintenance_reports.php?project_id=${pId}`), { credentials: 'same-origin' });
+        const json = await res.json();
+        const reports = json.data || [];
+        const healthMap = { good:['rd-badge-good','Good'], fair:['rd-badge-warn','Fair'], needs_attention:['rd-badge-bad','Needs Attention'] };
+        document.getElementById('tb-reports').innerHTML = reports.length
+            ? reports.map(r => {
+                const period = (r.period_start || r.period_end) ? `${formatD(r.period_start)} → ${formatD(r.period_end)}` : '—';
+                const [hCls, hLabel] = healthMap[r.overall_health] || ['rd-badge-neutral', r.overall_health || '—'];
+                const sCls = r.status === 'final' ? 'rd-badge-accent' : 'rd-badge-neutral';
+                return `<tr onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+                    <td style="${tdRow};font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace">${formatD(r.report_date)}</td>
+                    <td style="${tdRow};font-size:12.5px;color:var(--text-2)">${period}</td>
+                    <td style="${tdRow};text-align:center"><span class="rd-badge ${hCls}">${hLabel}</span></td>
+                    <td style="${tdRow};text-align:center"><span class="rd-badge ${sCls}">${r.status==='final'?'Final':'Draft'}</span></td>
+                    <td style="${tdRow}">
+                        <div style="display:flex;gap:6px;justify-content:flex-end">
+                            <a href="report-view.html?id=${r.id}" class="rd-icon-btn" title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                            <a href="report-edit.html?id=${r.id}" class="rd-icon-btn" title="Edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a>
+                            <button onclick="delReport(${r.id})" class="rd-icon-btn danger" title="Delete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('')
+            : emptyRow(5, 'No maintenance reports yet.');
+    } catch(e) {}
+}
+
+async function delReport(id) {
+    const result = await Swal.fire({ title:'Are you sure?', text:"You won't be able to revert this!", icon:'warning', showCancelButton:true, confirmButtonColor:'#df433f', cancelButtonColor:'#979b92', confirmButtonText:'Yes, delete it!' });
+    if (!result.isConfirmed) return;
+    await fetch(rdApi(`api/maintenance_reports.php?id=${id}`), { method:'DELETE', credentials:'same-origin' });
+    Swal.fire({ title:'Deleted!', text:'Report has been removed.', icon:'success', timer:1500, showConfirmButton:false });
+    loadReports();
+}
+
 loadCountries().then(() => loadData());
+loadReports();
 </script>
 </body>
 </html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Edit Maintenance Report - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('reports');</script>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header" style="align-items:center">
+            <div style="display:flex;align-items:center;gap:14px">
+                <a href="reports.html" style="width:38px;height:38px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);text-decoration:none;flex-shrink:0" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-2)'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </a>
+                <div>
+                    <h1 class="rd-page-title" id="pageTitle">New Maintenance Report</h1>
+                    <p class="rd-page-subtitle">Pick the sections that apply to this project, drag to reorder</p>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-left:auto">
+                <a id="viewLink" href="#" style="display:none" class="rd-btn rd-btn-outline">View / Print</a>
+                <button id="saveDraftBtn" onclick="saveReport('draft')" class="rd-btn rd-btn-outline">Save Draft</button>
+                <button id="finalizeBtn" onclick="saveReport('final')" class="rd-btn rd-btn-primary">Finalize</button>
+            </div>
+        </div>
+
+        <!-- ONE CONTINUOUS FORM: Report Details + Report Sections in a single card -->
+        <div class="rd-card rd-report-details-card" style="overflow:hidden">
+            <div style="padding:18px 20px">
+                <h3 class="rd-card-title" style="margin:0 0 12px">Report Details</h3>
+                <div class="rd-grid-2">
+                    <div id="projectFieldWrap" class="rd-form-group"></div>
+                    <div class="rd-form-group"><label class="rd-label">Website URL</label><input type="url" id="f_website_url" class="rd-input" placeholder="https://example.com"></div>
+                </div>
+                <div class="rd-grid-3" style="margin-top:10px">
+                    <div class="rd-form-group"><label class="rd-label">Report Date <span style="color:var(--bad)">*</span></label><input type="date" id="f_report_date" class="rd-input"></div>
+                    <div class="rd-form-group"><label class="rd-label">Period Start</label><input type="date" id="f_period_start" class="rd-input"></div>
+                    <div class="rd-form-group"><label class="rd-label">Period End</label><input type="date" id="f_period_end" class="rd-input"></div>
+                </div>
+                <div class="rd-grid-3" style="margin-top:10px">
+                    <div class="rd-form-group"><label class="rd-label">Overall Site Health</label>
+                        <select id="f_overall_health" class="rd-input">
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="needs_attention">Needs Attention</option>
+                        </select>
+                    </div>
+                    <div class="rd-form-group"><label class="rd-label">Prepared By</label><input type="text" id="f_prepared_by" class="rd-input"></div>
+                    <div class="rd-form-group"><label class="rd-label">Reviewed By</label><input type="text" id="f_reviewed_by" class="rd-input"></div>
+                </div>
+            </div>
+
+            <div style="padding:14px 20px;border-top:1px solid var(--border)">
+                <h3 style="font-size:15px;font-weight:700;margin:0">Report Sections</h3>
+                <p style="font-size:12.5px;color:var(--text-3);margin:4px 0 0">Not every project needs every section — add only what applies, drag the handle to reorder, hide instead of delete to keep content for later.</p>
+            </div>
+            <div class="rd-report-palette" id="sectionPalette"></div>
+            <div class="rd-report-list" id="sectionsList"></div>
+        </div>
+        <style>
+            /* Report Details fields — slightly tighter than the app-wide .rd-input default */
+            .rd-report-details-card .rd-label { margin-bottom: 7px; font-size: 12px; }
+            .rd-report-details-card .rd-input,
+            .rd-report-details-card .rd-select { padding: 11px 14px; border-radius: 10px; font-size: 14px; }
+            .rd-report-details-card .rd-select { padding-right: 38px; }
+        </style>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script src="assets/js/report-sections.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+let reportId = urlParams.get('id');
+const fixedProjectId = urlParams.get('project_id');
+
+let sections = [];
+let projectsData = [];
+let sortableInstance = null;
+const collapsedSet = new Set();
+
+function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function eyeIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>'; }
+function eyeOffIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.4 18.4 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>'; }
+function copyIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'; }
+function trashIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'; }
+
+async function loadProjects() {
+    try {
+        const res = await fetch(rdApi('api/projects.php'), { credentials: 'same-origin' });
+        const json = await res.json();
+        projectsData = json.data || [];
+    } catch(e) {}
+}
+
+function renderProjectField(selectedId) {
+    const wrap = document.getElementById('projectFieldWrap');
+    if (fixedProjectId || reportId) {
+        const p = projectsData.find(x => x.id == selectedId);
+        wrap.innerHTML = `<label class="rd-label">Project</label><input type="text" class="rd-input" value="${escapeHtml(p ? p.name : '')}" disabled>`;
+    } else {
+        wrap.innerHTML = `<label class="rd-label">Project <span style="color:var(--bad)">*</span></label>
+            <select id="f_project_id" class="rd-input">
+                <option value="">— Select project —</option>
+                ${projectsData.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+            </select>`;
+    }
+}
+
+function getProjectId() {
+    return fixedProjectId || (reportId ? reportId && document.getElementById('projectFieldWrap').dataset.projectId : (document.getElementById('f_project_id') ? document.getElementById('f_project_id').value : null));
+}
+
+function fieldInputHtml(instance, field) {
+    const val = instance.fields[field.name] ?? '';
+    const common = `data-field="${field.name}" class="rd-input"`;
+    if (field.band === 'yesno') {
+        const name = `${instance.instance_id}-${field.name}`;
+        return `<div class="rd-radio-group" data-field="${field.name}">
+            <label class="rd-radio-option" data-value="Yes"><input type="radio" name="${name}" value="Yes" ${val==='Yes'?'checked':''}> Yes</label>
+            <label class="rd-radio-option" data-value="No"><input type="radio" name="${name}" value="No" ${val==='No'?'checked':''}> No</label>
+        </div>`;
+    }
+    if (field.type === 'textarea') return `<textarea ${common} rows="3" placeholder="${escapeHtml(field.placeholder||'')}">${escapeHtml(val)}</textarea>`;
+    if (field.type === 'select') {
+        const opts = field.options.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('');
+        return `<select ${common}><option value="">— Select —</option>${opts}</select>`;
+    }
+    if (field.type === 'date') return `<input type="date" ${common} value="${escapeHtml(val)}">`;
+    if (field.type === 'number') return `<input type="number" ${common} value="${escapeHtml(val)}">`;
+    if (field.type === 'image') {
+        return `<input type="hidden" data-field="${field.name}" value="${escapeHtml(val)}">
+            <input type="file" accept="image/*" onchange="uploadReportImage(this,'${instance.instance_id}','${field.name}')">
+            ${val ? `<img src="${val}" data-preview-for="${field.name}" class="rd-report-image-preview">` : ''}`;
+    }
+    return `<input type="text" ${common} value="${escapeHtml(val)}" placeholder="${escapeHtml(field.placeholder||'')}">`;
+}
+
+function repeatableHtml(instance, cat) {
+    const rep = cat.repeatable;
+    const rows = instance.fields[rep.name] || [];
+    const theadCols = rep.columns.map(c => `<th>${c.label}</th>`).join('') + '<th></th>';
+    const rowsHtml = rows.map((row, idx) => {
+        const cells = rep.columns.map(c => {
+            const v = row[c.name] || '';
+            const type = c.type === 'date' ? 'date' : 'text';
+            return `<td><input type="${type}" data-col="${c.name}" class="rd-input" style="padding:6px 8px;font-size:12.5px" value="${escapeHtml(v)}"></td>`;
+        }).join('');
+        return `<tr data-row-idx="${idx}">${cells}<td><button type="button" onclick="removeRepeatRow('${instance.instance_id}','${rep.name}',${idx})" class="rd-icon-btn danger" title="Remove row">${trashIcon()}</button></td></tr>`;
+    }).join('');
+    return `
+        <div style="margin-top:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+                <label class="rd-label" style="margin:0">${rep.label}</label>
+                <button type="button" onclick="addRepeatRow('${instance.instance_id}','${rep.name}')" class="rd-btn rd-btn-outline" style="padding:4px 10px;font-size:12px">+ Add Row</button>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="rd-report-repeat-table">
+                    <thead><tr>${theadCols}</tr></thead>
+                    <tbody data-repeat-body="${rep.name}">${rowsHtml || `<tr><td colspan="${rep.columns.length+1}" style="text-align:center;color:var(--text-3);padding:10px">No rows yet.</td></tr>`}</tbody>
+                </table>
+            </div>
+        </div>`;
+}
+
+function sectionCardHtml(instance) {
+    const cat = RD_REPORT.findCatalog(instance.key);
+    const collapsed = collapsedSet.has(instance.instance_id);
+    const titleHtml = cat.key === 'custom'
+        ? `<input type="text" data-title-input class="rd-input" style="font-weight:700;font-size:14px;padding:4px 8px" value="${escapeHtml(instance.title)}" onclick="event.stopPropagation()">`
+        : `<span class="rd-report-section-title">${escapeHtml(instance.title)}</span>`;
+
+    const fieldsHtml = cat.fields.length ? `<div class="rd-report-fields-grid">${cat.fields.map(f => {
+        const wide = f.type === 'textarea' || f.type === 'image';
+        return `
+        <div class="rd-form-group" ${wide ? 'style="grid-column:1/-1"' : ''}>
+            <label class="rd-label">${f.label}${f.target ? ` <span style="color:var(--text-3);font-weight:500">(target: ${f.target})</span>` : ''}</label>
+            ${fieldInputHtml(instance, f)}
+        </div>`;
+    }).join('')}</div>` : '';
+
+    const repeatableHtmlStr = cat.repeatable ? repeatableHtml(instance, cat) : '';
+
+    return `
+        <div class="rd-report-section ${instance.enabled ? '' : 'disabled'}" data-instance-id="${instance.instance_id}">
+            <div class="rd-report-section-head" onclick="toggleCollapse('${instance.instance_id}')">
+                <span class="rd-report-drag-handle" onclick="event.stopPropagation()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="6" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/></svg>
+                </span>
+                ${titleHtml}
+                <div class="rd-report-section-actions" onclick="event.stopPropagation()">
+                    <button type="button" onclick="toggleEnabled('${instance.instance_id}')" class="rd-icon-btn" title="${instance.enabled?'Hide from report':'Show in report'}">${instance.enabled ? eyeIcon() : eyeOffIcon()}</button>
+                    <button type="button" onclick="duplicateSection('${instance.instance_id}')" class="rd-icon-btn" title="Duplicate">${copyIcon()}</button>
+                    <button type="button" onclick="removeSection('${instance.instance_id}')" class="rd-icon-btn danger" title="Remove">${trashIcon()}</button>
+                </div>
+            </div>
+            <div class="rd-report-section-body ${collapsed ? 'collapsed' : ''}">
+                ${fieldsHtml}
+                ${repeatableHtmlStr}
+            </div>
+        </div>`;
+}
+
+function renderPalette() {
+    const wrap = document.getElementById('sectionPalette');
+    wrap.innerHTML = window.RD_REPORT_SECTIONS.map(cat => {
+        const used = !cat.unlimited && sections.some(s => s.key === cat.key);
+        return `<button type="button" class="rd-report-chip ${used?'disabled':''}" ${used?'disabled':''} onclick="addSection('${cat.key}')">+ ${cat.title}</button>`;
+    }).join('');
+}
+
+function initSortable() {
+    const wrap = document.getElementById('sectionsList');
+    if (sortableInstance) { sortableInstance.destroy(); sortableInstance = null; }
+    if (!sections.length) return;
+    sortableInstance = new Sortable(wrap, {
+        handle: '.rd-report-drag-handle',
+        animation: 150,
+        forceFallback: true,
+        fallbackTolerance: 3,
+        onEnd: function () {
+            const order = Array.from(wrap.querySelectorAll('.rd-report-section')).map(el => el.dataset.instanceId);
+            sections.sort((a, b) => order.indexOf(a.instance_id) - order.indexOf(b.instance_id));
+        }
+    });
+}
+
+function renderSections() {
+    const wrap = document.getElementById('sectionsList');
+    wrap.innerHTML = sections.length
+        ? sections.map(sectionCardHtml).join('')
+        : '<div class="rd-report-empty">No sections added yet. Pick sections from the palette above to build this report.</div>';
+    renderPalette();
+    initSortable();
+}
+
+function harvestFromDom() {
+    document.querySelectorAll('.rd-report-section').forEach(secEl => {
+        const id = secEl.dataset.instanceId;
+        const inst = sections.find(s => s.instance_id === id);
+        if (!inst) return;
+        const titleInput = secEl.querySelector('[data-title-input]');
+        if (titleInput) inst.title = titleInput.value;
+        secEl.querySelectorAll(':scope > .rd-report-section-body [data-field]').forEach(el => {
+            if (el.classList.contains('rd-radio-group')) {
+                const checked = el.querySelector('input[type=radio]:checked');
+                inst.fields[el.dataset.field] = checked ? checked.value : '';
+            } else {
+                inst.fields[el.dataset.field] = el.value;
+            }
+        });
+        const repeatBody = secEl.querySelector('[data-repeat-body]');
+        if (repeatBody) {
+            const repeatName = repeatBody.dataset.repeatBody;
+            const rows = [];
+            repeatBody.querySelectorAll('tr[data-row-idx]').forEach(tr => {
+                const row = {};
+                tr.querySelectorAll('[data-col]').forEach(inp => { row[inp.dataset.col] = inp.value; });
+                rows.push(row);
+            });
+            inst.fields[repeatName] = rows;
+        }
+    });
+}
+
+function addSection(key) {
+    harvestFromDom();
+    const inst = RD_REPORT.newInstance(key);
+    if (!inst) return;
+    sections.push(inst);
+    renderSections();
+}
+
+function duplicateSection(id) {
+    harvestFromDom();
+    const idx = sections.findIndex(s => s.instance_id === id);
+    if (idx === -1) return;
+    const clone = RD_REPORT.duplicateInstance(sections[idx]);
+    sections.splice(idx + 1, 0, clone);
+    renderSections();
+}
+
+async function removeSection(id) {
+    const result = await Swal.fire({ title:'Remove this section?', text:'This deletes its content from the report.', icon:'warning', showCancelButton:true, confirmButtonColor:'#df433f', cancelButtonColor:'#979b92', confirmButtonText:'Yes, remove it!' });
+    if (!result.isConfirmed) return;
+    harvestFromDom();
+    sections = sections.filter(s => s.instance_id !== id);
+    renderSections();
+}
+
+function toggleEnabled(id) {
+    harvestFromDom();
+    const inst = sections.find(s => s.instance_id === id);
+    if (inst) inst.enabled = !inst.enabled;
+    renderSections();
+}
+
+function toggleCollapse(id) {
+    harvestFromDom();
+    if (collapsedSet.has(id)) collapsedSet.delete(id); else collapsedSet.add(id);
+    renderSections();
+}
+
+function addRepeatRow(instanceId, repName) {
+    harvestFromDom();
+    const inst = sections.find(s => s.instance_id === instanceId);
+    if (!inst) return;
+    if (!inst.fields[repName]) inst.fields[repName] = [];
+    inst.fields[repName].push({});
+    renderSections();
+}
+
+function removeRepeatRow(instanceId, repName, idx) {
+    harvestFromDom();
+    const inst = sections.find(s => s.instance_id === instanceId);
+    if (!inst) return;
+    inst.fields[repName].splice(idx, 1);
+    renderSections();
+}
+
+async function uploadReportImage(inputEl, instanceId, fieldName) {
+    const file = inputEl.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'reports');
+    try {
+        const res = await fetch(rdApi('api/upload.php'), { method: 'POST', credentials: 'same-origin', body: formData });
+        const json = await res.json();
+        if (json.status !== 'success') { rdError(json.message || 'Upload failed'); return; }
+        const container = inputEl.closest('[data-instance-id]');
+        const hidden = container.querySelector(`input[type=hidden][data-field="${fieldName}"]`);
+        hidden.value = json.url;
+        let img = container.querySelector(`img[data-preview-for="${fieldName}"]`);
+        if (!img) {
+            img = document.createElement('img');
+            img.className = 'rd-report-image-preview';
+            img.dataset.previewFor = fieldName;
+            inputEl.insertAdjacentElement('afterend', img);
+        }
+        img.src = json.url;
+    } catch (e) { rdError('Upload failed — server error.'); }
+}
+
+async function saveReport(status) {
+    harvestFromDom();
+    const projectId = fixedProjectId || (document.getElementById('f_project_id') ? document.getElementById('f_project_id').value : document.getElementById('projectFieldWrap').dataset.projectId);
+    if (!projectId) { Swal.fire({ icon:'warning', title:'Project required', text:'Please select a project.', confirmButtonColor:'var(--accent)' }); return; }
+    const reportDate = document.getElementById('f_report_date').value;
+    if (!reportDate) { Swal.fire({ icon:'warning', title:'Report date required', confirmButtonColor:'var(--accent)' }); return; }
+
+    const payload = {
+        project_id: projectId,
+        website_url: document.getElementById('f_website_url').value.trim() || null,
+        report_date: reportDate,
+        period_start: document.getElementById('f_period_start').value || null,
+        period_end: document.getElementById('f_period_end').value || null,
+        prepared_by: document.getElementById('f_prepared_by').value || null,
+        reviewed_by: document.getElementById('f_reviewed_by').value || null,
+        overall_health: document.getElementById('f_overall_health').value,
+        status: status,
+        sections: sections.map(s => ({ instance_id: s.instance_id, key: s.key, title: s.title, enabled: s.enabled, fields: s.fields }))
+    };
+
+    const btn = status === 'final' ? document.getElementById('finalizeBtn') : document.getElementById('saveDraftBtn');
+    btn.disabled = true;
+    try {
+        let url = rdApi('api/maintenance_reports.php');
+        let method = 'POST';
+        if (reportId) { url += `?id=${reportId}`; method = 'PUT'; }
+        const res = await fetch(url, { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (!reportId && json.id) {
+            reportId = json.id;
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('id', reportId);
+            window.history.replaceState({}, '', newUrl);
+        }
+        document.getElementById('viewLink').style.display = '';
+        document.getElementById('viewLink').href = `report-view.html?id=${reportId}`;
+        Swal.fire({ title:'Saved!', icon:'success', timer:1500, showConfirmButton:false });
+    } catch (e) { rdError('Failed to save report.'); }
+    btn.disabled = false;
+}
+
+async function init() {
+    await loadProjects();
+
+    if (reportId) {
+        const res = await fetch(rdApi(`api/maintenance_reports.php?id=${reportId}`), { credentials: 'same-origin' });
+        const json = await res.json();
+        const r = json.data;
+        document.getElementById('pageTitle').textContent = 'Edit Maintenance Report';
+        document.getElementById('projectFieldWrap').dataset.projectId = r.project_id;
+        renderProjectField(r.project_id);
+        document.getElementById('f_website_url').value = r.website_url || '';
+        document.getElementById('f_report_date').value = r.report_date ? r.report_date.split('T')[0] : '';
+        document.getElementById('f_period_start').value = r.period_start ? r.period_start.split('T')[0] : '';
+        document.getElementById('f_period_end').value = r.period_end ? r.period_end.split('T')[0] : '';
+        document.getElementById('f_prepared_by').value = r.prepared_by || '';
+        document.getElementById('f_reviewed_by').value = r.reviewed_by || '';
+        document.getElementById('f_overall_health').value = r.overall_health || 'good';
+        sections = r.sections || [];
+        document.getElementById('viewLink').style.display = '';
+        document.getElementById('viewLink').href = `report-view.html?id=${reportId}`;
+    } else {
+        renderProjectField(fixedProjectId);
+        document.getElementById('f_report_date').value = new Date().toISOString().split('T')[0];
+        if (fixedProjectId) document.getElementById('projectFieldWrap').dataset.projectId = fixedProjectId;
+    }
+
+    renderSections();
+}
+
+init();
+</script>
+</body>
+</html>

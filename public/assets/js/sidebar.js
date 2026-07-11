@@ -10,6 +10,7 @@
         hosting:     '<rect x="3" y="4" width="18" height="7" rx="1.8"/><rect x="3" y="13" width="18" height="7" rx="1.8"/><path d="M7 7.5h.01M7 16.5h.01"/>',
         maintenance: '<path d="M14.7 6.3a3.7 3.7 0 0 0-5 4.9L4 17v3h3l5.8-5.7a3.7 3.7 0 0 0 4.9-5l-2.5 2.5-2.2-2.2z"/>',
         backups:     '<path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.6 1.4A3.5 3.5 0 0 1 17 18z"/>',
+        reports:     '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6M9 9h1"/>',
         tasks:       '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/>',
         settings:    '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
         countries:   '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c1.7 1.7 2.6 4.2 2.6 9S13.7 19.3 12 21M12 3c-1.7 1.7-2.6 4.2-2.6 9s.9 7.3 2.6 9"/>'
@@ -51,6 +52,7 @@
               navLink('hosting',      'hosting.html',      'Hosting',     active),
               navLink('maintenance',  'maintenance.html',  'Maintenance', active),
               navLink('backups',      'backups.html',      'Backups',     active),
+              navLink('reports',      'reports.html',      'Reports',     active),
               navLink('tasks',        'tasks.html',        'Tasks',       active),
             '</nav>',
             '<div class="rd-nav-label">System</div>',

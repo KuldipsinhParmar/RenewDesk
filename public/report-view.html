@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Maintenance Report - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        /* ---- Document look-alike for the Site Maintenance Report template ---- */
+        .rd-doc { max-width: 860px; margin: 0 auto; background: #fff; color: #222; font-family: 'IBM Plex Sans', sans-serif; }
+        .rd-doc-logo-box {
+            width: 170px; height: 68px; margin: 0 auto 22px; border: 1px solid #bfbfbf; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; background: #fafafa;
+        }
+        .rd-doc-logo-box img { max-width: 140px; max-height: 52px; object-fit: contain; }
+        .rd-doc-logo-box span { font-style: italic; font-size: 12px; color: #9a9a9a; }
+        .rd-doc-title { text-align: center; font-size: 26px; font-weight: 700; color: #1f3864; margin: 0 0 4px; letter-spacing: .01em; }
+        .rd-doc-subtitle { text-align: center; font-style: italic; color: #0f6e6e; font-size: 13px; margin: 0 0 22px; }
+        .rd-doc-meta-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .rd-doc-meta-table td { border: 1px solid #bfbfbf; padding: 7px 12px; font-size: 12.5px; vertical-align: middle; }
+        .rd-doc-meta-table td.label { font-weight: 700; color: #1f3864; width: 30%; background: #f6f7f9; }
+        .rd-doc-meta-table td.value { color: #333; }
+        .rd-doc-footnote { font-style: italic; color: #6b6b6b; font-size: 11px; margin: 10px 0 30px; }
+        .rd-doc-section { margin-bottom: 24px; page-break-inside: avoid; }
+        .rd-doc-section-title { font-size: 14px; font-weight: 700; color: #1f3864; margin: 0 0 9px; padding-bottom: 5px; border-bottom: 1px solid #d8dde3; }
+        .rd-doc-section-title .num { color: #0f6e6e; margin-right: 3px; }
+        .rd-doc-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
+        .rd-doc-table th {
+            background: #1f3864; color: #fff; text-align: left; font-size: 10.5px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .03em; padding: 6px 10px; border: 1px solid #1f3864;
+        }
+        .rd-doc-table td { border: 1px solid #bfbfbf; padding: 6px 10px; font-size: 12.5px; color: #333; }
+        .rd-doc-table td.k { color: #6b6b6b; }
+        .rd-doc-field-row { font-size: 12.5px; margin: 0 0 5px; }
+        .rd-doc-field-row b { color: #222; }
+        .rd-doc-field-row .target { color: #6b6b6b; font-size: 11px; }
+        .rd-doc-subhead { font-weight: 700; font-size: 12.5px; margin: 12px 0 6px; color: #222; }
+        .rd-doc-colorkey { display: flex; gap: 18px; font-size: 11px; color: #6b6b6b; margin: 2px 0 12px; flex-wrap: wrap; }
+        .rd-doc-colorkey span.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+        .rd-doc-evidence {
+            border: 1px solid #bfbfbf; border-radius: 4px; padding: 26px; text-align: center; background: #fafafa; margin: 6px 0 10px;
+        }
+        .rd-doc-evidence img { max-width: 100%; max-height: 340px; object-fit: contain; border-radius: 3px; }
+        .rd-doc-evidence .placeholder-icon { font-size: 22px; color: #bfbfbf; margin-bottom: 4px; }
+        .rd-doc-evidence .placeholder-text { font-style: italic; color: #6b6b6b; font-size: 11px; }
+        .rd-doc-signoff { margin-top: 30px; }
+        .rd-doc-signoff-title { font-size: 14px; font-weight: 700; color: #1f3864; margin: 0 0 10px; }
+        .rd-doc-signoff-table { width: 100%; border-collapse: collapse; }
+        .rd-doc-signoff-table td { border: 1px solid #bfbfbf; padding: 14px 16px; width: 50%; vertical-align: top; }
+        .rd-doc-signoff-table .role { font-weight: 700; color: #1f3864; font-size: 12.5px; margin-bottom: 8px; }
+        .rd-doc-signoff-table .line { font-size: 12px; margin-bottom: 6px; color: #333; }
+        .rd-doc-signoff-table .sigline { border-bottom: 1px solid #bfbfbf; height: 20px; margin: 4px 0 10px; }
+
+        @media print {
+            .rd-doc-logo-box, .rd-doc-evidence { background: #fff !important; }
+            .rd-doc-table th, .rd-doc-meta-table td.label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar rd-no-print" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('reports');</script>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header rd-no-print" style="align-items:center">
+            <div style="display:flex;align-items:center;gap:14px">
+                <a href="reports.html" style="width:38px;height:38px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);text-decoration:none;flex-shrink:0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </a>
+                <div><h1 class="rd-page-title">Maintenance Report</h1><p class="rd-page-subtitle">Printable view</p></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-left:auto">
+                <a id="editLink" href="#" class="rd-btn rd-btn-outline">Edit</a>
+                <button onclick="window.print()" class="rd-btn rd-btn-primary">Print / Save as PDF</button>
+            </div>
+        </div>
+
+        <div class="rd-card rd-doc" style="padding:40px 46px">
+            <div class="rd-doc-logo-box" id="logoBox"><span>[ LOGO ]</span></div>
+
+            <h1 class="rd-doc-title">SITE MAINTENANCE REPORT</h1>
+            <p class="rd-doc-subtitle">Website Maintenance &amp; Performance Summary</p>
+
+            <table class="rd-doc-meta-table" id="reportMeta"></table>
+            <p class="rd-doc-footnote">This report is generated for internal record-keeping and client delivery purposes.</p>
+
+            <div id="sectionsOut"></div>
+
+            <div class="rd-doc-signoff">
+                <h3 class="rd-doc-signoff-title">Approval &amp; Sign-off</h3>
+                <table class="rd-doc-signoff-table">
+                    <tr>
+                        <td>
+                            <div class="role">Prepared By</div>
+                            <div class="line">Name: <span id="signPreparedName">—</span></div>
+                            <div class="line">Signature:</div>
+                            <div class="sigline"></div>
+                            <div class="line">Date: <span id="signPreparedDate">—</span></div>
+                        </td>
+                        <td>
+                            <div class="role">Client Approval</div>
+                            <div class="line">Name: <span id="signClientName">—</span></div>
+                            <div class="line">Signature:</div>
+                            <div class="sigline"></div>
+                            <div class="line">Date: <span id="signClientDate">—</span></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script src="assets/js/report-sections.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const reportId = urlParams.get('id');
+const formatD = rdFormatDate;
+
+function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+const COLOR_KEY_HTML = `
+    <div class="rd-doc-colorkey">
+        <span><span class="dot" style="background:#1a9b5c"></span>Green = OK / Good</span>
+        <span><span class="dot" style="background:#e08a1e"></span>Orange = Needs Attention</span>
+        <span><span class="dot" style="background:#d1453d"></span>Red = Issue / Action Required</span>
+    </div>`;
+
+function fieldValueHtml(field, value) {
+    if (field.type === 'image') return ''; // handled separately as Visual Evidence block
+    if (!value && value !== 0) return '<span style="color:#9a9a9a">—</span>';
+    if (field.band) return `<span class="rd-badge ${RD_REPORT.bandClass(value, field.band)}">${escapeHtml(value)}</span>`;
+    return escapeHtml(value);
+}
+
+function evidenceHtml(field, value, placeholderText) {
+    if (value) return `<div class="rd-doc-evidence"><img src="${value}" alt="${escapeHtml(field.label)}"></div>`;
+    return `<div class="rd-doc-evidence"><div class="placeholder-icon">&#128247;</div><div class="placeholder-text">${escapeHtml(placeholderText || 'No screenshot attached')}</div></div>`;
+}
+
+function sectionHtml(instance, num) {
+    const cat = RD_REPORT.findCatalog(instance.key);
+    if (!cat) return '';
+
+    const imageFields = cat.fields.filter(f => f.type === 'image');
+    const plainFields = cat.fields.filter(f => f.type !== 'image');
+    const hasBand = cat.fields.some(f => f.band);
+
+    const fieldsRows = plainFields.map(f => `
+        <tr>
+            <td class="k" style="width:38%"><b>${f.label}</b>${f.target ? ` <span class="target">(target: ${f.target})</span>` : ''}</td>
+            <td>${fieldValueHtml(f, instance.fields[f.name])}</td>
+        </tr>`).join('');
+
+    let repeatableStr = '';
+    if (cat.repeatable) {
+        const rows = instance.fields[cat.repeatable.name] || [];
+        const cols = cat.repeatable.columns;
+        const theadCols = cols.map(c => `<th>${c.label}</th>`).join('');
+        const bodyRows = rows.length
+            ? rows.map(row => `<tr>${cols.map(c => `<td>${escapeHtml(row[c.name] || '—')}</td>`).join('')}</tr>`).join('')
+            : `<tr><td colspan="${cols.length}" style="text-align:center;color:#9a9a9a">No entries.</td></tr>`;
+        repeatableStr = `
+            <div class="rd-doc-subhead">${cat.repeatable.label}</div>
+            <table class="rd-doc-table"><thead><tr>${theadCols}</tr></thead><tbody>${bodyRows}</tbody></table>`;
+    }
+
+    const imagesStr = imageFields.map(f => `
+        <div class="rd-doc-subhead">${f.label.replace(/^Visual Evidence \(([^)]+)\)$/, 'Visual Evidence')}</div>
+        ${evidenceHtml(f, instance.fields[f.name])}
+    `).join('');
+
+    return `
+        <div class="rd-doc-section">
+            <h3 class="rd-doc-section-title"><span class="num">${num}.</span>${escapeHtml(instance.title)}</h3>
+            ${fieldsRows ? `<table class="rd-doc-table"><tbody>${fieldsRows}</tbody></table>` : ''}
+            ${hasBand ? COLOR_KEY_HTML : ''}
+            ${repeatableStr}
+            ${imagesStr}
+        </div>`;
+}
+
+async function init() {
+    if (!reportId) { document.getElementById('sectionsOut').innerHTML = '<p style="color:var(--text-3)">No report specified.</p>'; return; }
+    const res = await fetch(rdApi(`api/maintenance_reports.php?id=${reportId}`), { credentials: 'same-origin' });
+    if (res.status === 401) { window.location.href = 'login.html'; return; }
+    const json = await res.json();
+    const r = json.data;
+    if (!r) { document.getElementById('sectionsOut').innerHTML = '<p style="color:var(--text-3)">Report not found.</p>'; return; }
+
+    document.getElementById('editLink').href = `report-edit.html?id=${reportId}`;
+    document.title = `Maintenance Report — ${r.project_name} — RenewDesk`;
+
+    if (r.project_logo_url) {
+        document.getElementById('logoBox').innerHTML = `<img src="${r.project_logo_url}" alt="${escapeHtml(r.project_name)} logo">`;
+    }
+
+    const healthMap = { good: 'Good', fair: 'Fair', needs_attention: 'Needs Attention' };
+    const metaRows = [
+        ['Site Name', escapeHtml(r.project_name)],
+        ['Website URL', r.website_url ? escapeHtml(r.website_url) : '<span style="color:#9a9a9a">—</span>'],
+        ['Report Date', formatD(r.report_date)],
+        ['Report Period', (r.period_start || r.period_end) ? `${formatD(r.period_start)} &rarr; ${formatD(r.period_end)}` : '<span style="color:#9a9a9a">—</span>'],
+        ['Overall Site Health', healthMap[r.overall_health] || r.overall_health],
+        ['Prepared By', r.prepared_by ? escapeHtml(r.prepared_by) : '<span style="color:#9a9a9a">—</span>'],
+        ['Reviewed By', r.reviewed_by ? escapeHtml(r.reviewed_by) : '<span style="color:#9a9a9a">—</span>']
+    ];
+    document.getElementById('reportMeta').innerHTML = metaRows.map(([label, value]) =>
+        `<tr><td class="label">${label}</td><td class="value">${value}</td></tr>`).join('');
+
+    const sections = (r.sections || []).filter(s => s.enabled !== false);
+    document.getElementById('sectionsOut').innerHTML = sections.length
+        ? sections.map((s, i) => sectionHtml(s, i + 1)).join('')
+        : '<p style="color:var(--text-3)">No sections in this report.</p>';
+
+    document.getElementById('signPreparedName').textContent = r.prepared_by || '—';
+    document.getElementById('signPreparedDate').textContent = formatD(r.report_date);
+    document.getElementById('signClientName').textContent = r.reviewed_by || '—';
+    document.getElementById('signClientDate').textContent = formatD(r.report_date);
+}
+
+init();
+</script>
+</body>
+</html>

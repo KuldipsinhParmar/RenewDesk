@@ -11,10 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    $file = $_FILES['logo'] ?? null;
+    $file = $_FILES['file'] ?? $_FILES['logo'] ?? null;
     if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
         throw new Exception("No file uploaded or upload error (code: " . ($file['error'] ?? 'none') . ")");
     }
+
+    $allowedFolders = ['logos', 'reports'];
+    $folder = in_array($_POST['folder'] ?? '', $allowedFolders, true) ? $_POST['folder'] : 'logos';
 
     $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -29,20 +32,21 @@ try {
         throw new Exception("File too large. Maximum size is 2 MB.");
     }
 
-    $uploadDir = dirname(__DIR__) . '/assets/uploads/logos/';
+    $uploadDir = dirname(__DIR__) . '/assets/uploads/' . $folder . '/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $filename = 'logo_' . bin2hex(random_bytes(8)) . '.' . $ext;
+    $prefix = $folder === 'reports' ? 'report_' : 'logo_';
+    $filename = $prefix . bin2hex(random_bytes(8)) . '.' . $ext;
     $destPath = $uploadDir . $filename;
 
     if (!move_uploaded_file($file['tmp_name'], $destPath)) {
         throw new Exception("Failed to save uploaded file.");
     }
 
-    echo json_encode(["status" => "success", "url" => "assets/uploads/logos/" . $filename]);
+    echo json_encode(["status" => "success", "url" => "assets/uploads/" . $folder . "/" . $filename]);
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
