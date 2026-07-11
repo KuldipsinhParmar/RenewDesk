@@ -7,51 +7,20 @@
 window.RD_REPORT_SECTIONS = [
     { key: 'loading_speed', title: 'Site Loading Speed', fields: [
         { name: 'performance_score', label: 'Performance Score (0-100)', type: 'number', band: 'score' },
-        { name: 'lcp', label: 'Largest Contentful Paint (LCP)', type: 'text', target: '< 2.5s' },
-        { name: 'inp', label: 'Interaction to Next Paint (INP)', type: 'text', target: '< 200ms' },
-        { name: 'cls', label: 'Cumulative Layout Shift (CLS)', type: 'text', target: '< 0.1' },
-        { name: 'evidence_screenshot', label: 'Visual Evidence (PageSpeed / Lighthouse screenshot)', type: 'image' }
+        { name: 'evidence_screenshot', label: 'Visual Evidence', type: 'image', wide: false }
     ]},
     { key: 'image_optimization', title: 'Image Size Optimized', fields: [
         { name: 'status', label: 'Status', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'e.g. All images resized/compressed using TinyPNG before upload.' },
-        { name: 'images_optimized_count', label: 'Total Images Optimized This Period', type: 'number' },
-        { name: 'avg_size_reduction_pct', label: 'Average File Size Reduction (%)', type: 'text' }
-    ]},
-    { key: 'server_performance', title: 'Server Performance', fields: [
-        { name: 'hosting_provider', label: 'Hosting Provider', type: 'text' },
-        { name: 'server_type', label: 'Server Type / Plan', type: 'text', placeholder: 'e.g. Shared / VPS / Cloud' },
-        { name: 'php_version', label: 'PHP Version', type: 'text' },
-        { name: 'details', label: 'Details', type: 'textarea' }
-    ]},
-    { key: 'uptime_monitoring', title: 'Uptime & Response Time Monitoring', fields: [
-        { name: 'uptime_pct', label: 'Uptime %', type: 'text', target: '≥ 99.9%', band: 'uptime' },
-        { name: 'avg_response_ms', label: 'Avg. Server Response Time (ms)', type: 'text', target: '< 200ms' },
-        { name: 'downtime_incidents', label: 'Downtime Incidents', type: 'number', target: '0' }
+        { name: 'plugin_name', label: 'Plugin Used', type: 'text', placeholder: 'e.g. ShortPixel, TinyPNG, Smush' },
+        { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'e.g. All images resized/compressed using TinyPNG before upload.' }
     ]},
     { key: 'traffic_analytics', title: 'Traffic & Analytics', fields: [
-        { name: 'sessions_this', label: 'Sessions — This Period', type: 'text' },
-        { name: 'sessions_prev', label: 'Sessions — Previous Period', type: 'text' },
-        { name: 'sessions_change', label: 'Sessions — Change %', type: 'text' },
-        { name: 'users_this', label: 'Users — This Period', type: 'text' },
-        { name: 'users_prev', label: 'Users — Previous Period', type: 'text' },
-        { name: 'users_change', label: 'Users — Change %', type: 'text' },
-        { name: 'page_views_this', label: 'Page Views — This Period', type: 'text' },
-        { name: 'page_views_prev', label: 'Page Views — Previous Period', type: 'text' },
-        { name: 'page_views_change', label: 'Page Views — Change %', type: 'text' },
-        { name: 'bounce_rate_this', label: 'Bounce Rate — This Period', type: 'text' },
-        { name: 'bounce_rate_prev', label: 'Bounce Rate — Previous Period', type: 'text' },
-        { name: 'bounce_rate_change', label: 'Bounce Rate — Change %', type: 'text' },
-        { name: 'avg_session_this', label: 'Avg. Session Duration — This Period', type: 'text' },
-        { name: 'avg_session_prev', label: 'Avg. Session Duration — Previous Period', type: 'text' },
-        { name: 'avg_session_change', label: 'Avg. Session Duration — Change %', type: 'text' }
-    ], repeatable: { name: 'top_pages', label: 'Top Performing Pages', columns: [
-        { name: 'url', label: 'Top Page / URL' }, { name: 'views', label: 'Views' }, { name: 'notes', label: 'Notes' }
-    ]}},
+        { name: 'evidence_screenshots', label: 'Visual Evidence (Analytics screenshots)', type: 'images' }
+    ]},
     { key: 'plugins', title: 'Plugins Used', fields: [
         { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'e.g. Elementor Pro and Yoast SEO Premium are paid plugins (license cost applies).' }
     ], repeatable: { name: 'rows', label: 'Plugins', columns: [
-        { name: 'plugin_name', label: 'Plugin' }, { name: 'purpose', label: 'Purpose' }, { name: 'version', label: 'Version' }, { name: 'status', label: 'Status' }
+        { name: 'plugin_name', label: 'Plugin' }, { name: 'version', label: 'Version' }, { name: 'reason', label: 'Why Used' }
     ]}},
     { key: 'caching', title: 'Caching Mechanism Used', fields: [
         { name: 'description', label: 'Description', type: 'textarea' }
@@ -69,13 +38,13 @@ window.RD_REPORT_SECTIONS = [
         { backup_type: 'Database Only', frequency: '', storage_location: '', last_backup_date: '', status: 'OK' }
     ]}},
     { key: 'security_checks', title: 'Security Checks', fields: [
-        { name: 'ssl_valid', label: 'SSL certificate valid and active', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'malware_scan', label: 'Malware / vulnerability scan completed', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'login_attempts_monitored', label: 'Login attempts monitored / limited', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'admin_username_non_default', label: 'Admin username is non-default', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'firewall_active', label: 'Firewall / security plugin active', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'file_permissions_reviewed', label: 'File permissions reviewed', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
-        { name: 'evidence_screenshot', label: 'Visual Evidence (security scan screenshot)', type: 'image' }
+        { name: 'ssl_valid', label: 'SSL certificate valid and active', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'malware_scan', label: 'Malware / vulnerability scan completed', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'login_attempts_monitored', label: 'Login attempts monitored / limited', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'admin_username_non_default', label: 'Admin username is non-default', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'firewall_active', label: 'Firewall / security plugin active', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'file_permissions_reviewed', label: 'File permissions reviewed', type: 'select', options: ['Yes', 'No'], band: 'yesno', wide: true },
+        { name: 'evidence_screenshot', label: 'Visual Evidence (security scan screenshot)', type: 'image', wide: true }
     ]},
     { key: 'basic_seo', title: 'Basic SEO Setup', fields: [
         { name: 'status', label: 'Status', type: 'select', options: ['Yes', 'No'], band: 'yesno' },
@@ -138,7 +107,7 @@ window.RD_REPORT = (function () {
         var cat = findCatalog(key);
         if (!cat) return null;
         var fields = {};
-        cat.fields.forEach(function (f) { fields[f.name] = ''; });
+        cat.fields.forEach(function (f) { fields[f.name] = f.type === 'images' ? [] : ''; });
         if (cat.repeatable) {
             fields[cat.repeatable.name] = cat.repeatable.seed ? JSON.parse(JSON.stringify(cat.repeatable.seed)) : [];
         }

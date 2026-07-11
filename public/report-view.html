@@ -48,6 +48,9 @@
         .rd-doc-evidence img { max-width: 100%; max-height: 340px; object-fit: contain; border-radius: 3px; }
         .rd-doc-evidence .placeholder-icon { font-size: 22px; color: #bfbfbf; margin-bottom: 4px; }
         .rd-doc-evidence .placeholder-text { font-style: italic; color: #6b6b6b; font-size: 11px; }
+        .rd-doc-evidence-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 6px 0 10px; }
+        .rd-doc-evidence-gallery .rd-doc-evidence { margin: 0; padding: 10px; }
+        .rd-doc-evidence-gallery .rd-doc-evidence img { max-height: 180px; }
         .rd-doc-signoff { margin-top: 30px; }
         .rd-doc-signoff-title { font-size: 14px; font-weight: 700; color: #1f3864; margin: 0 0 10px; }
         .rd-doc-signoff-table { width: 100%; border-collapse: collapse; }
@@ -139,13 +142,18 @@ const COLOR_KEY_HTML = `
     </div>`;
 
 function fieldValueHtml(field, value) {
-    if (field.type === 'image') return ''; // handled separately as Visual Evidence block
+    if (field.type === 'image' || field.type === 'images') return ''; // handled separately as Visual Evidence block
     if (!value && value !== 0) return '<span style="color:#9a9a9a">—</span>';
     if (field.band) return `<span class="rd-badge ${RD_REPORT.bandClass(value, field.band)}">${escapeHtml(value)}</span>`;
     return escapeHtml(value);
 }
 
 function evidenceHtml(field, value, placeholderText) {
+    if (field.type === 'images') {
+        const arr = Array.isArray(value) ? value.filter(Boolean) : [];
+        if (!arr.length) return `<div class="rd-doc-evidence"><div class="placeholder-icon">&#128247;</div><div class="placeholder-text">${escapeHtml(placeholderText || 'No screenshots attached')}</div></div>`;
+        return `<div class="rd-doc-evidence-gallery">${arr.map(url => `<div class="rd-doc-evidence"><img src="${escapeHtml(url)}" alt="${escapeHtml(field.label)}"></div>`).join('')}</div>`;
+    }
     if (value) return `<div class="rd-doc-evidence"><img src="${value}" alt="${escapeHtml(field.label)}"></div>`;
     return `<div class="rd-doc-evidence"><div class="placeholder-icon">&#128247;</div><div class="placeholder-text">${escapeHtml(placeholderText || 'No screenshot attached')}</div></div>`;
 }
@@ -154,8 +162,8 @@ function sectionHtml(instance, num) {
     const cat = RD_REPORT.findCatalog(instance.key);
     if (!cat) return '';
 
-    const imageFields = cat.fields.filter(f => f.type === 'image');
-    const plainFields = cat.fields.filter(f => f.type !== 'image');
+    const imageFields = cat.fields.filter(f => f.type === 'image' || f.type === 'images');
+    const plainFields = cat.fields.filter(f => f.type !== 'image' && f.type !== 'images');
     const hasBand = cat.fields.some(f => f.band);
 
     const fieldsRows = plainFields.map(f => `

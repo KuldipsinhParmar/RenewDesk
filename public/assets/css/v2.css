@@ -834,7 +834,7 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 .rd-report-fields-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px 14px;
 }
-.rd-report-fields-grid .rd-form-group { margin-bottom: 0; }
+.rd-report-fields-grid .rd-form-group { margin-bottom: 0; margin-top: 0; }
 .rd-report-fields-grid + .rd-report-repeat-table,
 .rd-report-fields-grid + div > .rd-report-repeat-table { margin-top: 4px; }
 
@@ -849,6 +849,8 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
 .rd-report-section-body .rd-select,
 .rd-report-section-body .rd-textarea { padding: 10px 13px; border-radius: 10px; font-size: 13.5px; }
 .rd-report-section-body .rd-select { padding-right: 36px; }
+.rd-report-fields-grid .rd-radio-group { width: auto; }
+.rd-report-fields-grid .rd-radio-option { flex: none; min-width: 88px; padding: 8px 16px; }
 
 .rd-report-repeat-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .rd-report-repeat-table th {
@@ -862,6 +864,32 @@ input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
   width: 100%; max-width: 260px; border-radius: 8px; border: 1px solid var(--border);
   display: block; margin-top: 8px; object-fit: contain; background: var(--surface-2);
 }
+
+.rd-report-upload { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rd-report-upload-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 12px 15px; border-radius: 10px;
+  background: var(--surface-2); border: 1px dashed var(--border-2);
+  font-size: 12.5px; font-weight: 600; color: var(--text-2);
+  cursor: pointer; transition: border-color .12s, color .12s, background .12s;
+}
+.rd-report-upload-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+.rd-report-upload-btn.uploading { opacity: .6; pointer-events: none; }
+.rd-report-upload-btn.uploading span::after { content: '…'; }
+.rd-report-upload-btn input[type=file] { display: none; }
+.rd-report-upload .rd-report-image-preview { flex-basis: 100%; margin-top: 0; }
+
+.rd-report-gallery { display: flex; flex-direction: column; gap: 10px; }
+.rd-report-gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;
+}
+.rd-report-gallery-item { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); }
+.rd-report-gallery-thumb { width: 100%; height: 100px; object-fit: cover; display: block; }
+.rd-report-gallery-remove {
+  position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,.55); color: #fff;
+  width: 24px; height: 24px; border-radius: 6px; border: none;
+}
+.rd-report-gallery-remove:hover { background: var(--bad); color: #fff; }
 
 /* ---- Printable report view ---- */
 .rd-report-print-section { margin-bottom: 26px; page-break-inside: avoid; }

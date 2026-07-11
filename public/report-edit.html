@@ -102,6 +102,7 @@ function eyeIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fil
 function eyeOffIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.4 18.4 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>'; }
 function copyIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'; }
 function trashIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'; }
+function uploadIcon() { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'; }
 
 async function loadProjects() {
     try {
@@ -147,9 +148,30 @@ function fieldInputHtml(instance, field) {
     if (field.type === 'date') return `<input type="date" ${common} value="${escapeHtml(val)}">`;
     if (field.type === 'number') return `<input type="number" ${common} value="${escapeHtml(val)}">`;
     if (field.type === 'image') {
-        return `<input type="hidden" data-field="${field.name}" value="${escapeHtml(val)}">
-            <input type="file" accept="image/*" onchange="uploadReportImage(this,'${instance.instance_id}','${field.name}')">
-            ${val ? `<img src="${val}" data-preview-for="${field.name}" class="rd-report-image-preview">` : ''}`;
+        return `<div class="rd-report-upload" data-field-wrap="${field.name}">
+            <input type="hidden" data-field="${field.name}" value="${escapeHtml(val)}">
+            <label class="rd-report-upload-btn">
+                ${uploadIcon()}<span data-upload-label>${val ? 'Replace screenshot' : 'Choose screenshot'}</span>
+                <input type="file" accept="image/*" onchange="uploadReportImage(this,'${instance.instance_id}','${field.name}')">
+            </label>
+            <button type="button" class="rd-icon-btn danger" data-upload-remove title="Remove screenshot" onclick="removeReportImage(this,'${field.name}')" ${val ? '' : 'style="display:none"'}>${trashIcon()}</button>
+            <img src="${escapeHtml(val)}" data-preview-for="${field.name}" class="rd-report-image-preview" ${val ? '' : 'style="display:none"'}>
+        </div>`;
+    }
+    if (field.type === 'images') {
+        const arr = Array.isArray(val) ? val : [];
+        const thumbs = arr.map((url, idx) => `
+            <div class="rd-report-gallery-item">
+                <img src="${escapeHtml(url)}" class="rd-report-gallery-thumb">
+                <button type="button" class="rd-icon-btn danger rd-report-gallery-remove" title="Remove" onclick="removeGalleryImage('${instance.instance_id}','${field.name}',${idx})">${trashIcon()}</button>
+            </div>`).join('');
+        return `<div class="rd-report-gallery">
+            <div class="rd-report-gallery-grid">${thumbs}</div>
+            <label class="rd-report-upload-btn">
+                ${uploadIcon()}<span>Add screenshot${arr.length ? 's' : ''}</span>
+                <input type="file" accept="image/*" multiple onchange="uploadGalleryImages(this,'${instance.instance_id}','${field.name}')">
+            </label>
+        </div>`;
     }
     return `<input type="text" ${common} value="${escapeHtml(val)}" placeholder="${escapeHtml(field.placeholder||'')}">`;
 }
@@ -189,7 +211,7 @@ function sectionCardHtml(instance) {
         : `<span class="rd-report-section-title">${escapeHtml(instance.title)}</span>`;
 
     const fieldsHtml = cat.fields.length ? `<div class="rd-report-fields-grid">${cat.fields.map(f => {
-        const wide = f.type === 'textarea' || f.type === 'image';
+        const wide = f.wide !== undefined ? f.wide : (f.type === 'textarea' || f.type === 'image' || f.type === 'images');
         return `
         <div class="rd-form-group" ${wide ? 'style="grid-column:1/-1"' : ''}>
             <label class="rd-label">${f.label}${f.target ? ` <span style="color:var(--text-3);font-weight:500">(target: ${f.target})</span>` : ''}</label>
@@ -339,6 +361,9 @@ function removeRepeatRow(instanceId, repName, idx) {
 async function uploadReportImage(inputEl, instanceId, fieldName) {
     const file = inputEl.files[0];
     if (!file) return;
+    const wrap = inputEl.closest('.rd-report-upload');
+    const label = wrap.querySelector('.rd-report-upload-btn');
+    label.classList.add('uploading');
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', 'reports');
@@ -346,18 +371,64 @@ async function uploadReportImage(inputEl, instanceId, fieldName) {
         const res = await fetch(rdApi('api/upload.php'), { method: 'POST', credentials: 'same-origin', body: formData });
         const json = await res.json();
         if (json.status !== 'success') { rdError(json.message || 'Upload failed'); return; }
-        const container = inputEl.closest('[data-instance-id]');
-        const hidden = container.querySelector(`input[type=hidden][data-field="${fieldName}"]`);
+        const hidden = wrap.querySelector(`input[type=hidden][data-field="${fieldName}"]`);
         hidden.value = json.url;
-        let img = container.querySelector(`img[data-preview-for="${fieldName}"]`);
-        if (!img) {
-            img = document.createElement('img');
-            img.className = 'rd-report-image-preview';
-            img.dataset.previewFor = fieldName;
-            inputEl.insertAdjacentElement('afterend', img);
-        }
+        wrap.querySelector('[data-upload-label]').textContent = 'Replace screenshot';
+        const img = wrap.querySelector(`img[data-preview-for="${fieldName}"]`);
         img.src = json.url;
-    } catch (e) { rdError('Upload failed — server error.'); }
+        img.style.display = '';
+        wrap.querySelector('[data-upload-remove]').style.display = '';
+    } catch (e) {
+        rdError('Upload failed — server error.');
+    } finally {
+        label.classList.remove('uploading');
+    }
+}
+
+function removeReportImage(btn, fieldName) {
+    const wrap = btn.closest('.rd-report-upload');
+    const hidden = wrap.querySelector(`input[type=hidden][data-field="${fieldName}"]`);
+    hidden.value = '';
+    wrap.querySelector('[data-upload-label]').textContent = 'Choose screenshot';
+    const img = wrap.querySelector(`img[data-preview-for="${fieldName}"]`);
+    img.src = '';
+    img.style.display = 'none';
+    const fileInput = wrap.querySelector('input[type=file]');
+    if (fileInput) fileInput.value = '';
+    btn.style.display = 'none';
+}
+
+async function uploadGalleryImages(inputEl, instanceId, fieldName) {
+    const files = Array.from(inputEl.files || []);
+    if (!files.length) return;
+    harvestFromDom();
+    const inst = sections.find(s => s.instance_id === instanceId);
+    if (!inst) return;
+    if (!Array.isArray(inst.fields[fieldName])) inst.fields[fieldName] = [];
+    const label = inputEl.closest('.rd-report-upload-btn');
+    label.classList.add('uploading');
+    for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', 'reports');
+        try {
+            const res = await fetch(rdApi('api/upload.php'), { method: 'POST', credentials: 'same-origin', body: formData });
+            const json = await res.json();
+            if (json.status === 'success') inst.fields[fieldName].push(json.url);
+            else rdError(json.message || 'Upload failed');
+        } catch (e) {
+            rdError('Upload failed — server error.');
+        }
+    }
+    renderSections();
+}
+
+function removeGalleryImage(instanceId, fieldName, idx) {
+    harvestFromDom();
+    const inst = sections.find(s => s.instance_id === instanceId);
+    if (!inst || !Array.isArray(inst.fields[fieldName])) return;
+    inst.fields[fieldName].splice(idx, 1);
+    renderSections();
 }
 
 async function saveReport(status) {
