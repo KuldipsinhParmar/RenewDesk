@@ -119,11 +119,46 @@ function renderProjectField(selectedId) {
         wrap.innerHTML = `<label class="rd-label">Project</label><input type="text" class="rd-input" value="${escapeHtml(p ? p.name : '')}" disabled>`;
     } else {
         wrap.innerHTML = `<label class="rd-label">Project <span style="color:var(--bad)">*</span></label>
-            <select id="f_project_id" class="rd-input">
+            <select id="f_project_id" class="rd-input" onchange="onProjectSelected(this.value)">
                 <option value="">— Select project —</option>
                 ${projectsData.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
             </select>`;
     }
+}
+
+async function onProjectSelected(projectId) {
+    if (!projectId || reportId) return;
+    await prefillFromLatestReport(projectId);
+}
+
+async function prefillFromLatestReport(projectId) {
+    if (!projectId || reportId) return;
+    try {
+        const listRes = await fetch(rdApi(`api/maintenance_reports.php?project_id=${projectId}`), { credentials: 'same-origin' });
+        const listJson = await listRes.json();
+        const latest = (listJson.data || [])[0];
+        if (!latest) return;
+        const res = await fetch(rdApi(`api/maintenance_reports.php?id=${latest.id}`), { credentials: 'same-origin' });
+        const json = await res.json();
+        const r = json.data;
+        if (!r) return;
+
+        document.getElementById('f_website_url').value = r.website_url || '';
+        document.getElementById('f_prepared_by').value = r.prepared_by || '';
+        document.getElementById('f_reviewed_by').value = r.reviewed_by || '';
+        document.getElementById('f_overall_health').value = r.overall_health || 'good';
+        sections = (r.sections || []).map(s => {
+            const clone = RD_REPORT.duplicateInstance(s);
+            clone.title = s.title;
+            return clone;
+        });
+        renderSections();
+
+        Swal.fire({
+            toast: true, position: 'top-end', icon: 'info', showConfirmButton: false, timer: 3000, timerProgressBar: true,
+            title: `Prefilled from your last report (${rdFormatDate(r.report_date)}) — review and update what's changed.`
+        });
+    } catch (e) {}
 }
 
 function getProjectId() {
@@ -495,7 +530,10 @@ async function init() {
     } else {
         renderProjectField(fixedProjectId);
         document.getElementById('f_report_date').value = new Date().toISOString().split('T')[0];
-        if (fixedProjectId) document.getElementById('projectFieldWrap').dataset.projectId = fixedProjectId;
+        if (fixedProjectId) {
+            document.getElementById('projectFieldWrap').dataset.projectId = fixedProjectId;
+            await prefillFromLatestReport(fixedProjectId);
+        }
     }
 
     renderSections();
