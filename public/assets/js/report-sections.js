@@ -26,7 +26,7 @@ window.RD_REPORT_SECTIONS = [
         { name: 'description', label: 'Description', type: 'textarea' }
     ]},
     { key: 'cms_version', title: 'WordPress Version Used', fields: [
-        { name: 'current_version', label: 'Current Version', type: 'text', placeholder: 'e.g. WP 6.8.1' },
+        { name: 'current_version', label: 'WordPress Version', type: 'text', placeholder: 'e.g. WP 6.8.1' },
         { name: 'theme_name', label: 'Theme Name', type: 'text' },
         { name: 'theme_version', label: 'Theme Version', type: 'text' },
         { name: 'php_mysql_compat_checked', label: 'PHP / MySQL Compatibility Checked', type: 'select', options: ['Yes', 'No'], band: 'yesno' }
