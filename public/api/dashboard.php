@@ -132,5 +132,9 @@ try {
     error_log("[dashboard.php] " . $e->getMessage());
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
+} catch (Throwable $e) {
+    error_log("[dashboard.php] " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => (function_exists('renewdesk_debug') && renewdesk_debug()) ? ($e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine()) : "An unexpected error occurred."]);
 }
 ?>

@@ -86,5 +86,9 @@ try {
         "message" => $e->getMessage(),
         "executed_at" => date('Y-m-d H:i:s T')
     ]);
+} catch (Throwable $e) {
+    error_log("[cron_trigger.php] " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => (function_exists('renewdesk_debug') && renewdesk_debug()) ? ($e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine()) : "An unexpected error occurred."]);
 }
 ?>
