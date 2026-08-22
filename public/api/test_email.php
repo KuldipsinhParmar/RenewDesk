@@ -123,6 +123,10 @@ try {
     } else {
         throw new Exception("Server mail() failed. Check your server mail configuration.");
     }
+} catch (PDOException $e) {
+    error_log("[test_email.php] " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);

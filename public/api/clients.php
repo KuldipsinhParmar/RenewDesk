@@ -50,6 +50,10 @@ try {
         $db->prepare("DELETE FROM clients WHERE id = ?")->execute([$id]);
         echo json_encode(["status"=>"success","message"=>"Client deleted."]);
     }
+} catch (PDOException $e) {
+    error_log("[clients.php] " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["status"=>"error","message"=>renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["status"=>"error","message"=>$e->getMessage()]);

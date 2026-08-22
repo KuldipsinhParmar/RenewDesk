@@ -23,18 +23,29 @@ try {
 
     // Don't filter by status='active' here — a record already marked 'renewed'
     // (paid ahead of its actual renewal_date) still belongs to that date's calendar
-    // year. Each domain/hosting chain has at most one record per year, so filtering
+    // year. Each domain/hosting chain normally has one record per year, so filtering
     // by year alone (any status) correctly captures "this year's" contract value.
+    // Guard against double-counting anyway: if a chain somehow has >1 row in the
+    // same year (manual duplicate, plan change, etc.), only the latest row per
+    // (project, plan/provider) counts.
     // "My Own" is the user's personal project, not client business — excluded here
     // since it's already broken out separately in my_own_cost.
-    $stmt = $db->query("SELECT SUM(h.price) as rev FROM hosting h JOIN projects p ON p.id = h.project_id WHERE p.name != 'My Own' AND YEAR(h.renewal_date) = YEAR(CURDATE())");
+    $stmt = $db->query("SELECT SUM(h.price) as rev FROM hosting h JOIN projects p ON p.id = h.project_id
+                        WHERE p.name != 'My Own' AND YEAR(h.renewal_date) = YEAR(CURDATE())
+                        AND h.id = (SELECT h2.id FROM hosting h2 WHERE h2.project_id = h.project_id AND h2.plan_name = h.plan_name AND h2.provider = h.provider AND YEAR(h2.renewal_date) = YEAR(h.renewal_date) ORDER BY h2.id DESC LIMIT 1)");
     $data['hosting_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
-    $stmt = $db->query("SELECT SUM(h.price) as rev FROM hosting h JOIN projects p ON p.id = h.project_id WHERE p.name != 'My Own' AND h.client_paid=1 AND YEAR(h.renewal_date) = YEAR(CURDATE())");
+    $stmt = $db->query("SELECT SUM(h.price) as rev FROM hosting h JOIN projects p ON p.id = h.project_id
+                        WHERE p.name != 'My Own' AND h.client_paid=1 AND YEAR(h.renewal_date) = YEAR(CURDATE())
+                        AND h.id = (SELECT h2.id FROM hosting h2 WHERE h2.project_id = h.project_id AND h2.plan_name = h.plan_name AND h2.provider = h.provider AND YEAR(h2.renewal_date) = YEAR(h.renewal_date) ORDER BY h2.id DESC LIMIT 1)");
     $data['hosting_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
-    $stmt = $db->query("SELECT SUM(d.price) as rev FROM domains d JOIN projects p ON p.id = d.project_id WHERE p.name != 'My Own' AND YEAR(d.renewal_date) = YEAR(CURDATE())");
+    $stmt = $db->query("SELECT SUM(d.price) as rev FROM domains d JOIN projects p ON p.id = d.project_id
+                        WHERE p.name != 'My Own' AND YEAR(d.renewal_date) = YEAR(CURDATE())
+                        AND d.id = (SELECT d2.id FROM domains d2 WHERE d2.project_id = d.project_id AND d2.domain_name = d.domain_name AND YEAR(d2.renewal_date) = YEAR(d.renewal_date) ORDER BY d2.id DESC LIMIT 1)");
     $data['domain_contract_value'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
-    $stmt = $db->query("SELECT SUM(d.price) as rev FROM domains d JOIN projects p ON p.id = d.project_id WHERE p.name != 'My Own' AND d.client_paid=1 AND YEAR(d.renewal_date) = YEAR(CURDATE())");
+    $stmt = $db->query("SELECT SUM(d.price) as rev FROM domains d JOIN projects p ON p.id = d.project_id
+                        WHERE p.name != 'My Own' AND d.client_paid=1 AND YEAR(d.renewal_date) = YEAR(CURDATE())
+                        AND d.id = (SELECT d2.id FROM domains d2 WHERE d2.project_id = d.project_id AND d2.domain_name = d.domain_name AND YEAR(d2.renewal_date) = YEAR(d.renewal_date) ORDER BY d2.id DESC LIMIT 1)");
     $data['domain_paid'] = $stmt->fetch(PDO::FETCH_ASSOC)['rev'] ?: 0;
 
     $stmt = $db->query("SELECT COUNT(*) as c FROM backups");
@@ -75,25 +86,25 @@ try {
     // Domains
     $stmt = $db->query("SELECT 'Domain' as type, d.id, d.domain_name as name, d.renewal_date as date, p.name as project, DATEDIFF(d.renewal_date, CURDATE()) as days_left
                         FROM domains d JOIN projects p ON d.project_id = p.id
-                        WHERE d.status = 'active' AND d.client_paid = 0 AND d.renewal_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY d.renewal_date ASC");
+                        WHERE d.status = 'active' AND d.client_paid = 0 AND d.renewal_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY d.renewal_date ASC LIMIT 200");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Hosting
     $stmt = $db->query("SELECT 'Hosting' as type, h.id, h.plan_name as name, h.renewal_date as date, p.name as project, DATEDIFF(h.renewal_date, CURDATE()) as days_left
                         FROM hosting h JOIN projects p ON h.project_id = p.id
-                        WHERE h.status = 'active' AND h.client_paid = 0 AND h.renewal_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY h.renewal_date ASC");
+                        WHERE h.status = 'active' AND h.client_paid = 0 AND h.renewal_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY h.renewal_date ASC LIMIT 200");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Maintenance
     $stmt = $db->query("SELECT 'Maintenance' as type, m.id, 'AMC Contract' as name, m.end_date as date, p.name as project, DATEDIFF(m.end_date, CURDATE()) as days_left
                         FROM maintenance m JOIN projects p ON m.project_id = p.id
-                        WHERE m.status = 'active' AND m.client_paid = 0 AND m.end_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY m.end_date ASC");
+                        WHERE m.status = 'active' AND m.client_paid = 0 AND m.end_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY m.end_date ASC LIMIT 200");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Backups
     $stmt = $db->query("SELECT 'Backup' as type, b.id, b.project_id, CONCAT('Backup (', b.frequency, ')') as name, b.frequency, b.next_backup as date, b.last_backup as extra, b.storage_location, b.is_done, p.name as project, DATEDIFF(b.next_backup, CURDATE()) as days_left
                         FROM backups b JOIN projects p ON b.project_id = p.id
-                        WHERE b.is_done = 0 AND b.next_backup <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY b.next_backup ASC");
+                        WHERE b.is_done = 0 AND b.next_backup <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY b.next_backup ASC LIMIT 200");
     $upcoming = array_merge($upcoming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
     // Sort by days left
@@ -118,7 +129,8 @@ try {
     echo json_encode(["status" => "success", "data" => $data]);
 
 } catch (PDOException $e) {
+    error_log("[dashboard.php] " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
 }
 ?>

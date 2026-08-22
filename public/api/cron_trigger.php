@@ -64,6 +64,17 @@ try {
         "executed_at" => date('Y-m-d H:i:s T')
     ]);
 
+} catch (PDOException $e) {
+    cronLog("ERROR: " . $e->getMessage());
+    cronLog("Stack trace: " . $e->getTraceAsString());
+    cronLog("========== CRON TRIGGER FAILED ==========");
+
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error",
+        "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred.",
+        "executed_at" => date('Y-m-d H:i:s T')
+    ]);
 } catch (Exception $e) {
     cronLog("ERROR: " . $e->getMessage());
     cronLog("Stack trace: " . $e->getTraceAsString());

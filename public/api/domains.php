@@ -42,6 +42,10 @@ try {
         $stmt->execute([$id]);
         echo json_encode(["status" => "success", "message" => "Domain deleted."]);
     }
+} catch (PDOException $e) {
+    error_log("[domains.php] " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
