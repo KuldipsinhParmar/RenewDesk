@@ -24,6 +24,7 @@
         .ts-dropdown .option:hover,.ts-dropdown .option.active { background:var(--accent-soft);color:var(--accent) }
         .ts-dropdown .option.selected { background:var(--accent-soft);color:var(--accent);font-weight:600 }
         .ts-dropdown-content { max-height:240px }
+        .ts-dropdown-flip { top:auto !important; bottom:100%; margin-top:0; margin-bottom:4px }
         /* filter toolbar select — match search bar height/style */
         #clientFilter + .ts-wrapper { min-width:320px }
         #clientFilter + .ts-wrapper .ts-control { padding:2px 4px;font-size:14px;background:transparent;border:1px solid transparent;border-radius:0;box-shadow:none;box-sizing:border-box }
@@ -160,7 +161,8 @@ async function loadCountries() {
         countriesData = data.data || [];
         if (!tsCountryModal) {
             tsCountryModal = new TomSelect('#p_country_id', {
-                placeholder: '— Select country —', allowEmptyOption: true, maxOptions: 300, searchField: ['text']
+                placeholder: '— Select country —', allowEmptyOption: true, maxOptions: 300, searchField: ['text'],
+                onDropdownOpen: function () { rdAutoFlipDropdown(this); }
             });
         }
         countriesData.forEach(c => tsCountryModal.addOption({ value: c.id, text: c.name }));
@@ -182,7 +184,8 @@ function populateClientFilter() {
     if (!tsClientFilter) {
         tsClientFilter = new TomSelect('#clientFilter', {
             placeholder: 'All Clients', allowEmptyOption: true, onChange: applyFilters,
-            sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }]
+            sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }],
+            onDropdownOpen: function () { rdAutoFlipDropdown(this); }
         });
     }
     const prev = tsClientFilter.getValue();
@@ -198,7 +201,8 @@ function populateClientDropdown(selectedId) {
     if (!tsClient) {
         tsClient = new TomSelect('#p_client_id', {
             placeholder: '— No client —', allowEmptyOption: true, maxOptions: 300, searchField: ['text'],
-            sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }]
+            sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }],
+            onDropdownOpen: function () { rdAutoFlipDropdown(this); }
         });
     }
     tsClient.clearOptions();

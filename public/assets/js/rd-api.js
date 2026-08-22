@@ -73,4 +73,22 @@
                 '</span> of <span class="dt-info-num">' + total + '</span> ' + label;
         };
     };
+
+    /* Tom Select's dropdown always opens downward from the control, even
+       when there isn't room — it overlaps whatever's below instead of
+       flipping up. Call from a TomSelect instance's onDropdownOpen hook:
+       onDropdownOpen: function () { rdAutoFlipDropdown(this); } */
+    window.rdAutoFlipDropdown = function (ts) {
+        var wrapper = ts.wrapper, dropdown = ts.dropdown;
+        if (!wrapper || !dropdown) return;
+        var rect = wrapper.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.bottom;
+        var spaceAbove = rect.top;
+        var ddHeight = dropdown.offsetHeight || 260; // not yet laid out on first open
+        if (spaceBelow < ddHeight && spaceAbove > spaceBelow) {
+            dropdown.classList.add('ts-dropdown-flip');
+        } else {
+            dropdown.classList.remove('ts-dropdown-flip');
+        }
+    };
 })();

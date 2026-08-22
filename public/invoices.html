@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Invoices - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('invoices');</script>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <div><h1 class="rd-page-title">Invoices</h1><p class="rd-page-subtitle">Bill clients for renewals and AMC contracts</p></div>
+            <a id="newInvoiceLink" href="invoice-edit.html" class="rd-btn rd-btn-primary" style="margin-left:auto;display:flex;align-items:center;gap:7px;text-decoration:none">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                New Invoice
+            </a>
+        </div>
+
+        <div class="rd-toolbar">
+            <div class="rd-search-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                <input id="searchData" class="rd-search-input" placeholder="Search by invoice # or client…" type="text"/>
+            </div>
+        </div>
+
+        <div class="rd-card">
+            <table id="invoicesDataTable" style="width:100%;border-collapse:collapse">
+                <thead><tr>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Invoice #</th>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Client / Project</th>
+                    <th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Date</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Total</th>
+                    <th style="padding:12px 20px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 20px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Actions</th>
+                </tr></thead>
+                <tbody id="dataTable">
+                    <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-3)">Loading invoices…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script>
+let listData = [];
+const formatD = rdFormatDate;
+const fmt = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
+
+async function loadData() {
+    try {
+        const res = await fetch(rdApi('api/invoices.php'), { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const data = await res.json();
+        listData = data.data || [];
+        renderData(listData);
+    } catch(e) { console.error("Failed to load invoices", e); }
+}
+
+function statusBadge(s) {
+    const map = { draft: ['rd-badge-neutral','Draft'], sent: ['rd-badge-accent','Sent'], paid: ['rd-badge-good','Paid'], overdue: ['rd-badge-bad','Overdue'], cancelled: ['rd-badge-neutral','Cancelled'] };
+    const [cls, label] = map[s] || ['rd-badge-neutral', s];
+    return `<span class="rd-badge ${cls}">${label}</span>`;
+}
+
+let invoicesTable = null;
+function renderData(dataset) {
+    const tbody = document.getElementById('dataTable');
+    if (invoicesTable) { invoicesTable.destroy(); invoicesTable = null; }
+    if (dataset.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">No invoices yet.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = dataset.map(item => `
+        <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-weight:700;font-family:'IBM Plex Mono',monospace">${item.invoice_number}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <div style="font-weight:600;font-size:14px">${item.client_name}</div>
+                ${item.project_name ? `<div style="font-size:12px;color:var(--text-3)">${item.project_name}</div>` : ''}
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:13.5px">${formatD(item.invoice_date)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;font-family:'IBM Plex Mono',monospace">₹${fmt(item.grand_total)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:center">${statusBadge(item.status)}</td>
+            <td style="padding:14px 20px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;gap:7px;justify-content:flex-end">
+                    <a href="invoice-view.html?id=${item.id}" class="rd-icon-btn" title="View"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    ${item.status === 'draft' ? `<a href="invoice-edit.html?id=${item.id}" class="rd-icon-btn" title="Edit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></a>` : ''}
+                    ${item.status !== 'paid' ? `<button onclick="markPaid(${item.id})" class="rd-icon-btn success" title="Mark Paid"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg></button>` : ''}
+                    <button onclick="deleteInvoice(${item.id})" class="rd-icon-btn danger" title="Delete"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16z"/></svg></button>
+                </div>
+            </td>
+        </tr>`).join('');
+
+    invoicesTable = new DataTable('#invoicesDataTable', {
+        dom: 'tip', pageLength: 10, order: [], pagingType: 'simple_numbers',
+        columnDefs: [{ orderable: false, targets: [5] }],
+        infoCallback: rdDtInfo('invoices'),
+        language: { paginate: { previous: '‹', next: '›' } },
+        drawCallback: rdPaintDtPaging
+    });
+}
+
+async function markPaid(id) {
+    const result = await Swal.fire({ title: 'Mark as Paid?', text: 'This will also mark linked domains/hosting/AMC as paid.', icon: 'question', showCancelButton: true, confirmButtonColor: '#0f9d76', confirmButtonText: 'Yes, Mark Paid' });
+    if (!result.isConfirmed) return;
+    await fetch(rdApi(`api/invoices.php?id=${id}`), { method: 'PUT', headers: {'Content-Type':'application/json'}, credentials: 'same-origin', body: JSON.stringify({ status: 'paid' }) });
+    loadData();
+}
+
+async function deleteInvoice(id) {
+    const result = await Swal.fire({ title: 'Delete invoice?', text: 'This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#df433f', confirmButtonText: 'Delete' });
+    if (!result.isConfirmed) return;
+    await fetch(rdApi(`api/invoices.php?id=${id}`), { method: 'DELETE', credentials: 'same-origin' });
+    loadData();
+}
+
+document.getElementById('searchData').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    renderData(listData.filter(p => (p.invoice_number||'').toLowerCase().includes(term) || (p.client_name||'').toLowerCase().includes(term)));
+});
+
+const urlParams = new URLSearchParams(window.location.search);
+const preselectProjectId = urlParams.get('project_id');
+if (preselectProjectId) {
+    document.getElementById('newInvoiceLink').href = `invoice-edit.html?project_id=${preselectProjectId}`;
+}
+
+loadData();
+</script>
+</body>
+</html>

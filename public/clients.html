@@ -24,6 +24,7 @@
         .ts-dropdown .option:hover,.ts-dropdown .option.active { background:var(--accent-soft);color:var(--accent) }
         .ts-dropdown .option.selected { background:var(--accent-soft);color:var(--accent);font-weight:600 }
         .ts-dropdown-content { max-height:240px }
+        .ts-dropdown-flip { top:auto !important; bottom:100%; margin-top:0; margin-bottom:4px }
     </style>
 </head>
 <body class="rd-body">
@@ -139,7 +140,8 @@ async function loadCountries() {
                 placeholder: '— Select country —',
                 allowEmptyOption: true,
                 maxOptions: 300,
-                searchField: ['text']
+                searchField: ['text'],
+                onDropdownOpen: function () { rdAutoFlipDropdown(this); }
             });
         }
         countriesData.forEach(c => {

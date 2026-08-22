@@ -8,6 +8,23 @@ require_once dirname(__DIR__) . '/api/config/db.php';
 
 $db = (new Database())->getConnection();
 
+// Auto-renew domains flagged auto_renew=1 once their cycle is due, regardless
+// of whether email alerts are enabled below — this is separate from reminders.
+function autoRenewDueDomains($db) {
+    $stmt = $db->query("SELECT * FROM domains WHERE auto_renew = 1 AND status = 'active' AND renewal_date <= CURDATE()");
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $db->prepare("UPDATE domains SET status = 'renewed', client_paid = 1 WHERE id = ?")->execute([$row['id']]);
+
+        $next = new DateTime($row['renewal_date']);
+        $next->modify('+1 year');
+        $db->prepare("INSERT INTO domains (project_id, domain_name, registrar, renewal_date, price, currency, auto_renew, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)")
+            ->execute([$row['project_id'], $row['domain_name'], $row['registrar'], $next->format('Y-m-d'), $row['price'], $row['currency'] ?? 'INR', $row['auto_renew'], $row['notes']]);
+
+        echo "Auto-renewed domain: {$row['domain_name']} -> {$next->format('Y-m-d')}\n";
+    }
+}
+autoRenewDueDomains($db);
+
 // Load all settings from DB
 $stmt = $db->query("SELECT `key`, `value` FROM settings");
 $settingsMap = [];
@@ -178,22 +195,22 @@ function processAsset($type, $db, $adminEmail, $fromEmail, $remindDays, $query) 
 // ── Process each asset type ──────────────────────────────────
 processAsset('Domain', $db, $adminEmail, $fromEmail, $remindDays,
     "SELECT p.name as project, d.domain_name as name, d.renewal_date as date, CONCAT(d.currency, ' ', d.price) as price
-     FROM domains d JOIN projects p ON d.project_id = p.id WHERE d.status = 'active'"
+     FROM domains d JOIN projects p ON d.project_id = p.id WHERE d.status = 'active' AND d.client_paid = 0"
 );
 
 processAsset('Hosting', $db, $adminEmail, $fromEmail, $remindDays,
     "SELECT p.name as project, COALESCE(h.plan_name, h.provider, 'Hosting Plan') as name, h.renewal_date as date, CONCAT(h.currency, ' ', h.price) as price
-     FROM hosting h JOIN projects p ON h.project_id = p.id WHERE h.status = 'active'"
+     FROM hosting h JOIN projects p ON h.project_id = p.id WHERE h.status = 'active' AND h.client_paid = 0"
 );
 
 processAsset('Maintenance', $db, $adminEmail, $fromEmail, $remindDays,
     "SELECT p.name as project, 'AMC Contract' as name, m.end_date as date, CONCAT(m.currency, ' ', m.price) as price
-     FROM maintenance m JOIN projects p ON m.project_id = p.id WHERE m.status = 'active'"
+     FROM maintenance m JOIN projects p ON m.project_id = p.id WHERE m.status = 'active' AND m.client_paid = 0"
 );
 
 processAsset('Backup', $db, $adminEmail, $fromEmail, $remindDays,
     "SELECT p.name as project, CONCAT('Backup (', b.frequency, ')') as name, b.next_backup as date, '—' as price
-     FROM backups b JOIN projects p ON b.project_id = p.id WHERE b.next_backup IS NOT NULL"
+     FROM backups b JOIN projects p ON b.project_id = p.id WHERE b.next_backup IS NOT NULL AND b.is_done = 0"
 );
 
 echo "Reminders completed.\n";

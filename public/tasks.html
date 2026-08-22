@@ -28,6 +28,7 @@
         .ts-dropdown .option:hover, .ts-dropdown .option.active { background:var(--accent-soft); color:var(--accent); }
         .ts-dropdown .option.selected { background:var(--accent-soft); color:var(--accent); font-weight:600; }
         .ts-dropdown-content { max-height:220px; }
+        .ts-dropdown-flip { top:auto !important; bottom:100%; margin-top:0; margin-bottom:4px; }
         .ts-control input { color:var(--text) !important; }
         .ts-wrapper.single .ts-control .placeholder { color:var(--text-3); }
         /* In modal, full-width */
@@ -201,7 +202,7 @@ const TODAY = new Date().toISOString().split('T')[0];
 function initTomSelects() {
     const base = { placeholder: '—', allowEmptyOption: true, onChange: applyFilters,
         sortField: [{ field: 'sort_order', direction: 'asc' }, { field: 'text', direction: 'asc' }] };
-    tsProject = new TomSelect('#filterProject', { ...base });
+    tsProject = new TomSelect('#filterProject', { ...base, onDropdownOpen: function () { rdAutoFlipDropdown(this); } });
     // addOption() no-ops on a value that already exists (the static "All ..."
     // placeholder parsed from the DOM at init) — patch its sort_order directly.
     tsProject.options[''].sort_order = 0;
@@ -209,7 +210,8 @@ function initTomSelects() {
         placeholder: 'Select project…',
         allowEmptyOption: true,
         maxOptions: 300,
-        onChange: () => {}
+        onChange: () => {},
+        onDropdownOpen: function () { rdAutoFlipDropdown(this); }
     });
 }
 

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Analytics - RenewDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-dt@2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@2/js/dataTables.min.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <link rel="stylesheet" href="assets/css/v2.css">
+    <style>
+        .an-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px }
+        .an-tab { padding:9px 16px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text-2); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap }
+        .an-tab:hover { border-color:var(--accent); color:var(--accent) }
+        .an-tab.active { background:var(--accent); border-color:var(--accent); color:#fff }
+    </style>
+</head>
+<body class="rd-body">
+<div class="rd-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="rd-sidebar" id="rd-sidebar"></aside>
+    <script>rdSidebar.init('analytics');</script>
+
+    <!-- MAIN -->
+    <div class="rd-main">
+        <div class="rd-page-header" style="align-items:center">
+            <button class="rd-menu-btn" onclick="rdSidebar.open()" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <div><h1 class="rd-page-title">Analytics</h1><p class="rd-page-subtitle">Internal reports — not shared with clients</p></div>
+            <div id="yearFilterWrap" style="margin-left:auto;display:none;align-items:center;gap:8px">
+                <label class="rd-label" style="margin:0">Year</label>
+                <select id="yearFilter" class="rd-input" style="width:110px"></select>
+            </div>
+        </div>
+
+        <div class="an-tabs" id="anTabs">
+            <button class="an-tab" data-tab="revenue">Revenue</button>
+            <button class="an-tab" data-tab="renewal_history">Renewal History</button>
+            <button class="an-tab" data-tab="client_cost">Client Cost</button>
+            <button class="an-tab" data-tab="overdue">Overdue / At-Risk</button>
+            <button class="an-tab" data-tab="task_time">Task / Time</button>
+            <button class="an-tab" data-tab="backup_compliance">Backup Compliance</button>
+        </div>
+
+        <div class="rd-card">
+            <table id="anDataTable" style="width:100%;border-collapse:collapse">
+                <thead id="anThead"></thead>
+                <tbody id="anBody">
+                    <tr><td style="text-align:center;padding:32px;color:var(--text-3)">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/rd-api.js"></script>
+<script>
+const fmt = (v) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(v)||0);
+const formatD = rdFormatDate;
+let anTable = null;
+let currentTab = 'revenue';
+
+const TABS = {
+    revenue: {
+        usesYear: true,
+        columns: ['Client', 'Domains', 'Hosting', 'AMC', 'Grand Total', 'Paid', 'Outstanding'],
+        row: r => {
+            const total = parseFloat(r.domain_total) + parseFloat(r.hosting_total) + parseFloat(r.amc_total);
+            const paid = parseFloat(r.domain_paid) + parseFloat(r.hosting_paid) + parseFloat(r.amc_paid);
+            return [
+                `<b>${r.client_name}</b>`,
+                `₹${fmt(r.domain_total)}`, `₹${fmt(r.hosting_total)}`, `₹${fmt(r.amc_total)}`,
+                `<b>₹${fmt(total)}</b>`, `<span style="color:var(--good)">₹${fmt(paid)}</span>`,
+                `<span style="color:${total-paid>0?'var(--bad)':'var(--text-3)'}">₹${fmt(total-paid)}</span>`
+            ];
+        }
+    },
+    renewal_history: {
+        columns: ['Type', 'Item', 'Project', 'Client', 'Date', 'Price', 'Paid'],
+        row: r => [r.type, r.name, r.project, r.client_name || '—', formatD(r.date), `₹${fmt(r.price)}`,
+            r.client_paid == 1 ? '<span class="rd-badge rd-badge-good">Paid</span>' : '<span class="rd-badge rd-badge-bad">Unpaid</span>']
+    },
+    client_cost: {
+        columns: ['Client', 'Company', 'Projects', 'Lifetime Total', 'Outstanding'],
+        row: r => [`<b>${r.client_name}</b>`, r.company || '—', r.project_count, `₹${fmt(r.lifetime_total)}`,
+            `<span style="color:${parseFloat(r.outstanding)>0?'var(--bad)':'var(--text-3)'}">₹${fmt(r.outstanding)}</span>`]
+    },
+    overdue: {
+        columns: ['Type', 'Item', 'Project', 'Due Date', 'Price', 'Days Overdue'],
+        row: r => [r.type, r.name, r.project, formatD(r.date), `₹${fmt(r.price)}`,
+            `<span class="rd-badge rd-badge-bad">${r.days_overdue}d</span>`]
+    },
+    task_time: {
+        usesYear: true,
+        columns: ['Project', 'Client', 'Tasks', 'Total Hours', 'First Task', 'Last Task'],
+        row: r => [`<b>${r.project_name}</b>`, r.client_name || '—', r.task_count, `${parseFloat(r.total_hours).toFixed(1)}h`, formatD(r.first_task), formatD(r.last_task)]
+    },
+    backup_compliance: {
+        columns: ['Project', 'Frequency', 'Last Backup', 'Next Backup', 'Status'],
+        row: r => {
+            const map = { overdue: ['rd-badge-bad','Overdue'], done: ['rd-badge-good','Done'], on_schedule: ['rd-badge-accent','On Schedule'], unscheduled: ['rd-badge-neutral','Unscheduled'] };
+            const [cls, label] = map[r.compliance] || ['rd-badge-neutral', r.compliance];
+            return [r.project, r.frequency, formatD(r.last_backup), formatD(r.next_backup), `<span class="rd-badge ${cls}">${label}</span>`];
+        }
+    }
+};
+
+function populateYearFilter() {
+    const sel = document.getElementById('yearFilter');
+    const nowYear = new Date().getFullYear();
+    sel.innerHTML = '';
+    for (let y = nowYear + 1; y >= nowYear - 4; y--) {
+        sel.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`);
+    }
+    sel.value = nowYear;
+}
+
+async function loadTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.an-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    const cfg = TABS[tab];
+    document.getElementById('yearFilterWrap').style.display = cfg.usesYear ? 'flex' : 'none';
+
+    document.getElementById('anThead').innerHTML = '<tr>' + cfg.columns.map(c => `<th style="padding:12px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">${c}</th>`).join('') + '</tr>';
+    document.getElementById('anBody').innerHTML = `<tr><td colspan="${cfg.columns.length}" style="text-align:center;padding:32px;color:var(--text-3)">Loading…</td></tr>`;
+    if (anTable) { anTable.destroy(); anTable = null; }
+
+    let url = `api/analytics.php?type=${tab}`;
+    if (cfg.usesYear) url += `&year=${document.getElementById('yearFilter').value}`;
+
+    try {
+        const res = await fetch(rdApi(url), { credentials: 'same-origin' });
+        if (res.status === 401) { window.location.href = 'login.html'; return; }
+        const json = await res.json();
+        const rows = json.data || [];
+        if (rows.length === 0) {
+            document.getElementById('anBody').innerHTML = `<tr><td colspan="${cfg.columns.length}" style="text-align:center;padding:40px;color:var(--text-3)">No data for this report.</td></tr>`;
+            return;
+        }
+        document.getElementById('anBody').innerHTML = rows.map(r => {
+            const cells = cfg.row(r);
+            return '<tr onmouseover="this.style.background=\'var(--surface-2)\'" onmouseout="this.style.background=\'\'">' +
+                cells.map((c, i) => `<td style="padding:12px 20px;border-bottom:1px solid var(--border);font-size:13.5px${i>=cells.length-3 && !isNaN(parseFloat(String(c).replace(/[^0-9.-]/g,'')))?';font-family:\'IBM Plex Mono\',monospace':''}">${c}</td>`).join('') +
+                '</tr>';
+        }).join('');
+
+        anTable = new DataTable('#anDataTable', {
+            dom: 'tip', pageLength: 15, order: [], pagingType: 'simple_numbers',
+            infoCallback: rdDtInfo('rows'),
+            language: { paginate: { previous: '‹', next: '›' } },
+            drawCallback: rdPaintDtPaging
+        });
+    } catch (e) {
+        console.error('Failed to load report', e);
+        document.getElementById('anBody').innerHTML = `<tr><td colspan="${cfg.columns.length}" style="text-align:center;padding:32px;color:var(--bad)">Failed to load report.</td></tr>`;
+    }
+}
+
+document.getElementById('anTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.an-tab');
+    if (btn) loadTab(btn.dataset.tab);
+});
+document.getElementById('yearFilter').addEventListener('change', () => loadTab(currentTab));
+
+populateYearFilter();
+loadTab('revenue');
+</script>
+</body>
+</html>

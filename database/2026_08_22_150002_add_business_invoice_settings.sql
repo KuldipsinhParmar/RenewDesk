@@ -1,0 +1,15 @@
+INSERT IGNORE INTO `settings` (`key`, `value`, `label`) VALUES
+('biz_name',           '', 'Business Name (shown on invoices)'),
+('biz_website',        '', 'Business Website'),
+('biz_phone',          '', 'Business Phone'),
+('biz_email',          '', 'Business Email'),
+('biz_address',        '', 'Business Address'),
+('biz_logo_url',       '', 'Business Logo URL'),
+('bank_name',          '', 'Bank Name'),
+('bank_ifsc',          '', 'Bank IFSC Code'),
+('bank_account',       '', 'Bank Account Number'),
+('upi_id',             '', 'UPI ID'),
+('gpay_number',        '', 'GPay Number'),
+('signatory_name',     '', 'Signatory Name (invoice sign-off)'),
+('invoice_prefix',     'INV-', 'Invoice Number Prefix'),
+('invoice_next_number','1', 'Next Invoice Sequence Number');

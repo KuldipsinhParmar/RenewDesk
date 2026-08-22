@@ -23,11 +23,31 @@ try {
         ]);
         echo json_encode(["status" => "success", "message" => "Maintenance contract added."]);
     }
+    elseif ($method === 'PUT' && ($_GET['action'] ?? '') === 'renew') {
+        $id = $_GET['id'] ?? null;
+        if (!$id) throw new Exception("ID required");
+
+        $cur = $db->prepare("SELECT * FROM maintenance WHERE id = ?");
+        $cur->execute([$id]);
+        $row = $cur->fetch(PDO::FETCH_ASSOC);
+        if (!$row) throw new Exception("Maintenance contract not found");
+
+        $db->prepare("UPDATE maintenance SET status='renewed', client_paid=1 WHERE id=?")->execute([$id]);
+
+        $nextStart = new DateTime($row['start_date']);
+        $nextStart->modify('+1 year');
+        $nextEnd = new DateTime($row['end_date']);
+        $nextEnd->modify('+1 year');
+        $db->prepare("INSERT INTO maintenance (project_id, start_date, end_date, price, currency, status, notes) VALUES (?, ?, ?, ?, ?, 'active', ?)")
+            ->execute([$row['project_id'], $nextStart->format('Y-m-d'), $nextEnd->format('Y-m-d'), $row['price'], $row['currency'] ?? 'INR', $row['notes']]);
+
+        echo json_encode(["status" => "success", "message" => "Maintenance renewed."]);
+    }
     elseif ($method === 'PUT') {
         $id = $_GET['id'] ?? null;
         if (!$id) throw new Exception("ID required");
         $input = json_decode(file_get_contents("php://input"), true);
-        
+
         $stmt = $db->prepare("UPDATE maintenance SET start_date=?, end_date=?, price=?, client_paid=?, status=?, notes=? WHERE id=?");
         $stmt->execute([
             $input['start_date'], $input['end_date'], 

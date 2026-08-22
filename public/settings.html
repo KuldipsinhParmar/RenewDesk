@@ -138,6 +138,38 @@
                 </div>
             </div>
 
+            <!-- ── Business & Invoice Details ── -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-icon" style="background:var(--accent-soft)">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M8 12h8M8 16h5"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:2px">Business &amp; Invoice Details</div>
+                        <div style="font-size:12.5px;color:var(--text-3)">Shown on generated invoices</div>
+                    </div>
+                </div>
+                <div class="settings-card-body" style="display:flex;flex-direction:column;gap:14px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                        <div class="rd-form-group"><label class="rd-label">Business Name</label><input type="text" id="bizName" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Website</label><input type="text" id="bizWebsite" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Phone</label><input type="text" id="bizPhone" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Email</label><input type="email" id="bizEmail" class="rd-input"></div>
+                    </div>
+                    <div class="rd-form-group"><label class="rd-label">Address</label><textarea id="bizAddress" rows="2" class="rd-input" style="resize:vertical"></textarea></div>
+                    <div class="rd-form-group"><label class="rd-label">Logo URL</label><input type="url" id="bizLogoUrl" class="rd-input" placeholder="https://example.com/logo.png"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                        <div class="rd-form-group"><label class="rd-label">Bank Name</label><input type="text" id="bankName" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Bank Account #</label><input type="text" id="bankAccount" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">IFSC Code</label><input type="text" id="bankIfsc" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">UPI ID</label><input type="text" id="upiId" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">GPay Number</label><input type="text" id="gpayNumber" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Signatory Name</label><input type="text" id="signatoryName" class="rd-input"></div>
+                        <div class="rd-form-group"><label class="rd-label">Invoice Number Prefix</label><input type="text" id="invoicePrefix" class="rd-input" placeholder="INV-"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ── Cron Job ── -->
             <div class="settings-card">
                 <div class="settings-card-header">
@@ -251,6 +283,20 @@ async function loadSettings() {
         document.getElementById('alertEnabled').checked = map.alert_enabled !== '0';
         syncAlertLabel();
         setRemindDays(map.remind_days || '30,15,7,1');
+
+        document.getElementById('bizName').value = map.biz_name || '';
+        document.getElementById('bizWebsite').value = map.biz_website || '';
+        document.getElementById('bizPhone').value = map.biz_phone || '';
+        document.getElementById('bizEmail').value = map.biz_email || '';
+        document.getElementById('bizAddress').value = map.biz_address || '';
+        document.getElementById('bizLogoUrl').value = map.biz_logo_url || '';
+        document.getElementById('bankName').value = map.bank_name || '';
+        document.getElementById('bankAccount').value = map.bank_account || '';
+        document.getElementById('bankIfsc').value = map.bank_ifsc || '';
+        document.getElementById('upiId').value = map.upi_id || '';
+        document.getElementById('gpayNumber').value = map.gpay_number || '';
+        document.getElementById('signatoryName').value = map.signatory_name || '';
+        document.getElementById('invoicePrefix').value = map.invoice_prefix || 'INV-';
         if (json.cron_url) {
             document.getElementById('cronUrlField').value = json.cron_url;
             document.getElementById('cronCpanelCmd').textContent = 'curl -s "' + json.cron_url + '"';
@@ -267,7 +313,20 @@ async function saveSettings() {
         email_from: document.getElementById('emailFrom').value.trim(),
         email_cc: document.getElementById('emailCc').value.trim(),
         alert_enabled: document.getElementById('alertEnabled').checked ? '1' : '0',
-        remind_days: getRemindDays() || '30,15,7,1'
+        remind_days: getRemindDays() || '30,15,7,1',
+        biz_name: document.getElementById('bizName').value.trim(),
+        biz_website: document.getElementById('bizWebsite').value.trim(),
+        biz_phone: document.getElementById('bizPhone').value.trim(),
+        biz_email: document.getElementById('bizEmail').value.trim(),
+        biz_address: document.getElementById('bizAddress').value.trim(),
+        biz_logo_url: document.getElementById('bizLogoUrl').value.trim(),
+        bank_name: document.getElementById('bankName').value.trim(),
+        bank_account: document.getElementById('bankAccount').value.trim(),
+        bank_ifsc: document.getElementById('bankIfsc').value.trim(),
+        upi_id: document.getElementById('upiId').value.trim(),
+        gpay_number: document.getElementById('gpayNumber').value.trim(),
+        signatory_name: document.getElementById('signatoryName').value.trim(),
+        invoice_prefix: document.getElementById('invoicePrefix').value.trim() || 'INV-'
     };
 
     try {

@@ -23,11 +23,29 @@ try {
         ]);
         echo json_encode(["status" => "success", "message" => "Hosting added."]);
     }
+    elseif ($method === 'PUT' && ($_GET['action'] ?? '') === 'renew') {
+        $id = $_GET['id'] ?? null;
+        if (!$id) throw new Exception("ID required");
+
+        $cur = $db->prepare("SELECT * FROM hosting WHERE id = ?");
+        $cur->execute([$id]);
+        $row = $cur->fetch(PDO::FETCH_ASSOC);
+        if (!$row) throw new Exception("Hosting plan not found");
+
+        $db->prepare("UPDATE hosting SET status='renewed', client_paid=1 WHERE id=?")->execute([$id]);
+
+        $next = new DateTime($row['renewal_date']);
+        $next->modify('+1 year');
+        $db->prepare("INSERT INTO hosting (project_id, provider, plan_name, renewal_date, price, currency, status, notes) VALUES (?, ?, ?, ?, ?, ?, 'active', ?)")
+            ->execute([$row['project_id'], $row['provider'], $row['plan_name'], $next->format('Y-m-d'), $row['price'], $row['currency'] ?? 'INR', $row['notes']]);
+
+        echo json_encode(["status" => "success", "message" => "Hosting renewed."]);
+    }
     elseif ($method === 'PUT') {
         $id = $_GET['id'] ?? null;
         if (!$id) throw new Exception("ID required");
         $input = json_decode(file_get_contents("php://input"), true);
-        
+
         $stmt = $db->prepare("UPDATE hosting SET provider=?, plan_name=?, renewal_date=?, price=?, client_paid=?, status=?, notes=? WHERE id=?");
         $stmt->execute([
             $input['provider'], $input['plan_name'], $input['renewal_date'], 

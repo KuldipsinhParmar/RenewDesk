@@ -166,10 +166,11 @@
                     <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Type</th>
                     <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Expiry</th>
                     <th style="padding:12px 10px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Days</th>
-                    <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 10px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th>
+                    <th style="padding:12px 16px;text-align:right;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border)">Action</th>
                 </tr></thead>
                 <tbody id="renewTable">
-                    <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Loading renewals…</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-3)">Loading renewals…</td></tr>
                 </tbody>
             </table>
             </div>
@@ -320,7 +321,7 @@ async function loadDashboard() {
             const backupBody = document.getElementById('backupTable');
 
             if (renewals.length === 0) {
-                renewBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-3)">No renewals due in the next 30 days.</td></tr>';
+                renewBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-3)">No renewals due in the next 30 days.</td></tr>';
             } else {
                 renewBody.innerHTML = renewals.map(item => `
                     <tr style="transition:background .1s" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
@@ -331,7 +332,13 @@ async function loadDashboard() {
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2)">${item.type}</td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600;font-family:'IBM Plex Mono',monospace">${formatD(item.date)}</td>
                         <td style="padding:14px 12px;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;${badgeStyle(item.days_left)};font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace">${item.days_left <= 0 ? 'Overdue' : item.days_left+'d'}</span></td>
-                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
+                        <td style="padding:14px 12px;border-bottom:1px solid var(--border);text-align:right"><span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-2)"><span style="width:9px;height:9px;border-radius:50%;background:${dotColor(item.days_left)};display:inline-block"></span>${statusLabel(item.days_left)}</span></td>
+                        <td style="padding:14px 20px;border-bottom:1px solid var(--border);text-align:right">
+                            <button class="rd-icon-btn success renew-btn" style="margin-left:auto" title="Renew"
+                            data-id="${item.id}" data-type="${item.type}" data-name="${(item.name||'').replace(/"/g,'&quot;')}">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                            </button>
+                        </td>
                     </tr>`).join('');
             }
 
@@ -373,6 +380,31 @@ function applyFreq(dt, freq) {
     else if (freq === 'weekly') dt.setDate(dt.getDate() + 7);
     else dt.setMonth(dt.getMonth() + 1);
 }
+
+const renewEndpoint = { Domain: 'domains', Hosting: 'hosting', Maintenance: 'maintenance' };
+
+document.getElementById('renewTable').addEventListener('click', async e => {
+    const btn = e.target.closest('.renew-btn');
+    if (!btn) return;
+    const { id, type, name } = btn.dataset;
+    const endpoint = renewEndpoint[type];
+    if (!endpoint) return;
+    const result = await Swal.fire({
+        title: 'Renew now?',
+        html: `Mark <b>${name}</b> as renewed and start the next cycle.`,
+        icon: 'question', showCancelButton: true, confirmButtonColor: '#0f9d76', confirmButtonText: 'Yes, Renew!'
+    });
+    if (!result.isConfirmed) return;
+    try {
+        const res = await fetch(rdApi(`api/${endpoint}.php?id=${id}&action=renew`), {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin'
+        });
+        const data = await res.json();
+        if (data.status !== 'success') throw new Error(data.message || 'Renew failed');
+        Swal.fire({ title: 'Renewed!', text: `${name} moved to its next cycle.`, icon: 'success', timer: 1800, showConfirmButton: false });
+        loadDashboard();
+    } catch(e) { Swal.fire('Error', e.message || 'Failed to renew.', 'error'); }
+});
 
 document.getElementById('backupTable').addEventListener('click', async e => {
     const btn = e.target.closest('.mark-backup-btn');
