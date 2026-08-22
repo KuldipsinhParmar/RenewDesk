@@ -516,17 +516,20 @@ document.getElementById('saveEntityBtn').addEventListener('click', async () => {
         payload.renewal_date = document.getElementById('f_renewal_date').value;
         payload.price = document.getElementById('f_price').value;
         payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
+        payload.status = payload.client_paid == 1 ? 'renewed' : 'active';
     } else if (currentModalType === 'hosting') {
         payload.plan_name = document.getElementById('f_plan_name').value;
         payload.provider = document.getElementById('f_provider').value;
         payload.renewal_date = document.getElementById('f_renewal_date').value;
         payload.price = document.getElementById('f_price').value;
         payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
+        payload.status = payload.client_paid == 1 ? 'renewed' : 'active';
     } else if (currentModalType === 'maintenance') {
         payload.start_date = document.getElementById('f_start_date').value;
         payload.end_date = document.getElementById('f_end_date').value;
         payload.price = document.getElementById('f_price').value;
         payload.client_paid = document.getElementById('f_client_paid').checked ? 1 : 0;
+        payload.status = payload.client_paid == 1 ? 'renewed' : 'active';
     } else if (currentModalType === 'backup') {
         payload.frequency = document.getElementById('f_frequency').value;
         payload.last_backup = document.getElementById('f_last_backup').value || null;
