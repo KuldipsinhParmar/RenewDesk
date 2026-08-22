@@ -18,42 +18,67 @@ require_once dirname(__DIR__, 3) . '/api/config/db.php';
 $database = new Database();
 $db = $database->getConnection();
 
+$email = strtolower(trim($data->email));
+$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$maxAttempts = 5;
+$windowMinutes = 15;
+
+// Best-effort brute-force throttle. Wrapped so a missing/un-migrated
+// login_attempts table degrades to "no throttle" instead of breaking login.
+try {
+    $stmt = $db->prepare("SELECT COUNT(*) FROM login_attempts WHERE email = ? AND attempted_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE)");
+    $stmt->execute([$email, $windowMinutes]);
+    if ($stmt->fetchColumn() >= $maxAttempts) {
+        http_response_code(429);
+        echo json_encode(["status" => "error", "message" => "Too many failed attempts. Please try again in a few minutes."]);
+        exit();
+    }
+} catch (PDOException $e) {
+    error_log("[login.php] attempt-check skipped: " . $e->getMessage());
+}
+
 $query = "SELECT id, name, email, password FROM admin WHERE email = :email LIMIT 0,1";
 $stmt = $db->prepare($query);
-$stmt->bindParam(':email', $data->email);
+$stmt->bindParam(':email', $email);
 
-if($stmt->execute()) {
-    if($stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $password_hash = $row['password'];
-        
-        // Verify Password
-        if(password_verify($data->password, $password_hash)) {
-            // Setup Session
-            $_SESSION['admin_id'] = $row['id'];
-            $_SESSION['admin_name'] = $row['name'];
-            $_SESSION['logged_in'] = true;
-
-            http_response_code(200);
-            echo json_encode(array(
-                "status" => "success",
-                "message" => "Login successful.",
-                "user" => [
-                    "name" => $row['name'],
-                    "email" => $row['email']
-                ]
-            ));
-        } else {
-            http_response_code(401);
-            echo json_encode(array("status" => "error", "message" => "Login failed. Incorrect password."));
-        }
-    } else {
-        http_response_code(401);
-        echo json_encode(array("status" => "error", "message" => "Login failed. User not found."));
+$authenticated = false;
+if ($stmt->execute() && $stmt->rowCount() > 0) {
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (password_verify($data->password, $row['password'])) {
+        $authenticated = true;
     }
+}
+
+if ($authenticated) {
+    try {
+        $db->prepare("DELETE FROM login_attempts WHERE email = ?")->execute([$email]);
+    } catch (PDOException $e) {
+        error_log("[login.php] attempt-clear skipped: " . $e->getMessage());
+    }
+
+    $_SESSION['admin_id'] = $row['id'];
+    $_SESSION['admin_name'] = $row['name'];
+    $_SESSION['logged_in'] = true;
+
+    http_response_code(200);
+    echo json_encode(array(
+        "status" => "success",
+        "message" => "Login successful.",
+        "user" => [
+            "name" => $row['name'],
+            "email" => $row['email']
+        ]
+    ));
 } else {
-    http_response_code(500);
-    echo json_encode(array("status" => "error", "message" => "Database error."));
+    try {
+        $db->prepare("INSERT INTO login_attempts (email, ip_address) VALUES (?, ?)")->execute([$email, $ip]);
+    } catch (PDOException $e) {
+        error_log("[login.php] attempt-log skipped: " . $e->getMessage());
+    }
+
+    // Same message whether the email doesn't exist or the password is
+    // wrong — distinguishing the two lets an attacker enumerate admin emails.
+    http_response_code(401);
+    echo json_encode(array("status" => "error", "message" => "Invalid email or password."));
 }
 ?>

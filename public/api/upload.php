@@ -19,13 +19,23 @@ try {
     $allowedFolders = ['logos', 'reports'];
     $folder = in_array($_POST['folder'] ?? '', $allowedFolders, true) ? $_POST['folder'] : 'logos';
 
-    $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    // Extension is derived from the sniffed MIME type below, never from the
+    // client-supplied filename — a crafted "polyglot" file (e.g. valid GIF
+    // magic bytes with an appended PHP payload) can still pass a MIME check,
+    // and trusting $_FILES['name']'s extension for that file would let an
+    // attacker get a .php file saved into this web-accessible directory.
+    $mimeToExt = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp',
+    ];
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mimeType = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
 
-    if (!in_array($mimeType, $allowedMimes, true)) {
-        throw new Exception("Invalid file type. Allowed: JPG, PNG, GIF, WebP, SVG.");
+    if (!isset($mimeToExt[$mimeType])) {
+        throw new Exception("Invalid file type. Allowed: JPG, PNG, GIF, WebP.");
     }
 
     if ($file['size'] > 2 * 1024 * 1024) {
@@ -37,7 +47,7 @@ try {
         mkdir($uploadDir, 0755, true);
     }
 
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $ext = $mimeToExt[$mimeType];
     $prefix = $folder === 'reports' ? 'report_' : 'logo_';
     $filename = $prefix . bin2hex(random_bytes(8)) . '.' . $ext;
     $destPath = $uploadDir . $filename;
