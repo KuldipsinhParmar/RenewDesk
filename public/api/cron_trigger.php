@@ -25,10 +25,19 @@ cronLog("IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'CLI'));
 cronLog("User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'N/A'));
 
 // --- Secret key to prevent unauthorized access ---
-$secretKey = renewdesk_env('CRON_KEY', 'RD-CRON-2024-xK9mP3qW7vN1');
+// No hardcoded fallback — a default baked into source code checked into git
+// isn't a secret. If CRON_KEY isn't set, fail closed instead of accepting
+// a key anyone who's seen this file could guess.
+$secretKey = renewdesk_env('CRON_KEY', '');
+if ($secretKey === '') {
+    cronLog("ERROR: CRON_KEY is not configured in .env — rejecting all requests.");
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => "Cron key is not configured on the server."]);
+    exit;
+}
 
 // Validate key
-if (!isset($_GET['key']) || $_GET['key'] !== $secretKey) {
+if (!isset($_GET['key']) || !hash_equals($secretKey, (string)$_GET['key'])) {
     cronLog("ERROR: Unauthorized access attempt. Key: " . ($_GET['key'] ?? 'none'));
     http_response_code(403);
     echo json_encode(["status" => "error", "message" => "Unauthorized. Invalid cron key."]);

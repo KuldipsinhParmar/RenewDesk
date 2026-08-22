@@ -11,7 +11,7 @@ function renewdesk_bootstrap_env(): void
     }
     $loaded = true;
 
-    $path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+    $path = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . '.env';
     if (!is_readable($path)) {
         return;
     }

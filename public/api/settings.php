@@ -13,11 +13,13 @@ try {
     if ($method === 'GET') {
         $stmt = $db->query("SELECT `key`, `value`, `label` FROM settings");
         $settings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $cronKey = renewdesk_env('CRON_KEY', 'RD-CRON-2024-xK9mP3qW7vN1');
+        $cronKey = renewdesk_env('CRON_KEY', '');
         $proto   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host    = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $cronUrl = $proto . '://' . $host . '/api/cron_trigger.php?key=' . urlencode($cronKey);
-        echo json_encode(["status" => "success", "data" => $settings, "cron_url" => $cronUrl]);
+        $cronUrl = $cronKey !== ''
+            ? $proto . '://' . $host . '/api/cron_trigger.php?key=' . urlencode($cronKey)
+            : null;
+        echo json_encode(["status" => "success", "data" => $settings, "cron_url" => $cronUrl, "cron_key_configured" => $cronKey !== '']);
     } 
     elseif ($method === 'PUT') {
         $input = json_decode(file_get_contents("php://input"), true);

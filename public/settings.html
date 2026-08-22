@@ -300,6 +300,9 @@ async function loadSettings() {
         if (json.cron_url) {
             document.getElementById('cronUrlField').value = json.cron_url;
             document.getElementById('cronCpanelCmd').textContent = 'curl -s "' + json.cron_url + '"';
+        } else {
+            document.getElementById('cronUrlField').value = 'CRON_KEY is not set in .env';
+            document.getElementById('cronCpanelCmd').textContent = 'Add CRON_KEY=<a-random-secret> to your server .env file, then reload this page.';
         }
     } catch(e) { console.error("Could not load settings.", e); }
 }
