@@ -10,10 +10,9 @@ DirectoryIndex public/index.html
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Block sensitive paths before any file exists check (api/config lives under project root)
+    # Block sensitive paths before any file exists check
     RewriteRule ^\.env$ - [F,L]
     RewriteRule ^\.git/ - [F,L]
-    RewriteRule ^api/config/ - [F,L]
     RewriteRule ^vendor/ - [F,L]
     RewriteRule ^composer\.json$ - [F,L]
     RewriteRule ^composer\.lock$ - [F,L]
@@ -23,7 +22,12 @@ DirectoryIndex public/index.html
     RewriteCond %{REQUEST_URI} ^/public/
     RewriteRule ^ - [L]
 
-    # Existing file/dir at project root only — serve as-is (rare)
+    # Existing file/dir at project root only — serve as-is (rare).
+    # All real app code (including api/*.php and api/config/) lives under
+    # public/ now — nothing should ever legitimately match this branch.
+    # If a stray file ever ends up at project root, this rule would serve
+    # it directly instead of routing into public/, so keep the project
+    # root clean of anything but this .htaccess and deploy metadata.
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]

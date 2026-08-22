@@ -1,0 +1,9 @@
+# Shared config (DB credentials, session/env setup) — never served directly,
+# only require_once'd by the api/*.php files that sit next to this folder.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

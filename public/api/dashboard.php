@@ -1,8 +1,8 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once dirname(__DIR__, 2) . '/api/config/auth.php';
-require_once dirname(__DIR__, 2) . '/api/config/db.php';
+require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/db.php';
 
 $db = (new Database())->getConnection();
 

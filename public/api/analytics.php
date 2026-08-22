@@ -2,8 +2,8 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
 
-require_once dirname(__DIR__, 2) . '/api/config/auth.php';
-require_once dirname(__DIR__, 2) . '/api/config/db.php';
+require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/db.php';
 
 $db = (new Database())->getConnection();
 $type = $_GET['type'] ?? '';
@@ -127,5 +127,11 @@ try {
     error_log("[analytics.php] " . $e->getMessage());
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => renewdesk_debug() ? $e->getMessage() : "A database error occurred."]);
+} catch (Throwable $e) {
+    // Catches fatal PHP errors (TypeError, etc.) that PDOException misses,
+    // so the client always gets JSON instead of a blank 500.
+    error_log("[analytics.php] " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => (function_exists('renewdesk_debug') && renewdesk_debug()) ? ($e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine()) : "An unexpected error occurred."]);
 }
 ?>

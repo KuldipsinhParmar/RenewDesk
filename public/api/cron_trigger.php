@@ -11,7 +11,7 @@ ini_set('log_errors', 1);
 ini_set('error_log', dirname(__DIR__, 2) . '/cron/cron_debug.log');
 
 header("Content-Type: application/json; charset=UTF-8");
-require_once dirname(__DIR__, 2) . '/api/config/env.php';
+require_once __DIR__ . '/config/env.php';
 
 // --- Log helper ---
 function cronLog($msg) {

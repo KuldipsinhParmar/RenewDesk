@@ -4,7 +4,7 @@
 // CLI: php /var/www/html/cron/send_reminders.php
 // ============================================================
 
-require_once dirname(__DIR__) . '/api/config/db.php';
+require_once dirname(__DIR__) . '/public/api/config/db.php';
 
 $db = (new Database())->getConnection();
 

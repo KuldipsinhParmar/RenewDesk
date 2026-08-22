@@ -2,9 +2,9 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, PUT");
 
-require_once dirname(__DIR__, 2) . '/api/config/auth.php';
-require_once dirname(__DIR__, 2) . '/api/config/db.php';
-require_once dirname(__DIR__, 2) . '/api/config/env.php';
+require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/env.php';
 
 $db = (new Database())->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
