@@ -68,8 +68,8 @@ window.RD_REPORT_SECTIONS = [
         { name: 'notes', label: 'Notes', type: 'textarea' }
     ]},
     { key: 'summary_recommendations', title: 'Summary & Recommendations', fields: [
-        { name: 'summary', label: 'Summary', type: 'textarea', placeholder: 'Short narrative summary of this period\'s maintenance activity, key wins, and any outstanding issues.' },
-        { name: 'next_steps', label: 'Recommended Next Steps', type: 'textarea' },
+        { name: 'summary', label: 'Summary', type: 'richtext', placeholder: 'Short narrative summary of this period\'s maintenance activity, key wins, and any outstanding issues.' },
+        { name: 'next_steps', label: 'Recommended Next Steps', type: 'richtext' },
         { name: 'next_maintenance_date', label: 'Next Scheduled Maintenance Date', type: 'date' }
     ]},
     { key: 'custom', title: 'Custom Section', unlimited: true, fields: [

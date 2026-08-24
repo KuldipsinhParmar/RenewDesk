@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@43.3.1/build/ckeditor.js"></script>
     <script src="assets/js/sidebar.js"></script>
     <link rel="stylesheet" href="assets/css/v2.css">
 </head>
@@ -78,6 +79,12 @@
             .rd-report-details-card .rd-input,
             .rd-report-details-card .rd-select { padding: 11px 14px; border-radius: 10px; font-size: 14px; }
             .rd-report-details-card .rd-select { padding-right: 38px; }
+
+            /* Rich-text (CKEditor) fields inside report sections */
+            .rd-report-richtext-wrap .ck.ck-editor__main > .ck-editor__editable { min-height: 130px; border-radius: 0 0 10px 10px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13.5px; }
+            .rd-report-richtext-wrap .ck.ck-toolbar { border-radius: 10px 10px 0 0; }
+            .rd-report-richtext-wrap .ck.ck-editor__editable_inline { border-color: var(--border) !important; }
+            .rd-report-richtext-wrap .ck.ck-toolbar { border-color: var(--border) !important; background: var(--surface-2) !important; }
         </style>
     </div>
 </div>
@@ -93,6 +100,24 @@ let sections = [];
 let projectsData = [];
 let sortableInstance = null;
 const collapsedSet = new Set();
+let activeEditors = {}; // "<instance_id>::<field_name>" -> CKEditor instance
+
+function destroyActiveEditors() {
+    const editors = Object.values(activeEditors);
+    activeEditors = {};
+    return Promise.all(editors.map(ed => ed.destroy().catch(() => {})));
+}
+
+function initRichTextEditors() {
+    document.querySelectorAll('.rd-report-richtext-wrap [data-field]').forEach(el => {
+        const secEl = el.closest('.rd-report-section');
+        if (!secEl) return;
+        const key = `${secEl.dataset.instanceId}::${el.dataset.field}`;
+        ClassicEditor.create(el, {
+            toolbar: ['bold', 'italic', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+        }).then(editor => { activeEditors[key] = editor; }).catch(() => {});
+    });
+}
 
 function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -176,6 +201,7 @@ function fieldInputHtml(instance, field) {
         </div>`;
     }
     if (field.type === 'textarea') return `<textarea ${common} rows="3" placeholder="${escapeHtml(field.placeholder||'')}">${escapeHtml(val)}</textarea>`;
+    if (field.type === 'richtext') return `<div class="rd-report-richtext-wrap"><div data-field="${field.name}">${val}</div></div>`;
     if (field.type === 'select') {
         const opts = field.options.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('');
         return `<select ${common}><option value="">— Select —</option>${opts}</select>`;
@@ -246,7 +272,7 @@ function sectionCardHtml(instance) {
         : `<span class="rd-report-section-title">${escapeHtml(instance.title)}</span>`;
 
     const fieldsHtml = cat.fields.length ? `<div class="rd-report-fields-grid">${cat.fields.map(f => {
-        const wide = f.wide !== undefined ? f.wide : (f.type === 'textarea' || f.type === 'image' || f.type === 'images');
+        const wide = f.wide !== undefined ? f.wide : (f.type === 'textarea' || f.type === 'richtext' || f.type === 'image' || f.type === 'images');
         return `
         <div class="rd-form-group" ${wide ? 'style="grid-column:1/-1"' : ''}>
             <label class="rd-label">${f.label}${f.target ? ` <span style="color:var(--text-3);font-weight:500">(target: ${f.target})</span>` : ''}</label>
@@ -301,12 +327,15 @@ function initSortable() {
 }
 
 function renderSections() {
-    const wrap = document.getElementById('sectionsList');
-    wrap.innerHTML = sections.length
-        ? sections.map(sectionCardHtml).join('')
-        : '<div class="rd-report-empty">No sections added yet. Pick sections from the palette above to build this report.</div>';
-    renderPalette();
-    initSortable();
+    destroyActiveEditors().then(() => {
+        const wrap = document.getElementById('sectionsList');
+        wrap.innerHTML = sections.length
+            ? sections.map(sectionCardHtml).join('')
+            : '<div class="rd-report-empty">No sections added yet. Pick sections from the palette above to build this report.</div>';
+        renderPalette();
+        initSortable();
+        initRichTextEditors();
+    });
 }
 
 function harvestFromDom() {
@@ -320,6 +349,9 @@ function harvestFromDom() {
             if (el.classList.contains('rd-radio-group')) {
                 const checked = el.querySelector('input[type=radio]:checked');
                 inst.fields[el.dataset.field] = checked ? checked.value : '';
+            } else if (el.closest('.rd-report-richtext-wrap')) {
+                const editor = activeEditors[`${id}::${el.dataset.field}`];
+                if (editor) inst.fields[el.dataset.field] = editor.getData();
             } else {
                 inst.fields[el.dataset.field] = el.value;
             }

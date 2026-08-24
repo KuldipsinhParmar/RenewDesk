@@ -38,6 +38,10 @@
         .rd-doc-table td { border: 1px solid #bfbfbf; padding: 6px 10px; font-size: 12.5px; color: #333; }
         .rd-doc-table tr { page-break-inside: avoid; break-inside: avoid; }
         .rd-doc-table td.k { color: #6b6b6b; }
+        .rd-doc-richtext p { margin: 0 0 6px; }
+        .rd-doc-richtext p:last-child { margin-bottom: 0; }
+        .rd-doc-richtext ul, .rd-doc-richtext ol { margin: 4px 0; padding-left: 18px; }
+        .rd-doc-richtext li { margin-bottom: 2px; }
         .rd-doc-field-row { font-size: 12.5px; margin: 0 0 5px; }
         .rd-doc-field-row b { color: #222; }
         .rd-doc-field-row .target { color: #6b6b6b; font-size: 11px; }
@@ -107,6 +111,7 @@ function escapeHtml(s) {
 
 function fieldValueHtml(field, value) {
     if (field.type === 'image' || field.type === 'images') return ''; // handled separately as Visual Evidence block
+    if (field.type === 'richtext') return value ? `<div class="rd-doc-richtext">${value}</div>` : '<span style="color:#9a9a9a">—</span>';
     if (field.type === 'date') return escapeHtml(formatD(value));
     if (field.band) return `<span class="rd-badge ${RD_REPORT.bandClass(value, field.band)}">${escapeHtml(value)}</span>`;
     return escapeHtml(value);
