@@ -38,6 +38,7 @@
         .rd-doc-table td { border: 1px solid #bfbfbf; padding: 6px 10px; font-size: 12.5px; color: #333; }
         .rd-doc-table tr { page-break-inside: avoid; break-inside: avoid; }
         .rd-doc-table td.k { color: #6b6b6b; }
+        .rd-doc-richtext-heading { font-size: 15px; font-weight: 700; color: #1f3864; margin: 14px 0 8px; }
         .rd-doc-richtext p { margin: 0 0 6px; }
         .rd-doc-richtext p:last-child { margin-bottom: 0; }
         .rd-doc-richtext ul, .rd-doc-richtext ol { margin: 4px 0; padding-left: 18px; }
@@ -111,7 +112,6 @@ function escapeHtml(s) {
 
 function fieldValueHtml(field, value) {
     if (field.type === 'image' || field.type === 'images') return ''; // handled separately as Visual Evidence block
-    if (field.type === 'richtext') return value ? `<div class="rd-doc-richtext">${value}</div>` : '<span style="color:#9a9a9a">—</span>';
     if (field.type === 'date') return escapeHtml(formatD(value));
     if (field.band) return `<span class="rd-badge ${RD_REPORT.bandClass(value, field.band)}">${escapeHtml(value)}</span>`;
     return escapeHtml(value);
@@ -132,7 +132,8 @@ function sectionHtml(instance, num) {
     if (!cat) return '';
 
     const imageFields = cat.fields.filter(f => f.type === 'image' || f.type === 'images');
-    const plainFields = cat.fields.filter(f => f.type !== 'image' && f.type !== 'images')
+    const richtextFields = cat.fields.filter(f => f.type === 'richtext');
+    const plainFields = cat.fields.filter(f => f.type !== 'image' && f.type !== 'images' && f.type !== 'richtext')
         .filter(f => { const v = instance.fields[f.name]; return v !== undefined && v !== null && v !== ''; });
 
     const fieldsRows = plainFields.map(f => `
@@ -159,10 +160,19 @@ function sectionHtml(instance, num) {
         ${evidenceHtml(f, instance.fields[f.name])}
     `).join('');
 
+    const richtextStr = richtextFields.map(f => {
+        const v = instance.fields[f.name];
+        if (!v) return '';
+        return `
+        <div class="rd-doc-richtext-heading">${escapeHtml(f.label)}</div>
+        <div class="rd-doc-richtext">${v}</div>`;
+    }).join('');
+
     return `
         <div class="rd-doc-section">
             <h3 class="rd-doc-section-title"><span class="num">${num}.</span>${escapeHtml(instance.title)}</h3>
             ${fieldsRows ? `<table class="rd-doc-table"><tbody>${fieldsRows}</tbody></table>` : ''}
+            ${richtextStr}
             ${repeatableStr}
             ${imagesStr}
         </div>`;
