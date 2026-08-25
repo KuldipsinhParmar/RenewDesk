@@ -64,6 +64,24 @@
                     <div class="rd-form-group"><label class="rd-label">Prepared By</label><input type="text" id="f_prepared_by" class="rd-input"></div>
                     <div class="rd-form-group"><label class="rd-label">Reviewed By</label><input type="text" id="f_reviewed_by" class="rd-input"></div>
                 </div>
+                <div class="rd-grid-2" style="margin-top:10px">
+                    <div class="rd-form-group"><label class="rd-label">Middle Company Name <span style="font-weight:400;color:var(--text-3)">(partner/reseller shown on this report)</span></label><input type="text" id="f_partner_name" class="rd-input" placeholder="e.g. Acme Reseller Pvt Ltd"></div>
+                    <div class="rd-form-group">
+                        <label class="rd-label">Middle Company Logo</label>
+                        <div id="partnerLogoUploadZone" style="border:2px dashed var(--border-2);border-radius:12px;padding:12px 14px;min-height:44px;cursor:pointer;transition:border-color .2s;background:var(--surface-2);display:flex;align-items:center;justify-content:center;gap:10px" onclick="document.getElementById('partnerLogoFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border-2)'" ondrop="handlePartnerLogoDrop(event)">
+                            <div id="partnerLogoPreview" style="display:none;align-items:center">
+                                <img id="partnerLogoPreviewImg" style="max-width:56px;max-height:56px;border-radius:6px;object-fit:contain;border:1px solid var(--border);background:#fff">
+                            </div>
+                            <div id="partnerLogoPlaceholder" style="font-size:12.5px;color:var(--text-3)">Drop image or <span style="color:var(--accent);font-weight:600">click to upload</span></div>
+                            <div id="partnerLogoUploading" style="display:none;font-size:12.5px;color:var(--text-3)">Uploading…</div>
+                        </div>
+                        <input type="file" id="partnerLogoFileInput" accept="image/*" style="display:none" onchange="uploadPartnerLogoFile(this)">
+                        <input type="hidden" id="f_partner_logo_url">
+                        <div style="display:flex;justify-content:flex-end;margin-top:6px">
+                            <button type="button" onclick="clearPartnerLogo()" id="clearPartnerLogoBtn" style="display:none;padding:4px 10px;font-size:11.5px;font-weight:600;border:1px solid var(--border-2);background:var(--surface);color:var(--text-3);border-radius:7px;cursor:pointer">Remove</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div style="padding:14px 20px;border-top:1px solid var(--border)">
@@ -207,6 +225,7 @@ function fieldInputHtml(instance, field) {
         return `<select ${common}><option value="">— Select —</option>${opts}</select>`;
     }
     if (field.type === 'date') return `<input type="date" ${common} value="${escapeHtml(val)}">`;
+    if (field.type === 'datetime') return `<input type="datetime-local" ${common} value="${escapeHtml(val)}">`;
     if (field.type === 'number') return `<input type="number" ${common} value="${escapeHtml(val)}">`;
     if (field.type === 'image') {
         return `<div class="rd-report-upload" data-field-wrap="${field.name}">
@@ -244,7 +263,7 @@ function repeatableHtml(instance, cat) {
     const rowsHtml = rows.map((row, idx) => {
         const cells = rep.columns.map(c => {
             const v = row[c.name] || '';
-            const type = c.type === 'date' ? 'date' : 'text';
+            const type = c.type === 'date' ? 'date' : (c.type === 'datetime' ? 'datetime-local' : 'text');
             return `<td><input type="${type}" data-col="${c.name}" class="rd-input" style="padding:6px 8px;font-size:12.5px" value="${escapeHtml(v)}"></td>`;
         }).join('');
         return `<tr data-row-idx="${idx}">${cells}<td><button type="button" onclick="removeRepeatRow('${instance.instance_id}','${rep.name}',${idx})" class="rd-icon-btn danger" title="Remove row">${trashIcon()}</button></td></tr>`;
@@ -498,6 +517,61 @@ function removeGalleryImage(instanceId, fieldName, idx) {
     renderSections();
 }
 
+function setPartnerLogoPreview(url) {
+    if (url) {
+        document.getElementById('partnerLogoPreviewImg').src = url;
+        document.getElementById('partnerLogoPreview').style.display = 'flex';
+        document.getElementById('partnerLogoPlaceholder').style.display = 'none';
+        document.getElementById('clearPartnerLogoBtn').style.display = '';
+        document.getElementById('partnerLogoUploadZone').style.borderColor = 'var(--accent)';
+    } else {
+        clearPartnerLogo();
+    }
+}
+
+function clearPartnerLogo() {
+    document.getElementById('f_partner_logo_url').value = '';
+    document.getElementById('partnerLogoPreview').style.display = 'none';
+    document.getElementById('partnerLogoPlaceholder').style.display = '';
+    document.getElementById('clearPartnerLogoBtn').style.display = 'none';
+    document.getElementById('partnerLogoUploadZone').style.borderColor = '';
+    document.getElementById('partnerLogoFileInput').value = '';
+    document.getElementById('partnerLogoUploading').style.display = 'none';
+}
+
+function handlePartnerLogoDrop(event) {
+    event.preventDefault();
+    document.getElementById('partnerLogoUploadZone').style.borderColor = '';
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+    uploadPartnerLogoFile({ files: [file] });
+}
+
+async function uploadPartnerLogoFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('partnerLogoPlaceholder').style.display = 'none';
+    document.getElementById('partnerLogoPreview').style.display = 'none';
+    document.getElementById('partnerLogoUploading').style.display = '';
+    const formData = new FormData();
+    formData.append('logo', file);
+    try {
+        const res = await fetch(rdApi('api/upload.php'), { method: 'POST', credentials: 'same-origin', body: formData });
+        const json = await res.json();
+        if (json.status === 'success') {
+            setPartnerLogoPreview(json.url);
+            document.getElementById('f_partner_logo_url').value = json.url;
+        } else {
+            rdError(json.message || 'Upload failed');
+            document.getElementById('partnerLogoPlaceholder').style.display = '';
+        }
+    } catch (e) {
+        rdError('Upload failed — server error.');
+        document.getElementById('partnerLogoPlaceholder').style.display = '';
+    }
+    document.getElementById('partnerLogoUploading').style.display = 'none';
+}
+
 async function saveReport(status) {
     harvestFromDom();
     const projectId = fixedProjectId || (document.getElementById('f_project_id') ? document.getElementById('f_project_id').value : document.getElementById('projectFieldWrap').dataset.projectId);
@@ -513,6 +587,8 @@ async function saveReport(status) {
         period_end: document.getElementById('f_period_end').value || null,
         prepared_by: document.getElementById('f_prepared_by').value || null,
         reviewed_by: document.getElementById('f_reviewed_by').value || null,
+        partner_name: document.getElementById('f_partner_name').value.trim() || null,
+        partner_logo_url: document.getElementById('f_partner_logo_url').value || null,
         overall_health: document.getElementById('f_overall_health').value,
         status: status,
         sections: sections.map(s => ({ instance_id: s.instance_id, key: s.key, title: s.title, enabled: s.enabled, fields: s.fields }))
@@ -555,6 +631,9 @@ async function init() {
         document.getElementById('f_period_end').value = r.period_end ? r.period_end.split('T')[0] : '';
         document.getElementById('f_prepared_by').value = r.prepared_by || '';
         document.getElementById('f_reviewed_by').value = r.reviewed_by || '';
+        document.getElementById('f_partner_name').value = r.partner_name || '';
+        document.getElementById('f_partner_logo_url').value = r.partner_logo_url || '';
+        setPartnerLogoPreview(r.partner_logo_url || '');
         document.getElementById('f_overall_health').value = r.overall_health || 'good';
         sections = r.sections || [];
         document.getElementById('viewLink').style.display = '';

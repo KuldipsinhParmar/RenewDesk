@@ -33,7 +33,7 @@ window.RD_REPORT_SECTIONS = [
     ]},
     { key: 'backup_status', title: 'Backup Status', fields: [], repeatable: { name: 'rows', label: 'Backups', columns: [
         { name: 'backup_type', label: 'Backup Type' }, { name: 'frequency', label: 'Frequency' }, { name: 'storage_location', label: 'Storage Location' },
-        { name: 'last_backup_date', label: 'Last Backup Date', type: 'date' }, { name: 'status', label: 'Status' }
+        { name: 'last_backup_date', label: 'Last Backup Date', type: 'datetime' }, { name: 'status', label: 'Status' }
     ], seed: [
         { backup_type: 'Full Site (Files + DB)', frequency: '', storage_location: '', last_backup_date: '', status: 'OK' },
         { backup_type: 'Database Only', frequency: '', storage_location: '', last_backup_date: '', status: 'OK' }

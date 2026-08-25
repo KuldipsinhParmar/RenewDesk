@@ -38,7 +38,7 @@ try {
     }
     elseif ($method === 'POST') {
         $input = json_decode(file_get_contents("php://input"), true);
-        $stmt = $db->prepare("INSERT INTO maintenance_reports (project_id, website_url, report_date, period_start, period_end, prepared_by, reviewed_by, overall_health, status, sections) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO maintenance_reports (project_id, website_url, report_date, period_start, period_end, prepared_by, reviewed_by, partner_name, partner_logo_url, overall_health, status, sections) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $input['project_id'],
             $input['website_url'] ?? null,
@@ -47,6 +47,8 @@ try {
             $input['period_end'] ?? null,
             $input['prepared_by'] ?? null,
             $input['reviewed_by'] ?? null,
+            $input['partner_name'] ?? null,
+            $input['partner_logo_url'] ?? null,
             $input['overall_health'] ?? 'good',
             $input['status'] ?? 'draft',
             json_encode($input['sections'] ?? [])
@@ -57,7 +59,7 @@ try {
         $id = $_GET['id'] ?? null;
         if (!$id) throw new Exception("ID required");
         $input = json_decode(file_get_contents("php://input"), true);
-        $stmt = $db->prepare("UPDATE maintenance_reports SET website_url=?, report_date=?, period_start=?, period_end=?, prepared_by=?, reviewed_by=?, overall_health=?, status=?, sections=? WHERE id=?");
+        $stmt = $db->prepare("UPDATE maintenance_reports SET website_url=?, report_date=?, period_start=?, period_end=?, prepared_by=?, reviewed_by=?, partner_name=?, partner_logo_url=?, overall_health=?, status=?, sections=? WHERE id=?");
         $stmt->execute([
             $input['website_url'] ?? null,
             $input['report_date'],
@@ -65,6 +67,8 @@ try {
             $input['period_end'] ?? null,
             $input['prepared_by'] ?? null,
             $input['reviewed_by'] ?? null,
+            $input['partner_name'] ?? null,
+            $input['partner_logo_url'] ?? null,
             $input['overall_health'] ?? 'good',
             $input['status'] ?? 'draft',
             json_encode($input['sections'] ?? []),

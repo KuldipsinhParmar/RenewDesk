@@ -51,6 +51,18 @@
         return parts[2] + '-' + parts[1] + '-' + parts[0];
     };
 
+    /* Date + time formatter for datetime-local values ("YYYY-MM-DDTHH:MM").
+       Falls back to date-only display when no time portion is present. */
+    window.rdFormatDateTime = function (d) {
+        if (!d) return '—';
+        var chunks = String(d).split('T');
+        var parts = chunks[0].split('-');
+        if (parts.length !== 3) return d;
+        var out = parts[2] + '-' + parts[1] + '-' + parts[0];
+        if (chunks[1]) out += ' ' + chunks[1].slice(0, 5);
+        return out;
+    };
+
     /* DataTables v2's CDN stylesheet forces `color:inherit!important` on the
        current-page button, which beats our CSS regardless of specificity.
        Paint it directly after every draw instead of fighting the cascade.
